@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 
+      | #{userId ? 'Help for User - ' + userId : 'New General Inquiry'}
+  header(style='text-align:center; padding-top:4vh; padding-bottom:4vh; background-color:white;')
+    img(src='cid:headerTheSportsLogo', style='max-width:100%; align-content:center;')
+  body
+    article(style='border-bottom:solid #cc0000; padding-bottom:2vh;')
+      h2(style='color: #cc0000; text-align:left') 
+        | #{userId ? 'Help for User - ' + userId : 'New General Inquiry!'}
+      p(style='color:black; text-align:left') 
+        | #{userId ? name + ' is requesting your help from the user dashboard.' : name + ' has sent you an inquiry from the contact form.'}
+      p(style='text-align:left') Inquiry details:
+      ul(style='color:black; text-align:left')
+        li(style='margin-bottom:8px') <b>Name:</b> #{name}
+        li(style='margin-bottom:8px') <b>Phone:</b> #{phone}
+        li(style='margin-bottom:8px') <b>Email:</b> #{userEmail}
+        li(style='margin-bottom:8px') <b>Message:</b> #{message}
+        if userId
+          li(style='margin-bottom:8px') <b>User ID:</b> #{userId}
+      p(style='text-align:left') Please respond as soon as possible.
+    footer
+      p(style='color:black; text-align:left') Do not reply to this sender
+      <p style='color:black; text-align:left'><b>Sincerely:</b> The <span style="color: #cc0000"><b>Sport Zone</b></span> Team</p>

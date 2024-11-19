@@ -1,0 +1,14 @@
+import { Module } from '@nestjs/common';
+import { ExcelProductsController } from './excel-products.controller';
+import { ExcelProductsService } from './excel-products.service';
+import { ProductsService } from '../products/products.service';
+import { CategoriesService } from '../categories/categories.service';
+import { SportService } from '../sport/sport.service';
+import { VercelBlobService } from 'src/files/vercel-storage.service';
+
+@Module({
+  controllers: [ExcelProductsController],
+  providers: [ExcelProductsService, ProductsService, CategoriesService, SportService, VercelBlobService],
+  exports: [ExcelProductsService],
+})
+export class ExcelProductsModule {}

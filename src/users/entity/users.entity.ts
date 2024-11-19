@@ -1,0 +1,143 @@
+import {
+  AfterCreate,
+  BeforeCreate,
+  BeforeDestroy,
+  BelongsToMany,
+  Column,
+  DataType,
+  HasMany,
+  HasOne,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Direction } from '../../directions/entity/directions.entity';
+import { Customization } from '../../products/entity/customization.entity';
+import { Product } from '../../products/entity/products.entity';
+import { ShoppingCart } from '../../shopping-cart/entity/shopping-cart.entity';
+import { UserProductFav } from './userproductfav.entity';
+import { Review } from '../../reviews/entity/reviews.entity';
+import { Order } from '../../orders/entity/order.entity';
+import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+
+export enum Rol {
+  superAdmin = 'superAdmin',
+  admin = 'admin',
+  user = 'user',
+}
+
+export enum UserProviders {
+  none = 'none',
+  google = 'google',
+  facebook = 'facebook',
+}
+
+@Table({
+  tableName: 'Users',
+  underscored: true,
+  timestamps: true,
+  paranoid: true,
+})
+export class User extends Model {
+  @BeforeDestroy
+  static async destroyCart(instance: User) {
+    await ShoppingCart.destroy({
+      where: { userId: instance.id },
+      force: true,
+    });
+    await Direction.destroy({ where: { userId: instance.id }, force: true });
+  }
+
+  @AfterCreate
+  static async setShoppingCart(instance: User) {
+    const shoppingCart = await ShoppingCart.create();
+    shoppingCart.userId = instance.id;
+    await shoppingCart.save();
+  }
+
+  @BeforeCreate
+  static async setActive(instance: User) {
+    instance.isActive = true;
+  }
+
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    primaryKey: true,
+    allowNull: false,
+  })
+  id: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  firstName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  lastName: string;
+
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+    allowNull: false,
+  })
+  email: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  password: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  phone: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  image: string;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: UserProviders.none,
+    allowNull: false,
+  })
+  provider: UserProviders;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: Rol.user,
+    allowNull: false,
+  })
+  rol: Rol;
+
+  @Column(DataType.BOOLEAN)
+  isActive: boolean;
+
+  @HasOne(() => ShoppingCart)
+  cart: ShoppingCart;
+
+  @HasMany(() => Direction, { onDelete: 'CASCADE', hooks: true })
+  directions: Direction[];
+
+  @HasMany(() => Order)
+  orders: Order[];
+
+  @BelongsToMany(() => Product, () => UserProductFav)
+  favorites: Product[];
+
+  @HasMany(() => Customization)
+  customizations: Customization;
+
+  @HasMany(() => Review)
+  reviews: Review[];
+
+  @HasMany(() => CouponUser)
+  couponUsers: CouponUser[];
+}
