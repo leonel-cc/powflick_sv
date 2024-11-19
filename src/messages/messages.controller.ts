@@ -14,10 +14,10 @@ import {
 } from '@nestjs/swagger';
 import { Messages } from './entity/messages.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
-import { GetUser } from '../auth/decorator/auth-user.decorator';
-import { IGetUser } from '../auth/interfaces/getUser.interface';
-import { Rol } from '../users/entity/users.entity';
 import { QueryMessagesDto } from './dto/query-messages.dto';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/rolesGuard';
+import { Rol } from 'src/users/entity/users.entity';
 
 @ApiTags('Messages')
 @Controller('messages')
@@ -34,23 +34,21 @@ export class MessagesController {
   }
 
   @Get('/category/totals')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   async getCategoryTotals(
-  @GetUser() { rol }: IGetUser,
   ) {
-    if (rol !== Rol.admin) throw new HttpException('Este usuario no es un admin', 403);
     return this.messagesService.getCategoryTotals();
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @ApiOkResponse({ description: 'Todos los mensajes obtenidos correctamente', type: [Messages] })
   @ApiInternalServerErrorResponse({ description: 'Error interno del servidor' })
   async findAll(
-  @GetUser() { rol }: IGetUser,
-    @Query() querys: QueryMessagesDto,
+  @Query() querys: QueryMessagesDto,
   ) {
-    if (rol !== Rol.admin) throw new HttpException('Este usuario no es un admin', 403);
 
     const { desc, filter, search, answered, limit, page, category } = querys;
     const booleanAnswered = answered === undefined ? null : answered === 'true' ? true : false;
@@ -70,7 +68,8 @@ export class MessagesController {
 
   //useguards admin
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @ApiOkResponse({ description: 'Mensaje actualizado correctamente', type: Messages })
   @ApiBadRequestResponse({ description: 'No se pudo actualizar el mensaje' })
   @ApiNotFoundResponse({ description: 'Mensaje no encontrado' })
@@ -78,10 +77,8 @@ export class MessagesController {
   @ApiParam({ name: 'id', description: 'ID del mensaje' })
   @ApiBody({ type: UpdateMessageDto })
   async update(
-  @GetUser() { rol }: IGetUser,
-    @Param('id') id: string,
+  @Param('id') id: string,
     @Body() updateMessageDto: UpdateMessageDto) {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
 
     return this.messagesService.update(id, updateMessageDto);
   }

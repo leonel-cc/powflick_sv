@@ -11,6 +11,8 @@ import { CreateCustomizationDto } from './dto/create-customization.dto';
 import { Response } from './interface/serviceInterfaces';
 import { UpdateProductDto } from './dto/update-products.dto';
 import { Rol } from '../users/entity/users.entity';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/rolesGuard';
 
 @ApiTags('Products')
 @Controller('products')
@@ -40,13 +42,12 @@ export class ProductsController {
     description:
       'En caso de no haber error, la respuesta de la misma será un objeto con informacion del paginado y los productos solicitados, ademas de traer un conteo de sus atributos',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Get('/admin')
   allProductsAdmin(
-  @GetUser() { rol }: IGetUser,
-    @Query() querys: QueryProductsDto,
+  @Query() querys: QueryProductsDto,
   ) {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
 
     return this.productsService.allProducts(querys, true);
   }
@@ -69,14 +70,13 @@ export class ProductsController {
   })
   @ApiResponse({ status: 400, description: 'Solicitud inválida' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor' })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Patch(':id')
   async update(
-    @GetUser() { rol }: IGetUser,
-      @Body() updateProductDto: UpdateProductDto,
+    @Body() updateProductDto: UpdateProductDto,
       @Param('id') productId: string,
   ): Promise<any> {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
 
     return this.productsService.update(productId, updateProductDto);
   }
