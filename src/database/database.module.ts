@@ -22,11 +22,11 @@ import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
     SequelizeModule.forRoot({
       dialect: 'postgres',
       dialectModule: require('pg'),
-      host: env.DPHOST,
+      host: env.DBHOST,
       port: Number(env.DBPORT),
-      username: env.DPUSERNAME,
-      password: env.DPPASSWORD,
-      database: env.DPDATABASE,
+      username: env.DBUSERNAME,
+      password: env.DBPASSWORD,
+      database: env.DBDATABASE,
       models: [
         User,
         Product,
@@ -45,16 +45,16 @@ import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
         Coupon,
         CouponUser,
       ],
-      ssl: true,
-      dialectOptions: {
-        ssl: {
-          rejectUnauthorized: true,
-        },
-      },
+      // ssl: true,
+      // dialectOptions: {
+      //   ssl: {
+      //     rejectUnauthorized: true,
+      //   },
+      // },
       autoLoadModels: true,
       synchronize: true,
       logging: false,
-      sync: { force: false },
+      sync: { force: true },
     }),
   ],
   exports: [SequelizeModule],

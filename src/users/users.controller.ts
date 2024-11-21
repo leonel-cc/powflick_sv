@@ -10,6 +10,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
 import { Rol } from './entity/users.entity';
 import { QueryUsersDto } from './dto/query-user.dto';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/rolesGuard';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
@@ -128,14 +130,12 @@ export class UsersController {
     summary:
       'Ruta para ver todos los usuarios (se debe enviar "page" y "limit" por query).',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Get()
   getUsers(
-  @GetUser() { rol }: IGetUser,
-    @Query() querys: QueryUsersDto,
+  @Query() querys: QueryUsersDto,
   ) {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
-
     const { limit, page, desc, isActive, role, filter, search } = querys;
     const order = desc === 'true' ? 'DESC' : 'ASC';
 
