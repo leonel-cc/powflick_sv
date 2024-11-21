@@ -20,6 +20,8 @@ import { IReview } from './interfaces/response-review.interface';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
 import { Rol } from '../users/entity/users.entity';
 import { GetAllReviewsDto } from './dto/query-get-review.dto';
+import { RolesGuard } from 'src/auth/guards/rolesGuard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('Reviews')
 @Controller('reviews')
@@ -77,7 +79,8 @@ export class ReviewsController {
   }
 
   @Get('/admin')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @ApiOperation({
     summary: 'Obtiene todos los reviews activos e inactivos',
   })
@@ -94,16 +97,15 @@ export class ReviewsController {
   })
   //Controller------------------------------------------------------------------
   async findAllByAdmin(
-    @GetUser() { rol }: IGetUser,
-      @Query() query: GetAllReviewsDto,
+    @Query() query: GetAllReviewsDto,
   ): Promise<IReview> {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
     const response = await this.reviewsService.findAll(true, query);
     return response;
   }
 
   @Patch('update')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @ApiBody({ type: UpdateReviewDto })
   @ApiOperation({ summary: 'Actualiza un review' })
   //Posibles respuestas--------------------------------------------------------
@@ -120,17 +122,16 @@ export class ReviewsController {
   })
   //Controller-----------------------------------------------------------------
   async update(
-    @GetUser() { rol }: IGetUser,
-      @Body() updateReviewDto: UpdateReviewDto,
+    @Body() updateReviewDto: UpdateReviewDto,
   ): Promise<IReview> {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
 
     const response = await this.reviewsService.update(updateReviewDto);
     return response;
   }
 
   @Patch('activate')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   //Para los docs del dto------------------------------------------------------
   @ApiBody({ type: ActivateReviewDto })
   @ApiOperation({ summary: 'Activa o desactiva un review(borrado lógico)' })
@@ -143,10 +144,8 @@ export class ReviewsController {
       'Si todo sale bien, obtendrás el número de reviews actualizadas',
   })
   async removeOrActivate(
-    @GetUser() { rol }: IGetUser,
-      @Body() activateReview: ActivateReviewDto,
+    @Body() activateReview: ActivateReviewDto,
   ): Promise<IReview> {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
     const response = await this.reviewsService.removeOrActivate(activateReview);
     return response;
   }

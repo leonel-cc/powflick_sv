@@ -10,7 +10,7 @@ import {
 import { FindOptions, Op, Transaction } from 'sequelize';
 import { Product, StateProduct } from './entity/products.entity';
 import { SheetsProductsDto } from '../excel-products/dto/sheetsProductsDto';
-import { calculateCustomizationPrice, stringArraying } from '../utils/tools';
+import { calculateCustomizationPrice } from '../utils/tools';
 import { QueryProductsDto } from './dto/query-products.dto';
 import {
   PaginatedProductsResponse,

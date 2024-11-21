@@ -8,6 +8,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { GetUser } from 'src/auth/decorator/auth-user.decorator';
 import { IGetUser } from 'src/auth/interfaces/getUser.interface';
 import { Rol } from 'src/users/entity/users.entity';
+import { RolesGuard } from 'src/auth/guards/rolesGuard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('Excel Products')
 @Controller('excel-products')
@@ -32,15 +34,14 @@ export class ExcelProductsController {
       },
     },
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Post('')
   async excelToDatabase(
-  @GetUser() { rol }: IGetUser,
-    @Body('url') url: string,
+  @Body('url') url: string,
     @Req() req: Request,
   ) {
     req.setTimeout(1200000); //20 min
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
     const sheetsData: GoogleSpreadsheet = await this.excelProductsService.getSheetsData(url);
 
     const jsonData: any = await this.excelProductsService.spreadSheetsToJSON(sheetsData);
@@ -57,11 +58,10 @@ export class ExcelProductsController {
     status: 200,
     description: 'Datos exportados correctamente.',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Get('')
-  async exportToExcel(@GetUser() { rol }: IGetUser, @Res() res: Response) {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
-
+  async exportToExcel(@Res() res: Response) {
     // Recuperar datos de la base de datos utilizando el servicio
     const products = await this.excelProductsService.getExportProducts();
 

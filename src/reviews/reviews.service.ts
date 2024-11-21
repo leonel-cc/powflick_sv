@@ -212,27 +212,31 @@ export class ReviewsService {
     changeReviewState: ActivateReviewDto,
   ): Promise<IReview> {
     try {
+      const REVIEW_NOT_FOUND = 'This review does not exist.';
       const review = await Review.findByPk(changeReviewState.reviewId);
-      const user = await User.findByPk(review.userId);
-      if (!review) throw new HttpException('This review does not exist', HttpStatus.NOT_FOUND);
+
+      if (!review) {
+        throw new HttpException(REVIEW_NOT_FOUND, HttpStatus.NOT_FOUND);
+      }
+
+      // Cambiar el estado de la reseña
       review.isActive = !review.isActive;
       await review.save();
 
-      if (review.isActive) {
-        return {
-          message: `User review was activated: ${user.firstName + ' ' + user.lastName} successfully.`,
-          statusCode: HttpStatus.ACCEPTED,
-        };
-      } else {
-        return {
-          message: `User review was disabled: ${user.firstName + ' ' + user.lastName} successfully.`,
-          statusCode: HttpStatus.ACCEPTED,
-        };
-      }
+      const user = await User.findByPk(review.userId);
+
+      const action = review.isActive ? 'activated' : 'disabled';
+      const message = `User review was ${action}: ${user?.firstName || 'Unknown'} ${user?.lastName || 'User'} successfully.`;
+
+      return {
+        message,
+        statusCode: HttpStatus.ACCEPTED,
+      };
     } catch (error) {
       throw new InternalServerErrorException(
-        'An error occurred while updating the status of your review',
+        'An error occurred while updating the review status.',
       );
     }
   }
+
 }
