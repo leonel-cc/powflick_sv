@@ -1,11 +1,15 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Neck, Socks, Shorts, Pants, sportsConfig, withOrWithoutShort, PaymentMethods, ShippingTypes, SizeGuide, Materials, SizeType, defaultImage } from './utils/detail.enum';
 import { Product } from './products/entity/products.entity';
 import { Review } from './reviews/entity/reviews.entity';
 import { User } from './users/entity/users.entity';
+import { Op, Sequelize } from 'sequelize';
+import { CategoriesService } from './categories/categories.service';
 
 @Injectable()
 export class AppService {
+  constructor(private readonly categoryService: CategoriesService) { }
+
   hello() {
     return 'hello world';
   }
@@ -42,4 +46,91 @@ export class AppService {
       throw new HttpException('An error occurred while obtaining the detail validations', 400);
     }
   }
+
+  async getLanding() {
+    try {
+      const categories = await this.categoryService.getAll();
+      const recent = await this.getRandomProducts(2);
+      const modal = await this.getRandomProducts(5);
+      const reviews = await Review.findAll({
+        where: { isActive: true },
+        include: {
+          model: User,
+          attributes: ['firstName', 'lastName', 'email'],
+        },
+        attributes: [
+          'id',
+          'title',
+          'review',
+          'type',
+          'orderId',
+          'productId',
+          'rating',
+          'image',
+          'createdAt',
+          'updatedAt',
+        ],
+      });
+
+      const mostSoldProducts = await this.getProductsByCondition({
+        mostSold: true,
+      });
+      const discountProducts = await this.getProductsByCondition({
+        discount: { [Op.gt]: 0 },
+      });
+
+      return {
+        navbar: {
+          categories,
+          recent,
+        },
+        landing: {
+          reviews,
+          modal,
+          collections: {
+            mostSoldProducts,
+            discountProducts,
+          },
+        },
+      };
+    } catch (error) {
+      console.error('Error obtaining landing data:', error);
+      throw new HttpException(
+        'An error occurred while obtaining the landing data',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private async getRandomProducts(limit: number) {
+    const count = await Product.count();
+    if (count < 2) {
+      return Product.findAll(); // Si hay menos de 2 productos, devuelve todos
+    }
+
+    const randomIndex = Math.floor(Math.random() * Math.max(0, count - 2));
+
+    return Product.findAll({
+      offset: randomIndex,
+      limit,
+      order: Sequelize.literal('RANDOM()'),
+    });
+  }
+
+  // Método para obtener productos por condición
+  private async getProductsByCondition(condition: any) {
+    return Product.findAll({
+      where: condition,
+      attributes: [
+        'id',
+        'title',
+        'price',
+        'mostSold',
+        'discount',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
+  }
+
 }
