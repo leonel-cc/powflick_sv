@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
-  BadRequestException,
   HttpException,
 } from '@nestjs/common';
 import { Product, StateProduct } from '../products/entity/products.entity';
@@ -131,73 +130,78 @@ export class ShoppingCartService {
 
   private async getThisProduct(id: string): Promise<boolean> {
     try {
-      const thisProducto = await this.productsService.findByPkToValidateExistentProduct(
-        id,
-        {
-          attributes: ['id', 'status', 'stock', 'price'],
-        },
-      );
+      const PRODUCT_NOT_FOUND = 'The product was not found among our available catalog.';
+      const PRODUCT_INACTIVE = 'The selected product is not available for sale. Check another time.';
 
-      if (!thisProducto)
-        throw new NotFoundException(
-          'The product was not found among our available catalog.',
-        );
-      if (thisProducto.status === StateProduct.Inactive)
-        throw new NotFoundException(
-          'The selected product is not available for sale. Check another time.',
-        );
+      const thisProduct = await this.productsService.findByPkToValidateExistentProduct(id, {
+        attributes: ['id', 'status', 'stock', 'price'],
+      });
 
-      return true;
-    } catch (error) {
-      switch (error.constructor) {
-        case NotFoundException:
-          throw new NotFoundException(error.message);
-        case BadRequestException:
-          throw new BadRequestException(error.message);
-        default:
-          throw new InternalServerErrorException(
-            'An error occurred on the server while trying to search for a product',
-          );
+      if (!thisProduct) {
+        throw new NotFoundException(PRODUCT_NOT_FOUND);
       }
+
+      if (thisProduct.status === StateProduct.Inactive) {
+        throw new NotFoundException(PRODUCT_INACTIVE);
+      }
+
+      return true; // Producto válido
+    } catch (error) {
+      if (error instanceof HttpException) {
+        // Si ya es una excepción HTTP conocida, la volvemos a lanzar
+        throw error;
+      }
+      // Excepción genérica en caso de errores desconocidos
+      throw new InternalServerErrorException(
+        'An error occurred on the server while trying to search for a product.',
+      );
     }
   }
 
+
   async remove(userId: string, productId: string) {
     try {
-      const user: User = await User.findByPk(userId, {
-        include: {
-          model: ShoppingCart,
-        },
-      });
-      const cartId = user.cart.id;
+      const USER_NOT_FOUND = 'User or shopping cart not found.';
+      const CART_PRODUCT_NOT_FOUND = 'CartProduct record not found.';
+      const SUCCESS_MESSAGE = 'Product successfully removed.';
 
+      // Buscar al usuario con su carrito
+      const user: User = await User.findByPk(userId, {
+        include: ShoppingCart,
+      });
+
+      if (!user?.cart) {
+        throw new NotFoundException(USER_NOT_FOUND);
+      }
+
+      // Buscar el producto dentro del carrito
       const cartProductToDelete = await CartProduct.findOne({
         where: {
-          cartId,
+          cartId: user.cart.id,
           productId,
         },
       });
 
-      if (cartProductToDelete) {
-        await cartProductToDelete.destroy();
+      if (!cartProductToDelete) {
+        throw new NotFoundException(CART_PRODUCT_NOT_FOUND);
+      }
 
-        return {
-          statusCode: 204,
-          message: 'Product successfully removed',
-        };
-      } else {
-        throw new NotFoundException(
-          'CartProduct record not found',
-        );
-      }
+      // Eliminar el producto del carrito
+      await cartProductToDelete.destroy();
+
+      return {
+        statusCode: 204,
+        message: SUCCESS_MESSAGE,
+      };
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      } else {
-        throw new InternalServerErrorException('Server error');
+      if (error instanceof HttpException) {
+        throw error; // Relanzar errores conocidos
       }
+
+      throw new InternalServerErrorException('An unexpected server error occurred.');
     }
   }
+
 
   public async CreateShoppingCart(
     userId: { userId: string },

@@ -4,28 +4,20 @@ import { Sport } from './entity/sport.entity';
 @Injectable()
 export class SportService {
 
-  async getOrCreateSport(
-    name: string,
-    index: number,
-  ) {
+  async getOrCreateSport(name: string, index: number): Promise<string> {
     try {
-      const thisResult: [Sport, boolean] = await Sport.findOrCreate({
+      const [sport] = await Sport.findOrCreate({
         where: { name },
       });
 
-      return thisResult[0].id;
+      return sport.id; // Retorna solo el ID del deporte
     } catch (error) {
-      switch (error.constructor) {
-        case NotFoundException:
-          throw new NotFoundException(error.message);
-        default:
-          throw new InternalServerErrorException(
-            `An error occurred while querying the entity ${Sport.tableName}, with the index ${index}. Error: ` +
-                error.message,
-          );
-      }
+      throw new InternalServerErrorException(
+        `An error occurred while querying the entity "${Sport.tableName}" at index ${index}. Error: ${error.message || 'Unknown error'}`,
+      );
     }
   }
+
 
   async getAll() {
     try {

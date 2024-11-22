@@ -21,6 +21,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
 import { Rol } from 'src/users/entity/users.entity';
+import { RolesGuard } from 'src/auth/guards/rolesGuard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -87,13 +89,12 @@ export class OrdersController {
     summary: 'Obtener todas las ordenes',
     description: 'Se debe enviar por query paginado limite y orden, ademas se puede filtrar por estado.',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Get()
   async getAllOrders(
-    @GetUser() { rol }: IGetUser,
-      @Query() getAllOrders: GetAllOrdersDto,
+    @Query() getAllOrders: GetAllOrdersDto,
   ): Promise<IGetOrders> {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
 
     const response = await this.ordersService.findAll(getAllOrders);
     return response;
@@ -104,13 +105,12 @@ export class OrdersController {
     summary: 'Actualizar estado de orden',
     description: 'Se envia orderId y state por body',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
   @Patch()
   async patchUpdateStateOrder(
-  @GetUser() { rol }: IGetUser,
-    @Body() updateDto: UpdateOrderDto,
+  @Body() updateDto: UpdateOrderDto,
   ) {
-    if (rol !== Rol.admin) throw new HttpException('This user is not an admin', 403);
 
     const response = await this.ordersService.updateStateOrder(updateDto);
 

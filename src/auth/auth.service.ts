@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Inject, Injectable, InternalServerErrorException, UnauthorizedException, forwardRef } from '@nestjs/common';
+import { BadRequestException, HttpException, Inject, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException, forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Rol } from '../users/entity/users.entity';
@@ -7,7 +7,6 @@ import { RecoverPasswordDto } from './dto/recover-password.dto';
 import { CLIENT_URL, JWT_SECRET } from '../config/enviroments';
 import { UsersService } from '../users/users.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Response } from '../products/interface/serviceInterfaces';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { IGetUser } from './interfaces/getUser.interface';
 import { Cases } from '../mail/dto/sendMail.dto';
@@ -71,17 +70,19 @@ export class AuthService {
     return checkPassword;
   }
 
-  async recoverPassword(
-    recoverPassword: RecoverPasswordDto,
-  ) {
+  async recoverPassword(recoverPassword: RecoverPasswordDto): Promise<{ message: string }> {
     try {
       const { email } = recoverPassword;
+
+      // Buscar usuario por email
       const user = await this.usersService.findOneByEmail(email);
+
+      // Generar token de recuperación
       const token = jwt.sign({ sub: user.email }, JWT_SECRET, {
         expiresIn: '30m',
       });
 
-      //Setting up for email sending
+      // Configurar datos del correo
       const context = {
         name: user.firstName,
         link: `${CLIENT_URL}/login/recoverPassword?token=${token}`,
@@ -89,102 +90,112 @@ export class AuthService {
       const mailData = {
         EmailAddress: user.email,
         subject: Cases.RESET_PASSWORD,
-        context: context,
+        context,
       };
+
+      // Enviar correo
       await this.mailsService.sendMails(mailData);
 
-      // return mail;
+      return { message: 'Password recovery email sent successfully' };
     } catch (error) {
-      switch (error.constructor) {
-        case BadRequestException:
-          throw new BadRequestException(error.message);
-        case UnauthorizedException:
-          throw new UnauthorizedException(error.message);
-        default:
-          throw new InternalServerErrorException('Internal server error');
+      // Lanza errores específicos si ya fueron detectados
+      if (error instanceof BadRequestException || error instanceof UnauthorizedException) {
+        throw error;
       }
+
+      // Lanza error genérico para otros casos
+      throw new InternalServerErrorException(
+        'Failed to send password recovery email. Please try again later.',
+      );
     }
   }
+
 
   async resetPassword(
-    resetPassword: ResetPasswordDto,
+    resetPasswordDto: ResetPasswordDto,
     token: string,
-  ): Promise<Response> {
+  ): Promise<{ status: number; message: string }> {
     try {
-      if (token) {
-        const payload = jwt.verify(token, JWT_SECRET);
-        if (payload) {
-          const { sub } = payload;
-          const userEmail = sub.toString();
-          const { password } = resetPassword;
+      if (!token) {
+        throw new UnauthorizedException('Token is required to reset the password.');
+      }
 
-          const userChangePassword = await this.usersService.findOneByEmail(
-            userEmail,
-          );
-          userChangePassword.password = await this.generatePassword(password);
-          userChangePassword.save();
-          return {
-            status: 200,
-            message: 'Password change was successful.',
-          };
-        } else {
-          throw new UnauthorizedException(
-            'You are not authorized for this action',
-          );
-        }
-      } else {
-        throw new UnauthorizedException(
-          'Missing data to complete this action',
-        );
+      // Verificar token
+      const payload: any = jwt.verify(token, JWT_SECRET);
+      const userEmail = payload.sub.toString();
+      const { password } = resetPasswordDto;
+
+      // Buscar usuario por email
+      const user = await this.usersService.findOneByEmail(userEmail);
+      if (!user) {
+        throw new NotFoundException('User not found.');
       }
+
+      // Cambiar contraseña
+      user.password = await this.generatePassword(password);
+      await user.save();
+
+      return {
+        status: 200,
+        message: 'Password reset successfully.',
+      };
     } catch (error) {
-      switch (error.constructor) {
-        case BadRequestException:
-          throw new BadRequestException(error.message);
-        case UnauthorizedException:
-          throw new UnauthorizedException(error.message);
-        default:
-          throw new InternalServerErrorException('Internal server errror');
+      // Manejar errores específicos
+      if (error instanceof BadRequestException || error instanceof UnauthorizedException) {
+        throw error;
       }
+      if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Invalid or expired token.');
+      }
+
+      // Manejo de errores genéricos
+      throw new InternalServerErrorException('An error occurred while resetting the password.');
     }
   }
 
+
   async changePassword(
-    changePassword: ChangePasswordDto,
+    changePasswordDto: ChangePasswordDto,
     user: IGetUser,
-  ): Promise<Response> {
+  ): Promise<{ status: number; message: string }> {
+    const { oldPassword, newPassword } = changePasswordDto;
+    const { userEmail } = user;
+
     try {
-      const { oldPassword, newPassword } = changePassword;
-      const { userEmail } = user;
-
+      // Buscar al usuario por email
       const userFind = await this.usersService.findOneByEmail(userEmail);
+      if (!userFind) {
+        throw new NotFoundException('User not found.');
+      }
 
-      const validatePassword = await this.comparePassword(
-        oldPassword,
-        userFind.password,
-      );
-
-      if (validatePassword) {
-        userFind.password = await this.generatePassword(newPassword);
-        userFind.save();
-        return {
-          status: 204,
-          message: 'Password change was successful.',
-        };
-      } else {
+      // Validar la contraseña actual
+      const isPasswordValid = await this.comparePassword(oldPassword, userFind.password);
+      if (!isPasswordValid) {
         throw new BadRequestException(
           'The current password received does not correspond to the one saved in the application',
         );
       }
+
+      // Generar y guardar la nueva contraseña
+      userFind.password = await this.generatePassword(newPassword);
+      await userFind.save();
+
+      return {
+        status: 204,
+        message: 'Password change was successful.',
+      };
     } catch (error) {
-      switch (error.constructor) {
-        case BadRequestException:
-          throw new BadRequestException(error.message);
-        case UnauthorizedException:
-          throw new UnauthorizedException(error.message);
-        default:
-          throw new InternalServerErrorException('Error interno del servidor');
+      // Manejo de errores específicos
+      if (error instanceof BadRequestException) {
+        throw error;
       }
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      // Manejo de errores genéricos
+      throw new InternalServerErrorException('Internal server error while changing password');
     }
   }
+
 }

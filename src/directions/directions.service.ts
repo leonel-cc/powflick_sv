@@ -4,13 +4,11 @@ import {
   BadRequestException,
   InternalServerErrorException,
   HttpStatus,
-  ConflictException,
 } from '@nestjs/common';
 import { CreateDirectionDto } from './dto/create-direetion.dto';
 import { UpdateDirectionDto } from './dto/update-direetion.dto';
 import { IResDirection } from './interfaces/direction.interface';
 import { Direction } from './entity/directions.entity';
-import { Response } from '../products/interface/serviceInterfaces';
 import { Order } from 'src/orders/entity/order.entity';
 
 @Injectable()
@@ -26,24 +24,20 @@ export class DirectionsService {
         userId,
       });
 
-      if (!newDirection) {
-        throw new BadRequestException();
-      } else {
-        return {
-          status: 201,
-          direction: newDirection,
-        };
-      }
+      return {
+        status: HttpStatus.CREATED,
+        direction: newDirection,
+      };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw new BadRequestException('Cannot create address');
-      } else {
-        throw new InternalServerErrorException(
-          'Internal server error' + error.message,
-        );
       }
+      throw new InternalServerErrorException(
+        `Internal server error: ${error.message}`,
+      );
     }
   }
+
 
   async findAll(userId: string): Promise<IResDirection> {
     try {
