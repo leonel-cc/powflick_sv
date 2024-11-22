@@ -15,18 +15,20 @@ import { Order } from '../orders/entity/order.entity';
 import { OrderProduct } from '../orders/entity/orderProduct.entity';
 import { Review } from '../reviews/entity/reviews.entity';
 import { Messages } from '../messages/entity/messages.entity';
-import { Coupon } from 'src/coupon/entities/coupon.entity';
-import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+import { Coupon } from '../coupon/entities/coupon.entity';
+import { CouponUser } from '../coupon/entities/coupon-user.entity';
+import { Collection } from '../collections/entity/collections.entity';
+import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
       dialectModule: require('pg'),
-      host: env.DPHOST,
+      host: env.DBHOST,
       port: Number(env.DBPORT),
-      username: env.DPUSERNAME,
-      password: env.DPPASSWORD,
-      database: env.DPDATABASE,
+      username: env.DBUSERNAME,
+      password: env.DBPASSWORD,
+      database: env.DBDATABASE,
       models: [
         User,
         Product,
@@ -44,17 +46,19 @@ import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
         Messages,
         Coupon,
         CouponUser,
+        Collection,
+        CollectionProduct,
       ],
-      ssl: true,
-      dialectOptions: {
-        ssl: {
-          rejectUnauthorized: true,
-        },
-      },
+      // ssl: true,
+      // dialectOptions: {
+      //   ssl: {
+      //     rejectUnauthorized: true,
+      //   },
+      // },
       autoLoadModels: true,
       synchronize: true,
       logging: false,
-      sync: { force: false },
+      sync: { force: true },
     }),
   ],
   exports: [SequelizeModule],

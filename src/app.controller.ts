@@ -36,4 +36,12 @@ export class AppController {
     
     return this.appService.getDetail(product.sports, product, sugestedProducts);
   }
+
+  @Get('landing')
+  async getLanding() {
+    const data = await this.appService.getLanding();
+
+    return data;
+  }
+
 }

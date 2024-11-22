@@ -39,70 +39,46 @@ export class UsersService {
     private readonly sequelize: Sequelize,
     private readonly mailsService: MailService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<ICreateUser> {
     try {
-      let data;
+      const { firstName, lastName, email, password, phone, image, provider } = createUserDto;
 
-      if (createUserDto.password) {
-        data = {
-          firstName: createUserDto.firstName,
-          lastName: createUserDto.lastName,
-          email: createUserDto.email,
-          password: await this.authService.generatePassword(
-            createUserDto.password,
-          ),
-          phone: createUserDto.phone,
-          image: createUserDto.image ?? null,
-        };
-      } else {
-        data = {
-          firstName: createUserDto.firstName,
-          lastName: createUserDto.lastName,
-          email: createUserDto.email,
-          provider: createUserDto.provider,
-          image: createUserDto.image ?? null,
-          password: '',
-          phone: '',
-        };
-      }
+      const userData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        image: image ?? null,
+        password: password ? await this.authService.generatePassword(password) : '',
+        provider: provider || UserProviders.none,
+      };
 
-      const newUser = await User.create(data);
+      const newUser = await User.create(userData);
 
-      const response = {
+      // Generar el token
+      const token = await this.authService.generateToken(newUser.id, newUser.email, newUser.rol);
+
+      // Enviar correo de confirmación
+      await this.mailsService.sendMails({
+        EmailAddress: email,
+        subject: Cases.CREATE_ACCOUNT,
+        context: { firstname: firstName, lastname: lastName },
+      });
+
+      return {
         statusCode: 201,
-        token: await this.authService.generateToken(
-          newUser.id,
-          newUser.email,
-          newUser.rol,
-        ),
+        token,
         user: {
           id: newUser.id,
           email: newUser.email,
-          name: newUser.firstName + ' ' + newUser.lastName,
+          name: `${newUser.firstName} ${newUser.lastName}`,
         },
       };
-
-      //Setting up for email sending
-      const context: ICreateUserContext = {
-        firstname: createUserDto.firstName,
-        lastname: createUserDto.lastName,
-        /* link: 'http://TheSports.com', //Link falso. Reemplazar por link de verdad */
-      };
-
-      const mailData = {
-        EmailAddress: createUserDto.email,
-        subject: Cases.CREATE_ACCOUNT,
-        context: context,
-      };
-      //Sending mail
-      await this.mailsService.sendMails(mailData);
-
-      return response;
     } catch (error) {
       throw new InternalServerErrorException(
-        'Internal server error, try again later \n' + error.message,
+        `Internal server error, try again later \n ${error.message}`,
       );
     }
   }
@@ -111,108 +87,75 @@ export class UsersService {
     try {
       const user = await User.findOne({ where: { email } });
 
-      if (!user) {
-        return true;
-      } else {
-        throw new ConflictException(
-          'There is already an account created with this email.',
-        );
+      if (user) {
+        throw new ConflictException('An account with this email already exists.');
       }
+      return true;
     } catch (error) {
-      switch (error.constructor) {
-        case ConflictException:
-          throw new ConflictException(error.message);
-        default:
-          throw new InternalServerErrorException(
-            'Internal server error, try again later',
-          );
-      }
+      throw error instanceof ConflictException
+        ? error
+        : new InternalServerErrorException('Internal server error, try again later');
     }
   }
 
   async signIn(loginUserDto: LoginUserDto): Promise<ICreateUser> {
     try {
       const { email, password } = loginUserDto;
-
       const checkUser = await this.findOneByEmail(email);
 
-      const comparePassword = password
-        ? await this.authService.comparePassword(password, checkUser.password)
-        : null;
-
-      if (!checkUser.isActive)
-        throw new ForbiddenException(
-          'You do not have access, check with the administration',
-        );
-
-      if (password && !comparePassword) {
-        if (checkUser.provider === UserProviders.none) {
-          throw new UnauthorizedException(
-            'The password entered is not valid, check and try again',
-          );
-        } else {
-          throw new HttpException(
-            'This account has been registered with' +
-              checkUser.provider +
-              ', please use ' +
-              checkUser.provider +
-              ' to log in.',
-            HttpStatus.NOT_ACCEPTABLE,
-          );
-        }
+      if (!checkUser.isActive) {
+        throw new ForbiddenException('Your account is inactive.');
       }
 
-      // Generar el token y obtener la fecha de expiración
-      const token = await this.authService.generateToken(
-        checkUser.id,
-        checkUser.email,
-        checkUser.rol,
-      );
+      // Si no se pasa password o no coincide, gestionar el flujo
+      if (password && !(await this.authService.comparePassword(password, checkUser.password))) {
+        const errorMessage = checkUser.provider === UserProviders.none
+          ? 'Invalid password, please try again.'
+          : `This account was registered with ${checkUser.provider}. Please use ${checkUser.provider} to log in.`;
+
+        throw new UnauthorizedException(errorMessage);
+      }
+
+      // Generar el token y fecha de expiración
+      const token = await this.authService.generateToken(checkUser.id, checkUser.email, checkUser.rol);
       const tokenExpiration = this.authService.getTokenExpirationDate(token);
 
-      const response = {
+      return {
         statusCode: 200,
         token,
-        tokenExpiration, // Enviar la fecha de expiración junto con el token
+        tokenExpiration,
         user: {
           id: checkUser.id,
           email: checkUser.email,
-          name: checkUser.firstName + ' ' + checkUser.lastName,
+          name: `${checkUser.firstName} ${checkUser.lastName}`,
           rol: checkUser.rol,
         },
       };
-
-      return response;
     } catch (error) {
-      switch (error.constructor) {
-        case UnauthorizedException:
-          throw new UnauthorizedException(error.message);
-        default:
-          throw new HttpException(error.message, error.status);
-      }
+      throw error instanceof UnauthorizedException
+        ? error
+        : new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 
   public async findOneByEmail(email: string): Promise<User> {
     try {
       const user = await User.findOne({ where: { email } });
 
-      if (user) {
-        return user;
-      } else {
-        throw new UnauthorizedException(
-          'The email entered does not correspond to any registered user.',
-        );
+      if (!user) {
+        throw new UnauthorizedException('The email entered does not correspond to any registered user.');
       }
+
+      return user;
     } catch (error) {
-      switch (error.constructor) {
-        case UnauthorizedException:
-          throw new UnauthorizedException(error.message);
-        default:
-          throw new InternalServerErrorException('Error interno del servidor.');
-      }
+      // Si el error no es UnauthorizedException, lanza un InternalServerErrorException
+      throw error instanceof UnauthorizedException
+        ? error
+        : new InternalServerErrorException('Internal server error.');
     }
   }
+
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
@@ -237,8 +180,9 @@ export class UsersService {
         profileUpdated: user,
       };
     } catch (error) {
+      // Se agrega el detalle del error para mejor diagnóstico
       throw new InternalServerErrorException(
-        'Server error, try again later' + error.message,
+        `Server error, try again later. Error: ${error?.message || 'Unknown error'}`,
       );
     }
   }
@@ -248,23 +192,18 @@ export class UsersService {
     options: FindOptions,
   ): Promise<User> {
     try {
-      const genericResponseUser = await User.findByPk(userId, options);
-      if (!genericResponseUser)
-        throw new BadRequestException(
-          'It has not been possible to find the user',
-        );
-      return genericResponseUser;
-    } catch (error) {
-      switch (error.constructor) {
-        case BadRequestException:
-          throw new BadRequestException(error.message);
-        default:
-          throw new InternalServerErrorException(
-            'An error occurred when working with the user entity when searching for a particular user',
-          );
+      const user = await User.findByPk(userId, options);
+      if (!user) {
+        throw new BadRequestException('User not found');
       }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error searching user with ID: ${userId}. ${error.message}`,
+      );
     }
   }
+
 
   async findProfileUser(userId: string) {
     try {
@@ -391,7 +330,7 @@ export class UsersService {
         default:
           throw new InternalServerErrorException(
             'An error occurred while working with the User entity when investigating the user profile.\n' +
-              error.message,
+            error.message,
           );
       }
     }
@@ -461,8 +400,7 @@ export class UsersService {
         /* Realiza la eliminación del carrito de compras dentro de la transacción. */
         await ShoppingCart.destroy({ where: { userId: id } });
         return {
-          message: `The User's account was inactivated: ${
-            user.firstName + ' ' + user.lastName
+          message: `The User's account was inactivated: ${user.firstName + ' ' + user.lastName
           } correctly.`,
           status: HttpStatusCode.NoContent,
         };
@@ -470,8 +408,7 @@ export class UsersService {
         /* Realiza la creación del carrito de compras dentro de la transacción. */
         await ShoppingCart.create({ userId: id });
         return {
-          message: `The Users account has been restored ${
-            user.firstName + ' ' + user.lastName
+          message: `The Users account has been restored ${user.firstName + ' ' + user.lastName
           } correctly.`,
           status: HttpStatusCode.Ok,
         };
