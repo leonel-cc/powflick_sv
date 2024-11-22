@@ -84,8 +84,6 @@ export class AppService {
         discount: { [Op.gt]: 0 },
       });
 
-      console.log(featuredProducts);
-      
       return {
         navbar: {
           categories,
