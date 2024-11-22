@@ -72,13 +72,20 @@ export class AppService {
         ],
       });
 
+      const featuredProducts = await this.getProductsByCondition({
+        featured: true,
+      });
+
       const mostSoldProducts = await this.getProductsByCondition({
         mostSold: true,
       });
+
       const discountProducts = await this.getProductsByCondition({
         discount: { [Op.gt]: 0 },
       });
 
+      console.log(featuredProducts);
+      
       return {
         navbar: {
           categories,
@@ -88,6 +95,7 @@ export class AppService {
           reviews,
           modal,
           collections: {
+            featuredProducts,
             mostSoldProducts,
             discountProducts,
           },
@@ -121,15 +129,16 @@ export class AppService {
   private async getProductsByCondition(condition: any) {
     return Product.findAll({
       where: condition,
-      attributes: [
-        'id',
-        'title',
-        'price',
-        'mostSold',
-        'discount',
-        'createdAt',
-        'updatedAt',
-      ],
+      // attributes: [
+      //   'id',
+      //   'title',
+      //   'price',
+      //   'mostSold',
+      //   'discount',
+      //   'featured',
+      //   'createdAt',
+      //   'updatedAt',
+      // ],
     });
   }
 

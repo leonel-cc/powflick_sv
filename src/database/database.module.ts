@@ -15,8 +15,10 @@ import { Order } from '../orders/entity/order.entity';
 import { OrderProduct } from '../orders/entity/orderProduct.entity';
 import { Review } from '../reviews/entity/reviews.entity';
 import { Messages } from '../messages/entity/messages.entity';
-import { Coupon } from 'src/coupon/entities/coupon.entity';
-import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+import { Coupon } from '../coupon/entities/coupon.entity';
+import { CouponUser } from '../coupon/entities/coupon-user.entity';
+import { Collection } from '../collections/entity/collections.entity';
+import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -44,6 +46,8 @@ import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
         Messages,
         Coupon,
         CouponUser,
+        Collection,
+        CollectionProduct,
       ],
       ssl: true,
       dialectOptions: {

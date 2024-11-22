@@ -10,6 +10,8 @@ import { UserProductFav } from '../../users/entity/userproductfav.entity';
 import { User } from '../../users/entity/users.entity';
 import { Order } from '../../orders/entity/order.entity';
 import { OrderProduct } from '../../orders/entity/orderProduct.entity';
+import { Collection } from 'src/collections/entity/collections.entity';
+import { CollectionProduct } from 'src/collections/entity/collectionProduct.entity';
 
 export enum StateProduct {
   Active = 'publish',
@@ -197,4 +199,7 @@ export class Product extends Model {
   @HasMany(() => Customization)
     customizations: Customization;
 
+  // Relación con Collections
+  @BelongsToMany(() => Collection, () => CollectionProduct)
+    collection: Collection[];
 }
