@@ -71,18 +71,24 @@ export class AppService {
           'updatedAt',
         ],
       });
-
+      
       const featuredProducts = await this.getProductsByCondition({
         featured: true,
       });
-
+      
       const mostSoldProducts = await this.getProductsByCondition({
         mostSold: true,
       });
-
+      
       const discountProducts = await this.getProductsByCondition({
         discount: { [Op.gt]: 0 },
       });
+
+      // Obtener los últimos productos
+      const latestProducts = await this.getLatestProducts(3);
+      const bestWeekProducts = await this.getRandomProducts(3);
+      const popularProducts = await this.getRandomProducts(3);
+      const saleProducts = await this.getRandomProducts(3);
 
       return {
         navbar: {
@@ -96,6 +102,10 @@ export class AppService {
             featuredProducts,
             mostSoldProducts,
             discountProducts,
+            latestProducts,
+            bestWeekProducts,
+            popularProducts,
+            saleProducts,
           },
         },
       };
@@ -138,6 +148,14 @@ export class AppService {
       //   'updatedAt',
       // ],
     });
+  }
+
+  private async getLatestProducts(limit: number) {
+    const products = await Product.findAll({
+      order: [['createdAt', 'DESC']],
+      limit,
+    });
+    return products;
   }
 
 }
