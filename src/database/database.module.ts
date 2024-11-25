@@ -49,16 +49,16 @@ import { CollectionProduct } from '../collections/entity/collectionProduct.entit
         Collection,
         CollectionProduct,
       ],
-      // ssl: true,
-      // dialectOptions: {
-      //   ssl: {
-      //     rejectUnauthorized: true,
-      //   },
-      // },
+      ssl: true,
+      dialectOptions: {
+        ssl: {
+          rejectUnauthorized: true,
+        },
+      },
       autoLoadModels: true,
       synchronize: true,
       logging: false,
-      sync: { force: true },
+      sync: { force: false },
     }),
   ],
   exports: [SequelizeModule],
