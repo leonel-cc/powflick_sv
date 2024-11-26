@@ -39,7 +39,7 @@ export class StripeService {
     try {
       const session: Stripe.Checkout.Session =
         await this.stripe.checkout.sessions.create({
-          payment_method_configuration: 'pmc_1PsEjv01zJ3ScnNMcSo8xXsa',
+          payment_method_configuration: 'pmc_1QPRnVKXCIFqthWbK6rSvEP8',
           line_items: lineItems,
           mode: 'payment',
           success_url: SERVER_URL + '/payments/success/' + orderId,
