@@ -24,11 +24,11 @@ import { CollectionProduct } from '../collections/entity/collectionProduct.entit
     SequelizeModule.forRoot({
       dialect: 'postgres',
       dialectModule: require('pg'),
-      host: env.DBHOST,
+      host: env.DPHOST,
       port: Number(env.DBPORT),
-      username: env.DBUSERNAME,
-      password: env.DBPASSWORD,
-      database: env.DBDATABASE,
+      username: env.DPUSERNAME,
+      password: env.DPPASSWORD,
+      database: env.DPDATABASE,
       models: [
         User,
         Product,

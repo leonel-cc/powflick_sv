@@ -208,7 +208,7 @@ export class UsersService {
   async findProfileUser(userId: string) {
     try {
       const genericResponseUser = await User.findByPk(userId, {
-        attributes: ['firstName', 'lastName', 'email', 'phone', 'image'],
+        attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'image'],
         include: [
           {
             model: CouponUser,

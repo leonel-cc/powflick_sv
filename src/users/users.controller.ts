@@ -113,11 +113,10 @@ export class UsersController {
     @Param('id') userId: string,
   ) {
     try {
-      if (updateUserDto.email) {
-        await this.usersService.verifyEmail(updateUserDto.email);
-      }
-
-      const response = await this.usersService.update(user.rol === Rol.admin ? userId : user.userId, updateUserDto);
+      // if (updateUserDto.email) {
+      //   await this.usersService.verifyEmail(updateUserDto.email);
+      // }
+      const response = await this.usersService.update(user.rol === Rol.admin && userId !== 'update' ? userId : user.userId, updateUserDto);
 
       return response;
     } catch (error) {
