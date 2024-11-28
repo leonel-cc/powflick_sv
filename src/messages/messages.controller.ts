@@ -18,6 +18,8 @@ import { QueryMessagesDto } from './dto/query-messages.dto';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/rolesGuard';
 import { Rol } from 'src/users/entity/users.entity';
+import { Conversation } from './entity/conversationMessage';
+import { GetUser } from 'src/auth/decorator/auth-user.decorator';
 
 @ApiTags('Messages')
 @Controller('messages')
@@ -90,5 +92,16 @@ export class MessagesController {
   @ApiParam({ name: 'id', description: 'ID del mensaje' })
   async remove(@Param('id') id: string) {
     return this.messagesService.remove(id);
+  }
+
+  // Agregar una conversación a un mensaje
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post(':id/conversations')
+  async addConversation(
+    @GetUser('rol') rol: string,
+      @Param('id') id: string,
+      @Body() data: Partial<Conversation>,
+  ): Promise<Conversation> {
+    return this.messagesService.addConversation(id, data, rol === 'admin');
   }
 }

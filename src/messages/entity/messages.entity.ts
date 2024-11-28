@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, HasMany } from 'sequelize-typescript';
+import { Conversation } from './conversationMessage';
 
 export enum ContactType {
   ComplaintOrClaim = 'Complaint or Claim',
@@ -38,17 +39,40 @@ export class Messages extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-    message: string;
+    title: string;
 
   @Column({
     type: DataType.STRING,
+    allowNull: false,
+  })
+    type: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+    status: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: true,
+    allowNull: false,
+  })
+    pending: boolean;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+    message: string;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(ContactType)),
     defaultValue: ContactType.GeneralHelp,
     allowNull: false,
   })
     category: ContactType;
 
-  @Column({
-    type: DataType.STRING,
-  })
-    response: string | null;
+  @HasMany(() => Conversation)
+    conversation: Conversation[];
 }

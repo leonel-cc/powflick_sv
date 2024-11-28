@@ -5,6 +5,7 @@ import { MailService } from '../mail/mail.service';
 import { IContactFormResponseContext } from '../mail/interfaces/contact-form-response-context.interface';
 import { Cases } from '../mail/dto/sendMail.dto';
 import { User } from 'src/users/entity/users.entity';
+import { Conversation } from './entity/conversationMessage';
 
 @Injectable()
 export class MessagesService {
@@ -109,7 +110,7 @@ export class MessagesService {
 
       // Agrega la condición para verificar si el mensaje ha sido respondido o no
       if (answered !== null) {
-        where.response = answered ? { [Op.not]: null } : null;
+        where.pending = !answered;
       }
 
       // Filtra por la categoría proporcionada
@@ -132,6 +133,12 @@ export class MessagesService {
       // Realiza la consulta para obtener los mensajes con paginación
       const messages = await Messages.findAll({
         where,
+        include: [
+          {
+            model: Conversation,
+            attributes: ['text', 'imgUrl', 'name', 'createdAt'], // Especifica los atributos que deseas incluir
+          },
+        ],
         order: orderClause,
         limit,
         offset: (page - 1) * limit,
@@ -173,19 +180,6 @@ export class MessagesService {
       }
       const updatedMessage = await Messages.findByPk(id);
 
-      const context: IContactFormResponseContext = {
-        name: updatedMessage.name,
-        userEmail: updatedMessage.email,
-        message: updatedMessage.message,
-        response: updatedMessage.response,
-      };
-
-      await this.mailService.sendMails({
-        EmailAddress: context.userEmail,
-        context,
-        subject: Cases.CONTACT_FORM_RESPONSE,
-      });
-
       return {
         statusCode: HttpStatus.OK,
         message: 'The message has been updated successfully',
@@ -209,6 +203,45 @@ export class MessagesService {
       };
     } catch (error) {
       throw new HttpException('There was an error deleting the message', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async addConversation(
+    messageId: string,
+    data: Partial<Conversation>,
+    admin: boolean,
+  ): Promise<Conversation> {
+    try {
+      const message = await this.findOne(messageId);
+      if (!message) {
+        throw new Error('Message not found');
+      }
+
+      if (admin) {
+        const context: IContactFormResponseContext = {
+          name: message.name,
+          userEmail: message.email,
+          message: message.message,
+          response: data.text,
+        };
+
+        await this.mailService.sendMails({
+          EmailAddress: context.userEmail,
+          context,
+          subject: Cases.CONTACT_FORM_RESPONSE,
+        });
+
+        message.pending = false;
+        await message.save();
+      } else {
+        message.pending = true;
+        await message.save();
+      }
+
+      const conversation = await Conversation.create({ ...data, messageId, name: admin ? data.name : message.name });
+      return conversation;
+    } catch (error) {
+      throw new HttpException('There was an error adding the message', HttpStatus.BAD_REQUEST);
     }
   }
 }

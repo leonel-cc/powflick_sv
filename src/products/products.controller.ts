@@ -207,4 +207,11 @@ export class ProductsController {
     const response = await this.productsService.getAllProductsIds();
     return response;
   }
+
+  @Get('all/productsSlugs')
+  async getAllProductsSlugs(
+  ) {
+    const response = await this.productsService.getAllProductsSlugs();
+    return response;
+  }
 }

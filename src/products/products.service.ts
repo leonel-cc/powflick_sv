@@ -30,7 +30,7 @@ export class ProductsService {
     private readonly sequelize: Sequelize,
     @Inject(forwardRef(() => VercelBlobService))
     private readonly vercelBlobService: VercelBlobService,
-  ) {}
+  ) { }
 
   public async createGenericProduct(
     product: SheetsProductsDto,
@@ -63,8 +63,7 @@ export class ProductsService {
       return genericCreatedProduct;
     } catch (error) {
       throw new InternalServerErrorException(
-        `An error occurred while working with the Product entity when creating the product ${
-          product.ID
+        `An error occurred while working with the Product entity when creating the product ${product.ID
         } in the index: ${index + 2}. ${error.message}`,
       );
     }
@@ -89,9 +88,18 @@ export class ProductsService {
 
   async oneProduct(id: string): Promise<Product> {
     try {
-      const product = await Product.findByPk(id);
+      const product = await Product.findOne({
+        where: {
+          [Op.or]: [
+            { id },
+            { slug: id },
+          ],
+        },
+      });
 
-      if (!product) throw new NotFoundException('Product not found');
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
 
       return product;
     } catch ({ message, status }) {
@@ -597,6 +605,24 @@ export class ProductsService {
       // Maneja los errores de manera adecuada
       throw new HttpException(
         'Error when searching for product ids: ' + error.message,
+        500,
+      );
+    }
+  }
+
+  async getAllProductsSlugs() {
+    try {
+      const slugs = await Product.findAll({
+        attributes: ['slug'],
+      });
+
+      const allSlug = [];
+      slugs.forEach(({ slug }) => allSlug.push(slug));
+      return allSlug;
+    } catch (error) {
+      // Maneja los errores de manera adecuada
+      throw new HttpException(
+        'Error when searching for product slugs: ' + error.message,
         500,
       );
     }
