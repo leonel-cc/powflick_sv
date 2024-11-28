@@ -14,7 +14,7 @@ export class AppService {
     return 'hello world';
   }
 
-  async getDetail(sport: string, product: Product, sugestedProducts: Product[]) {
+  async getDetail(sport: string, product: Product, sugestedProducts: Product[], frequentlyBought: Product[]) {
     try {
       const { neck, socks, shorts, pants } = sportsConfig[sport];
 
@@ -30,6 +30,7 @@ export class AppService {
       return {
         product,
         sugestedProducts,
+        frequentlyBought,
         reviews,
         Default: defaultImage[sport],
         Neck: neck ? Neck : null,

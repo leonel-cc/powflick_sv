@@ -9,7 +9,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly productService: ProductsService,
-  ) {}
+  ) { }
 
   @Get()
   async HelloWorld() {
@@ -31,10 +31,27 @@ export class AppController {
         },
       },
       limit: 4,
-      attributes: ['id', 'title', 'price', 'sports', 'images'],
+      attributes: ['id', 'title', 'price', 'sports', 'images', 'slug', 'URL'],
     });
-    
-    return this.appService.getDetail(product.sports, product, sugestedProducts);
+
+    const sugestedProductIds = sugestedProducts.map((p) => p.id);
+
+    const frequentlyBought = await this.productService.sugestedProducts({
+      where: {
+        sports: product.sports, // Relacionado con el mismo deporte
+        status: StateProduct.Active,
+        id: {
+          [Op.notIn]: sugestedProductIds, // Excluir productos ya sugeridos
+        },
+        images: {
+          [Op.ne]: null, // Filtra los productos donde 'images' no es un string vacío
+        },
+      },
+      limit: 4,
+      attributes: ['id', 'title', 'price', 'sports', 'images', 'slug', 'URL'],
+    });
+
+    return this.appService.getDetail(product.sports, product, sugestedProducts, frequentlyBought);
   }
 
   @Get('landing')
