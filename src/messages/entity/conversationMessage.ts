@@ -32,6 +32,12 @@ export class Conversation extends Model {
   })
     imgUrl: string;
 
+  @Column({
+    type: DataType.ENUM('user', 'admin'),
+    allowNull: false,
+  })
+    from: 'user' | 'admin';
+
   @ForeignKey(() => Messages)
   @Column({
     type: DataType.UUID,

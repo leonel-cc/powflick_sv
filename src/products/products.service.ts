@@ -100,7 +100,6 @@ export class ProductsService {
       if (!product) {
         throw new NotFoundException('Product not found');
       }
-
       return product;
     } catch ({ message, status }) {
       throw new HttpException(message, status);

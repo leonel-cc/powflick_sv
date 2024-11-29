@@ -32,6 +32,7 @@ import { Messages } from '../messages/entity/messages.entity';
 import { de } from '@faker-js/faker';
 import { Coupon } from 'src/coupon/entities/coupon.entity';
 import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+import { Conversation } from 'src/messages/entity/conversationMessage';
 
 @Injectable()
 export class UsersService {
@@ -316,6 +317,10 @@ export class UsersService {
 
       const messages = await Messages.findAll({
         where: { email: genericResponseUser.email },
+        include: {
+          model: Conversation,
+          attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+        },
       });
 
       if (!genericResponseUser)
@@ -401,7 +406,7 @@ export class UsersService {
         await ShoppingCart.destroy({ where: { userId: id } });
         return {
           message: `The User's account was inactivated: ${user.firstName + ' ' + user.lastName
-          } correctly.`,
+            } correctly.`,
           status: HttpStatusCode.NoContent,
         };
       } else {
@@ -409,7 +414,7 @@ export class UsersService {
         await ShoppingCart.create({ userId: id });
         return {
           message: `The Users account has been restored ${user.firstName + ' ' + user.lastName
-          } correctly.`,
+            } correctly.`,
           status: HttpStatusCode.Ok,
         };
       }

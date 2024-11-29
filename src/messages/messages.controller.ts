@@ -20,6 +20,7 @@ import { RolesGuard } from 'src/auth/guards/rolesGuard';
 import { Rol } from 'src/users/entity/users.entity';
 import { Conversation } from './entity/conversationMessage';
 import { GetUser } from 'src/auth/decorator/auth-user.decorator';
+import { IGetUser } from 'src/auth/interfaces/getUser.interface';
 
 @ApiTags('Messages')
 @Controller('messages')
@@ -51,7 +52,6 @@ export class MessagesController {
   async findAll(
   @Query() querys: QueryMessagesDto,
   ) {
-
     const { desc, filter, search, answered, limit, page, category } = querys;
     const booleanAnswered = answered === undefined ? null : answered === 'true' ? true : false;
     const order = desc === 'true' ? 'DESC' : 'ASC';
@@ -98,10 +98,10 @@ export class MessagesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post(':id/conversations')
   async addConversation(
-    @GetUser('rol') rol: string,
+    @GetUser() user: IGetUser,
       @Param('id') id: string,
       @Body() data: Partial<Conversation>,
   ): Promise<Conversation> {
-    return this.messagesService.addConversation(id, data, rol === 'admin');
+    return this.messagesService.addConversation(id, data, user);
   }
 }

@@ -6,6 +6,7 @@ import { IContactFormResponseContext } from '../mail/interfaces/contact-form-res
 import { Cases } from '../mail/dto/sendMail.dto';
 import { User } from 'src/users/entity/users.entity';
 import { Conversation } from './entity/conversationMessage';
+import { IGetUser } from 'src/auth/interfaces/getUser.interface';
 
 @Injectable()
 export class MessagesService {
@@ -209,8 +210,10 @@ export class MessagesService {
   async addConversation(
     messageId: string,
     data: Partial<Conversation>,
-    admin: boolean,
+    user: IGetUser,
   ): Promise<Conversation> {
+    const admin = user.rol === 'admin';
+    const u = await User.findByPk(user.userId);
     try {
       const message = await this.findOne(messageId);
       if (!message) {
@@ -238,10 +241,10 @@ export class MessagesService {
         await message.save();
       }
 
-      const conversation = await Conversation.create({ ...data, messageId, name: admin ? data.name : message.name });
+      const conversation = await Conversation.create({ ...data, messageId, name: u.firstName + ' ' + u.lastName, imgUrl: u.image, from: user.rol });
       return conversation;
     } catch (error) {
-      throw new HttpException('There was an error adding the message', HttpStatus.BAD_REQUEST);
+      throw new HttpException('There was an error adding the message:' + error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
