@@ -211,7 +211,7 @@ export class MessagesService {
     messageId: string,
     data: Partial<Conversation>,
     user: IGetUser,
-  ): Promise<Conversation> {
+  ) {
     const admin = user.rol === 'admin';
     const u = await User.findByPk(user.userId);
     try {
@@ -241,8 +241,19 @@ export class MessagesService {
         await message.save();
       }
 
-      const conversation = await Conversation.create({ ...data, messageId, name: u.firstName + ' ' + u.lastName, imgUrl: u.image, from: user.rol });
-      return conversation;
+      await Conversation.create({ ...data, messageId, name: u.firstName + ' ' + u.lastName, imgUrl: u.image, from: user.rol });
+
+      const messages = await Messages.findAll({
+        where: { email: user.userEmail }, include: {
+          model: Conversation,
+          attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+        },
+      });
+
+      return {
+        text: 'Your message has been sended succesfully',
+        messages,
+      };
     } catch (error) {
       throw new HttpException('There was an error adding the message:' + error.message, HttpStatus.BAD_REQUEST);
     }
