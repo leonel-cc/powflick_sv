@@ -118,41 +118,27 @@ export class CollectionsService {
         return 'Colecciones creadas con éxito';
     }
 
-    // Contar la frecuencia de cada palabra clave
-    // const keywordCounts = titleKeywords.reduce((acc, keyword) => {
-    //   acc[keyword] = (acc[keyword] || 0) + 1;
-    //   return acc;
-    // }, {});
-    // console.log('Conteo de palabras clave:', keywordCounts);
+    async getCollectionNames(): Promise<string[]> {
+        const collections = await Collection.findAll({
+            attributes: ['title'],
+        });
+        return collections.map(collection => collection.title);
+    }
 
-    // Encontrar la palabra clave más común
-    // const mostCommonKeyword = Object.keys(keywordCounts).reduce((a, b) => keywordCounts[a] > keywordCounts[b] ? a : b);
-    // console.log('Palabra clave más común:', mostCommonKeyword);
+    async getCollectionNamesWithProducts(): Promise<{ title: string, products: Product[] }[]> {
+        const collections = await Collection.findAll({
+            attributes: ['title'],
+            include: [
+                {
+                    model: Product,
+                    through: { attributes: [] },
+                },
+            ],
+        });
 
-    // Crear una nueva colección con la palabra clave más común
-    // const collection = new Collection();
-    // collection.title = mostCommonKeyword;
-    // collection.content = `Collection of products with "${mostCommonKeyword}" in the title`;
-    // await collection.save();
-    // console.log('Colección creada:', collection);
-
-    // Encontrar todos los productos relacionados que contienen la palabra clave más común en el título
-    // const relatedProducts = await Product.findAll({
-    //   where: {
-    //     title: {
-    //       [Op.iLike]: `%${mostCommonKeyword}%`,
-    //     },
-    //   },
-    // });
-    // console.log('Productos relacionados encontrados:', relatedProducts);
-
-    // Relacionar cada producto encontrado con la nueva colección
-    // for (const product of relatedProducts) {
-    //   await CollectionProduct.create({
-    //     collectionId: collection.id,
-    //     productId: product.id,
-    //   });
-    //   console.log(`Producto ${product.id} relacionado con la colección ${collection.id}`);
-    // }
-
+        return collections.map(collection => ({
+            title: collection.title,
+            products: collection.products.slice(0, 5), // Limitar a 5 productos en el resultado final
+        }));
+    }
 }

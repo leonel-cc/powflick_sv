@@ -36,4 +36,9 @@ export class CollectionsController {
   createWithProducts() {
     return this.collectionsService.createCollectionWithProducts();
   }
+
+  @Get('all/names')
+  async getCollectionNames() {
+    return this.collectionsService.getCollectionNamesWithProducts();
+  }
 }

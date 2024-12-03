@@ -1,20 +1,42 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Neck, Socks, Shorts, Pants, sportsConfig, withOrWithoutShort, PaymentMethods, ShippingTypes, SizeGuide, Materials, SizeType, defaultImage } from './utils/detail.enum';
+import {
+  Neck,
+  Socks,
+  Shorts,
+  Pants,
+  sportsConfig,
+  withOrWithoutShort,
+  PaymentMethods,
+  ShippingTypes,
+  SizeGuide,
+  Materials,
+  SizeType,
+  defaultImage,
+} from './utils/detail.enum';
 import { Product } from './products/entity/products.entity';
 import { Review } from './reviews/entity/reviews.entity';
 import { User } from './users/entity/users.entity';
 import { Op, Sequelize } from 'sequelize';
 import { CategoriesService } from './categories/categories.service';
+import { CollectionsService } from './collections/collections.service';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly categoryService: CategoriesService) { }
+  constructor(
+    private readonly categoryService: CategoriesService,
+    private readonly CollectionsService: CollectionsService,
+  ) {}
 
   hello() {
     return 'hello world';
   }
 
-  async getDetail(sport: string, product: Product, sugestedProducts: Product[], frequentlyBought: Product[]) {
+  async getDetail(
+    sport: string,
+    product: Product,
+    sugestedProducts: Product[],
+    frequentlyBought: Product[],
+  ) {
     try {
       const { neck, socks, shorts, pants } = sportsConfig[sport];
 
@@ -24,7 +46,18 @@ export class AppService {
           model: User,
           attributes: ['firstName', 'lastName', 'email'],
         },
-        attributes: ['id', 'title', 'review', 'type', 'orderId', 'productId', 'rating', 'image', 'createdAt', 'updatedAt'],
+        attributes: [
+          'id',
+          'title',
+          'review',
+          'type',
+          'orderId',
+          'productId',
+          'rating',
+          'image',
+          'createdAt',
+          'updatedAt',
+        ],
       });
 
       return {
@@ -44,13 +77,18 @@ export class AppService {
         SizeGuide: SizeGuide[sport],
       };
     } catch (error) {
-      throw new HttpException('An error occurred while obtaining the detail validations', 400);
+      throw new HttpException(
+        'An error occurred while obtaining the detail validations',
+        400,
+      );
     }
   }
 
   async getLanding() {
     try {
       const categories = await this.categoryService.getAll();
+      const collectionst =
+        await this.CollectionsService.getCollectionNamesWithProducts();
       const recent = await this.getRandomProducts(2);
       const modal = await this.getRandomProducts(5);
       const reviews = await Review.findAll({
@@ -72,15 +110,15 @@ export class AppService {
           'updatedAt',
         ],
       });
-      
+
       const featuredProducts = await this.getProductsByCondition({
         featured: true,
       });
-      
+
       const mostSoldProducts = await this.getProductsByCondition({
         mostSold: true,
       });
-      
+
       const discountProducts = await this.getProductsByCondition({
         discount: { [Op.gt]: 0 },
       });
@@ -95,6 +133,7 @@ export class AppService {
         navbar: {
           categories,
           recent,
+          collectionst,
         },
         landing: {
           reviews,
@@ -158,5 +197,4 @@ export class AppService {
     });
     return products;
   }
-
 }
