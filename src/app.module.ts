@@ -28,6 +28,7 @@ import { CurrencyModule } from './currency/currency.module';
 import { CouponController } from './coupon/coupon.controller';
 import { CouponModule } from './coupon/coupon.module';
 import { CollectionsModule } from './collections/collections.module';
+import { CollectionsService } from './collections/collections.service';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { CollectionsModule } from './collections/collections.module';
     CouponController,
   ],
   providers: [
+    CollectionsService,
     AppService,
     PdfService,
     StripeService,

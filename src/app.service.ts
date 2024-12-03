@@ -87,7 +87,7 @@ export class AppService {
   async getLanding() {
     try {
       const categories = await this.categoryService.getAll();
-      const collectionst =
+      const collections =
         await this.CollectionsService.getCollectionNamesWithProducts();
       const recent = await this.getRandomProducts(2);
       const modal = await this.getRandomProducts(5);
@@ -133,7 +133,7 @@ export class AppService {
         navbar: {
           categories,
           recent,
-          collectionst,
+          collections,
         },
         landing: {
           reviews,
