@@ -406,7 +406,7 @@ export class UsersService {
         await ShoppingCart.destroy({ where: { userId: id } });
         return {
           message: `The User's account was inactivated: ${user.firstName + ' ' + user.lastName
-            } correctly.`,
+          } correctly.`,
           status: HttpStatusCode.NoContent,
         };
       } else {
@@ -414,7 +414,7 @@ export class UsersService {
         await ShoppingCart.create({ userId: id });
         return {
           message: `The Users account has been restored ${user.firstName + ' ' + user.lastName
-            } correctly.`,
+          } correctly.`,
           status: HttpStatusCode.Ok,
         };
       }
