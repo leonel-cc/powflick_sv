@@ -21,7 +21,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('TheSportsApi', app, document);
 
-  // app.use(morgan('dev'));
+  app.use(morgan('dev'));
 
   // Configuración de Express
   app.use(express.json());

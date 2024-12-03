@@ -27,6 +27,7 @@ import { MessagesModule } from './messages/messages.module';
 import { CurrencyModule } from './currency/currency.module';
 import { CouponController } from './coupon/coupon.controller';
 import { CouponModule } from './coupon/coupon.module';
+import { CollectionsModule } from './collections/collections.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { CouponModule } from './coupon/coupon.module';
     MessagesModule,
     CurrencyModule,
     CouponModule,
+    CollectionsModule,
   ],
   controllers: [
     AppController,
