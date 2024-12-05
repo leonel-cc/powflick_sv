@@ -78,10 +78,9 @@ export class UpdateProductDto {
     genders?: string[];
 
   @IsOptional()
-  @IsArray()
-  @ArrayUnique()
+  @IsString()
   @ApiProperty({ description: 'Deportes del producto.' })
-    sports?: string[];
+    sports?: string;
 
   @IsOptional()
   @IsArray()
@@ -97,7 +96,12 @@ export class UpdateProductDto {
 
   @IsOptional()
   @ApiProperty({ description: 'Producto destacado.' })
-    featured?: string;
+    featured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({ description: 'Mas vendido.' })
+    mostSold?: boolean;
 
   @IsOptional()
   @IsEnum(StateProduct, {
@@ -112,4 +116,14 @@ export class UpdateProductDto {
   })
   @ApiProperty({ description: 'ID del deporte del producto.' })
     sportId?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ description: 'Descuento del producto.' })
+    discount?: number;
+
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ description: 'colleccion del producto.' })
+    collections?: string[];
 }

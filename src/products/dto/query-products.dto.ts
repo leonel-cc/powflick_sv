@@ -113,4 +113,13 @@ export class QueryProductsDto {
   @IsString({ message: 'El valor de búsqueda debe ser una cadena de caracteres' })
   @ApiProperty({ name: 'search', required: false, description: 'Valor de atributo a filtrar' })
     search?: string;
+
+  @IsOptional()
+  @IsString({ message: 'La colección debe ser una cadena de caracteres' })
+  @ApiProperty({ name: 'collection', required: false, description: 'Colección' })
+    collection?: string;
+
+  @IsOptional()
+  @ApiProperty({ name:'status', required: false, type: String, description: 'Estado del producto' })
+    status?: string;
 }

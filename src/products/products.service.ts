@@ -23,6 +23,10 @@ import { UserProductFav } from '../users/entity/userproductfav.entity';
 import { User } from 'src/users/entity/users.entity';
 import { UpdateProductDto } from './dto/update-products.dto';
 import { VercelBlobService } from 'src/files/vercel-storage.service';
+import { Collection } from 'src/collections/entity/collections.entity';
+import { Categories } from 'src/categories/entity/categories.entity';
+import { CollectionProduct } from 'src/collections/entity/collectionProduct.entity';
+import { Sport } from 'src/sport/entity/sport.entity';
 
 @Injectable()
 export class ProductsService {
@@ -106,18 +110,210 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
+  async oneProductAdmin(id: string) {
     try {
-      const product = await Product.findByPk(id);
+      const product = await Product.findOne({
+        where: {
+          [Op.or]: [
+            { id },
+            { slug: id },
+          ],
+        },
+        include: [
+          {
+            model: Collection, // Especifica el modelo relacionado
+            as: 'collections', // Asegúrate de usar el alias correcto si está definido
+            attributes: ['title'],
+          },
+        ],
+      });
+
+      if (!product && id !== 'create') {
+        throw new NotFoundException('Product not found');
+      }
+
+      const collections = await Collection.findAll();
+      const collectionsList = collections.map(c => c.title);
+
+      const categories = await Categories.findAll();
+      const categoriesList = categories.map(c => c.name);
+
+      return {
+        product,
+        collectionsList,
+        categoriesList,
+      };
+
+    } catch (error) {
+      const { message, status } = error;
+      throw new HttpException(message || 'Error fetching product', status || 500);
+    }
+  }
+
+  async create(createProductDto: UpdateProductDto): Promise<any> {
+    const transaction = await this.sequelize.transaction(); // Iniciar la transacción
+
+    try {
+      // Verificar si el deporte está presente y buscar su ID
+      let sportId: string | null = null;
+      if (createProductDto.sports) {
+        const sport = await Sport.findOne({
+          where: { name: createProductDto.sports }, // Suponiendo que el campo en la tabla Sports es 'name'
+          transaction,
+        });
+
+        if (!sport) {
+          throw new NotFoundException(`Sport with name '${createProductDto.sports}' not found`);
+        }
+
+        sportId = sport.id; // Asignar el ID del deporte encontrado
+      }
+
+      const productWithHighestId = await Product.findOne({
+        order: [['id', 'DESC']], // Ordenar por ID en orden descendente
+      });
+
+      let idGenerate = Number(productWithHighestId.id) + 1; // Nuevo id que generamos
+
+      // Verificar si el id generado ya existe
+      let existingProduct = await Product.findByPk(String(idGenerate));
+
+      while (existingProduct) {
+        // Si el producto ya existe con ese id, generamos otro id
+        idGenerate = idGenerate + 1;
+        existingProduct = await Product.findByPk(String(idGenerate)); // Verificamos si existe ese id
+      }
+
+      const existProductTitle = await Product.findOne({ where: { title: createProductDto.title } });
+      if (existProductTitle) throw new HttpException('Has exist a product with this name.', 400);
+
+      const slug = createProductDto.title.split(' ').join('-');
+
+      const productData: Partial<Product> = {
+        id: String(idGenerate),
+        title: createProductDto.title,
+        regular_price: createProductDto.regular_price,
+        content: createProductDto.content,
+        featured: createProductDto.featured,
+        mostSold: createProductDto.mostSold,
+        product_categories: createProductDto.product_categories.join('|'),
+        discount: createProductDto.discount,
+        date: new Date().toDateString(), // Fecha actual
+        stock_status: 'instock',
+        sports: createProductDto.sports,
+        sportId,
+        slug,
+        // Agrega aquí más campos según tu modelo Product
+      };
+      console.log(productData);
+
+      // Crear un nuevo producto con los campos proporcionados
+      const product = await Product.create(productData, { transaction });
+
+      // Si se proporcionan colecciones, crear las relaciones
+      if (createProductDto.collections && createProductDto.collections.length > 0) {
+        for (const name of createProductDto.collections) {
+          const collection = await Collection.findOne({
+            where: { title: name }, // Buscar por nombre de la colección
+            transaction,
+          });
+
+          if (!collection) {
+            throw new NotFoundException(`Collection with name '${name}' not found`);
+          }
+
+          // Crear la relación en la tabla intermedia CollectionProduct
+          await CollectionProduct.create(
+            {
+              productId: product.id,
+              collectionId: collection.id,
+            },
+            { transaction },
+          );
+        }
+      }
+
+      // Confirmar la transacción
+      await transaction.commit();
+
+      return {
+        status: HttpStatus.CREATED,
+        message: 'The product has been created successfully.',
+        createdProduct: product,
+      };
+    } catch (error) {
+      // Revertir la transacción en caso de error
+      await transaction.rollback();
+
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      } else {
+        throw new InternalServerErrorException(
+          error.message,
+        );
+      }
+    }
+  }
+
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
+    const transaction = await this.sequelize.transaction(); // Iniciar la transacción
+
+    try {
+      const product = await Product.findByPk(id, { transaction });
 
       if (!product) {
         throw new NotFoundException('Product not found');
       }
 
+      // Primero, eliminar todas las relaciones de colección si no se proporciona ninguna
+      if (!updateProductDto.collections || updateProductDto.collections.length === 0) {
+        // Eliminar las relaciones existentes entre el producto y las colecciones
+        await CollectionProduct.destroy({
+          where: { productId: id },
+          transaction, // Usar la transacción
+        });
+      } else {
+        // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        for (const name of updateProductDto.collections) {
+          const collection = await Collection.findOne({
+            where: { title: name }, // Busca por nombre de colección individual
+            transaction, // Usar la transacción
+          });
+
+          if (!collection) {
+            throw new NotFoundException(`Collection with name '${name}' not found`);
+          }
+
+          // Crear la relación en la tabla intermedia CollectionProduct
+          await CollectionProduct.findOrCreate({
+            where: {
+              productId: id,
+              collectionId: collection.id,
+            },
+            transaction,
+          },
+          ); // Se pasa la transacción correctamente aquí
+        }
+      }
+
+      // Manejar el deporte (sports) si se proporciona
+      if (updateProductDto.sports) {
+        const sport = await Sport.findOne({
+          where: { name: updateProductDto.sports },
+          transaction,
+        });
+
+        if (!sport) {
+          throw new NotFoundException(`Sport with name '${updateProductDto.sports}' not found`);
+        }
+
+        product.sports = updateProductDto.sports;
+        product.sportId = sport.id; // Asignar el ID del deporte al producto
+      }
+
+
       // Verificar si no hay datos recibidos para actualizar
-      if (
-        !Object.values(updateProductDto).some((value) => value !== undefined)
-      ) {
+      if (!Object.values(updateProductDto).some((value) => value !== undefined)) {
         return {
           status: HttpStatus.NOT_MODIFIED,
           message: 'No data received to update.',
@@ -138,7 +334,11 @@ export class ProductsService {
         }
       }
 
-      await product.save();
+      // Guardar el producto actualizado
+      await product.save({ transaction });
+
+      // Confirmar la transacción
+      await transaction.commit();
 
       return {
         status: HttpStatus.OK,
@@ -146,13 +346,35 @@ export class ProductsService {
         updateProduct: product,
       };
     } catch (error) {
+      // Revertir la transacción en caso de error
+      await transaction.rollback();
+
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);
       } else {
         throw new InternalServerErrorException(
-          'A server error occurred while trying to update the product',
+          'A server error occurred while trying to update the product' + error.message,
         );
       }
+    }
+  }
+
+  async deleteProduct(productId: string) {
+    try {
+      // Busca el producto por su id
+      const product = await Product.findByPk(productId);
+
+      if (!product) {
+        throw new Error('Producto no encontrado');
+      }
+
+      // Elimina el producto de la base de datos
+      await product.destroy();
+
+      return { message: 'Producto eliminado exitosamente' };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error al eliminar el producto');
     }
   }
 
@@ -188,6 +410,10 @@ export class ProductsService {
 
       if (!admin) {
         query['status'] = StateProduct.Active;
+      } else {
+        if (filters.status) {
+          query['status'] = filters.status;
+        }
       }
 
       // Buscador
@@ -216,7 +442,19 @@ export class ProductsService {
       const products = await Product.findAll({
         where: query,
         order,
+        include: [
+          {
+            model: Collection, // Modelo relacionado
+            attributes: ['title'], // Solo traer el título
+            where: filters.collection ? { title: { [Op.iLike]: `%${filters.collection}%` } } : undefined,
+          },
+        ],
       });
+
+      const transformedProducts = products.map((product) => ({
+        ...product,
+        collections: product.collections?.[0]?.title || null, // Si no hay título, será `null`
+      }));
 
       // Calcular el número total de páginas
       const total = products.length;
@@ -229,6 +467,8 @@ export class ProductsService {
       const categoryCount = this.countAtributes(products, 'product_categories');
       // Contar la cantidad de cada genero
       const genderCount = this.countAtributes(products, 'genders');
+      // Contar la cantidad de cada colleccion
+      const collectionCount = this.countAtributes(transformedProducts, 'collections');
 
       // Aplicar paginación
       const limit = parseInt(filters.limit);
@@ -254,6 +494,7 @@ export class ProductsService {
           colors: colorsCount,
           categories: categoryCount,
           gender: genderCount,
+          collection: collectionCount,
         },
       };
     } catch (error) {
@@ -265,7 +506,7 @@ export class ProductsService {
   }
 
   private countAtributes(
-    products: Product[],
+    products: Product[] | any[],
     toCount: string,
   ): { [Attr: string]: number } {
     const attributesCount = {};
@@ -278,6 +519,8 @@ export class ProductsService {
         typeof product[toCount] === 'string' &&
         !product[toCount].includes('|')
       ) {
+
+
         attributesCount[product[toCount]] =
           (attributesCount[product[toCount]] || 0) + 1;
       } else if (product[toCount]?.includes('|')) {
