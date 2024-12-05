@@ -19,12 +19,12 @@ export class CollectionProduct extends Model<CollectionProduct> {
     type: DataType.UUID,
     allowNull: false,
   })
-  collectionId: string;
+    collectionId: string;
 
   @ForeignKey(() => Product)
   @Column({
     type: DataType.UUID,
     allowNull: false,
   })
-  productId: string;
+    productId: string;
 }
