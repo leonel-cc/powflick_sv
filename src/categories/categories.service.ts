@@ -14,13 +14,13 @@ export class CategoriesService {
       );
     }
   }
-  
+
 
   async getAll() {
     try {
       const allCategories = await Categories.findAll();
 
-      return allCategories;
+      return allCategories.map((c) => { return { title: c.name }; });
     } catch (error) {
       throw new HttpException('Error to get categories', 500);
     }
