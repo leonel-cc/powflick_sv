@@ -86,7 +86,7 @@ export class AppService {
 
   async getLanding() {
     try {
-      const categories = await this.categoryService.getAll();
+      const categories = await this.categoryService.getAllTitles();
       const collections =
         await this.collectionsService.getCollectionNamesWithProducts();
 
