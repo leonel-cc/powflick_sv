@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, UseGuards, HttpException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, UseGuards, HttpException, Query, Delete, Param } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -26,7 +26,7 @@ import { Roles } from 'src/auth/decorator/roles.decorator';
 @ApiTags('Reviews')
 @Controller('reviews')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) {}
+  constructor(private readonly reviewsService: ReviewsService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -149,4 +149,13 @@ export class ReviewsController {
     const response = await this.reviewsService.removeOrActivate(activateReview);
     return response;
   }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
+  async deleteReview(@Param('id') id: string) {
+    const response = await this.reviewsService.delete(id);
+    return response;
+  }
+
 }

@@ -86,6 +86,12 @@ export class Order extends Model {
     sessionId: string;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+    note: string;
+
+  @Column({
     type: DataType.JSONB,
     allowNull: true,
   })

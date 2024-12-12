@@ -41,7 +41,7 @@ export class OrdersService {
     private currencyService: CurrencyService,
     private sequelize: Sequelize,
     private couponService: CouponService,
-  ) {}
+  ) { }
 
   async findOneOrder(id: string, user: IGetUser) {
     try {
@@ -67,8 +67,13 @@ export class OrdersService {
           {
             model: Direction,
           },
+          {
+            model: User,
+          },
         ],
       });
+
+      const directions = await Direction.findAll({ where: { userId: order.userId } });
 
       if (
         (order && order.userId === user.userId) ||
@@ -77,6 +82,7 @@ export class OrdersService {
         return {
           status: 200,
           data: order,
+          directions,
         };
       } else {
         throw new NotFoundException('Order not found');
@@ -195,98 +201,93 @@ export class OrdersService {
             description += `Size: ${customization.size}, `;
           }
           if (customization.neck) {
-            description += `Neck: ${
-              customization.neck.split(' ')[1]
-                ? customization.neck.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.neck.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.neck
+            description += `Neck: ${customization.neck.split(' ')[1]
+              ? customization.neck.split(' ')[0] +
+              ' ' +
+              '(' +
+              currencySymbol(currency.name) +
+              this.currencyService.convertCurrency(
+                Number(
+                  eliminarCaracteresNoNumericos(
+                    String(customization.neck.split(' ').pop()),
+                  ),
+                ),
+                currency.value,
+              ) +
+              ')'
+              : customization.neck
             }, `;
           }
           if (customization.socks) {
-            description += `Socks: ${
-              customization.socks.split(' ')[1]
-                ? customization.socks.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.socks.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.socks
+            description += `Socks: ${customization.socks.split(' ')[1]
+              ? customization.socks.split(' ')[0] +
+              ' ' +
+              '(' +
+              currencySymbol(currency.name) +
+              this.currencyService.convertCurrency(
+                Number(
+                  eliminarCaracteresNoNumericos(
+                    String(customization.socks.split(' ').pop()),
+                  ),
+                ),
+                currency.value,
+              ) +
+              ')'
+              : customization.socks
             }, `;
           }
           if (customization.pants) {
-            description += `Pants: ${
-              customization.pants.split(' ')[1]
-                ? customization.pants.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.pants.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.pants
+            description += `Pants: ${customization.pants.split(' ')[1]
+              ? customization.pants.split(' ')[0] +
+              ' ' +
+              '(' +
+              currencySymbol(currency.name) +
+              this.currencyService.convertCurrency(
+                Number(
+                  eliminarCaracteresNoNumericos(
+                    String(customization.pants.split(' ').pop()),
+                  ),
+                ),
+                currency.value,
+              ) +
+              ')'
+              : customization.pants
             }, `;
           }
           if (customization.shorts) {
-            description += `Shorts: ${
-              customization.shorts.split(' ')[1]
-                ? customization.shorts.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.shorts.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.shorts
+            description += `Shorts: ${customization.shorts.split(' ')[1]
+              ? customization.shorts.split(' ')[0] +
+              ' ' +
+              '(' +
+              currencySymbol(currency.name) +
+              this.currencyService.convertCurrency(
+                Number(
+                  eliminarCaracteresNoNumericos(
+                    String(customization.shorts.split(' ').pop()),
+                  ),
+                ),
+                currency.value,
+              ) +
+              ')'
+              : customization.shorts
             }, `;
           }
           if (customization.materials) {
-            description += `Materials: ${
-              customization.materials.split(' ')[1]
-                ? customization.materials.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.materials.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.materials
+            description += `Materials: ${customization.materials.split(' ')[1]
+              ? customization.materials.split(' ')[0] +
+              ' ' +
+              '(' +
+              currencySymbol(currency.name) +
+              this.currencyService.convertCurrency(
+                Number(
+                  eliminarCaracteresNoNumericos(
+                    String(customization.materials.split(' ').pop()),
+                  ),
+                ),
+                currency.value,
+              ) +
+              ')'
+              : customization.materials
             }, `;
           }
 
@@ -300,10 +301,9 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Text ${i}: ${e.text} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -312,10 +312,9 @@ export class OrdersService {
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Number ${i + 1}: ${e.number} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -331,10 +330,9 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Text ${i}: ${e.text} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -343,10 +341,9 @@ export class OrdersService {
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Number ${i + 1}: ${e.number} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -420,7 +417,7 @@ export class OrdersService {
     }
   }
 
-  async updateStateOrder(updateDto: UpdateOrderDto): Promise<UpdateStateOrder> {
+  async updateOrder(updateDto: UpdateOrderDto): Promise<UpdateStateOrder> {
     try {
       const order = await Order.findByPk(updateDto.orderId, {
         attributes: [
@@ -466,7 +463,20 @@ export class OrdersService {
           'It is not allowed to change the order to this state',
         );
 
+      // Actualizar dirección si se envió un nuevo ID de dirección
+      if (updateDto.directionId) {
+        const newDirection = await Direction.findByPk(updateDto.directionId);
+        if (!newDirection) throw new NotFoundException('Direction not found');
+        order.directionId = newDirection.id;
+      }
+
+      // Actualizar la nota si se envió
+      if (updateDto.note) {
+        order.note = updateDto.note;
+      }
+
       order.state = updateDto.state;
+
       order.save();
 
       return {
