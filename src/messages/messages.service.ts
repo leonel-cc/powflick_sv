@@ -167,7 +167,14 @@ export class MessagesService {
 
   async findOne(id: string) {
     try {
-      return await Messages.findByPk(id);
+      return await Messages.findByPk(id, {
+        include: [
+          {
+            model: Conversation,
+            attributes: ['text', 'imgUrl', 'name', 'createdAt', 'from'], // Especifica los atributos que deseas incluir
+          },
+        ],
+      });
     } catch (error) {
       throw new HttpException('There was an error searching for the message', HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -210,12 +217,11 @@ export class MessagesService {
   async addConversation(
     messageId: string,
     data: Partial<Conversation>,
-    user: IGetUser,
   ) {
-    const admin = user.rol === 'admin';
-    const u = await User.findByPk(user.userId);
+    const admin = data.from === 'admin';
     try {
       const message = await this.findOne(messageId);
+      const u = await User.findOne({ where: { email: message.email } });
       if (!message) {
         throw new Error('Message not found');
       }
@@ -241,10 +247,24 @@ export class MessagesService {
         await message.save();
       }
 
-      await Conversation.create({ ...data, messageId, name: u.firstName + ' ' + u.lastName, imgUrl: u.image, from: user.rol });
+      await Conversation.create({ ...data, messageId, name: u.firstName + ' ' + u.lastName, imgUrl: u.image, from: data.from });
+
+      if (admin) {
+        const messages = await Messages.findByPk(messageId, {
+          include: {
+            model: Conversation,
+            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+          },
+        });
+
+        return {
+          text: 'Your message has been sended succesfully',
+          messages,
+        };
+      }
 
       const messages = await Messages.findAll({
-        where: { email: user.userEmail }, include: {
+        where: { email: u.email }, include: {
           model: Conversation,
           attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
         },

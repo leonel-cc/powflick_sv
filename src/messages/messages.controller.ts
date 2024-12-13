@@ -98,10 +98,9 @@ export class MessagesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post(':id/conversations')
   async addConversation(
-  @GetUser() user: IGetUser,
-    @Param('id') id: string,
+  @Param('id') id: string,
     @Body() data: Partial<Conversation>,
   ) {
-    return this.messagesService.addConversation(id, data, user);
+    return this.messagesService.addConversation(id, data);
   }
 }
