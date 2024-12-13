@@ -217,11 +217,12 @@ export class MessagesService {
   async addConversation(
     messageId: string,
     data: Partial<Conversation>,
+    user: IGetUser,
   ) {
     const admin = data.from === 'admin';
     try {
       const message = await this.findOne(messageId);
-      const u = await User.findOne({ where: { email: message.email } });
+      const u = await User.findOne({ where: { email: user.userEmail } });
       if (!message) {
         throw new Error('Message not found');
       }
@@ -247,29 +248,22 @@ export class MessagesService {
         await message.save();
       }
 
-      await Conversation.create({ ...data, messageId, name: u.firstName + ' ' + u.lastName, imgUrl: u.image, from: data.from });
+      await Conversation.create({ ...data, messageId, name: u?.firstName + ' ' + u?.lastName, imgUrl: u?.image || '', from: data.from });
 
-      if (admin) {
-        const messages = await Messages.findByPk(messageId, {
+      const messages = admin
+        ? await Messages.findByPk(messageId, {
+          include: {
+            model: Conversation,
+            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+          },
+        })
+        : await Messages.findAll({
+          where: { email: message.email },
           include: {
             model: Conversation,
             attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
           },
         });
-
-        return {
-          text: 'Your message has been sended succesfully',
-          messages,
-        };
-      }
-
-      const messages = await Messages.findAll({
-        where: { email: u.email }, include: {
-          model: Conversation,
-          attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-        },
-      });
-
       return {
         text: 'Your message has been sended succesfully',
         messages,

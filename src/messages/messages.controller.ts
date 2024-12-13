@@ -99,8 +99,9 @@ export class MessagesController {
   @Post(':id/conversations')
   async addConversation(
   @Param('id') id: string,
+    @GetUser() user: IGetUser,
     @Body() data: Partial<Conversation>,
   ) {
-    return this.messagesService.addConversation(id, data);
+    return this.messagesService.addConversation(id, data, user);
   }
 }
