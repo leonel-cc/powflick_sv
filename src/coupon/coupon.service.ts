@@ -6,7 +6,7 @@ import { Coupon } from './entities/coupon.entity';
 import { CouponUser } from './entities/coupon-user.entity';
 import { CreateCouponUserDto } from './dto/create-coupon-user.dto';
 import { WhereOptions } from 'sequelize';
-import { User } from 'src/users/entity/users.entity';
+import { User } from '../users/entity/users.entity';
 import { validate } from 'class-validator';
 
 @Injectable()

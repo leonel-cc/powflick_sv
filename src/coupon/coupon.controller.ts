@@ -12,9 +12,9 @@ import {
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { GetUser } from 'src/auth/decorator/auth-user.decorator';
-import { IGetUser } from 'src/auth/interfaces/getUser.interface';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
+import { GetUser } from '../auth/decorator/auth-user.decorator';
+import { IGetUser } from '../auth/interfaces/getUser.interface';
 import { CreateCouponUserDto } from './dto/create-coupon-user.dto';
 
 @Controller('coupon')

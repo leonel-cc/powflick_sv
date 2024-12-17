@@ -12,9 +12,9 @@ import { PdfService } from '../pdf/pdf.service';
 import { Product } from '../products/entity/products.entity';
 import { User } from '../users/entity/users.entity';
 import Stripe from 'stripe';
-import { CurrencyService } from 'src/currency/currency.service';
-import { currencySymbol } from 'src/utils/tools';
-import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+import { CurrencyService } from '../currency/currency.service';
+import { currencySymbol } from '../utils/tools';
+import { CouponUser } from '../coupon/entities/coupon-user.entity';
 
 @Injectable()
 export class StripeService {

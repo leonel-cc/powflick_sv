@@ -8,7 +8,7 @@ import {
   BeforeCreate,
 } from 'sequelize-typescript';
 import { User } from '../../users/entity/users.entity';
-// import { Order } from 'src/orders/entities/order.entity';
+// import { Order } from '../orders/entities/order.entity';
 @Table({
   tableName: 'Directions',
   timestamps: true,

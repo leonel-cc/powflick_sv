@@ -17,7 +17,7 @@ import { ShoppingCart } from '../../shopping-cart/entity/shopping-cart.entity';
 import { UserProductFav } from './userproductfav.entity';
 import { Review } from '../../reviews/entity/reviews.entity';
 import { Order } from '../../orders/entity/order.entity';
-import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+import { CouponUser } from '../../coupon/entities/coupon-user.entity';
 
 export enum Rol {
   superAdmin = 'superAdmin',

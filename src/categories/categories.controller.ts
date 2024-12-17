@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { Rol } from 'src/users/entity/users.entity';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guards/rolesGuard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
+import { Rol } from '../users/entity/users.entity';
 
 @ApiTags('Categories')
 @Controller('categories')

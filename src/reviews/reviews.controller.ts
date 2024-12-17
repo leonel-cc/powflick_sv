@@ -20,8 +20,8 @@ import { IReview } from './interfaces/response-review.interface';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
 import { Rol } from '../users/entity/users.entity';
 import { GetAllReviewsDto } from './dto/query-get-review.dto';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
-import { Roles } from 'src/auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guards/rolesGuard';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @ApiTags('Reviews')
 @Controller('reviews')

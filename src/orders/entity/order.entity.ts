@@ -13,8 +13,8 @@ import { Direction } from '../../directions/entity/directions.entity';
 import { User } from '../../users/entity/users.entity';
 import { OrderProduct } from './orderProduct.entity';
 import { Product } from '../../products/entity/products.entity';
-import { Customization } from 'src/products/entity/customization.entity';
-import { Review } from 'src/reviews/entity/reviews.entity';
+import { Customization } from '../../products/entity/customization.entity';
+import { Review } from '../../reviews/entity/reviews.entity';
 
 export enum OrderStateEnum {
   APROBADO = 'APPROVED',

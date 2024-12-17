@@ -20,9 +20,9 @@ import { GetAllOrdersDto } from './dto/getAllOrders.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
-import { Rol } from 'src/users/entity/users.entity';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
-import { Roles } from 'src/auth/decorator/roles.decorator';
+import { Rol } from '../users/entity/users.entity';
+import { RolesGuard } from '../auth/guards/rolesGuard';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @ApiTags('Orders')
 @Controller('orders')

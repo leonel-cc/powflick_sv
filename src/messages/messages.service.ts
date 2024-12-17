@@ -4,9 +4,9 @@ import { Op, Sequelize } from 'sequelize';
 import { MailService } from '../mail/mail.service';
 import { IContactFormResponseContext } from '../mail/interfaces/contact-form-response-context.interface';
 import { Cases } from '../mail/dto/sendMail.dto';
-import { User } from 'src/users/entity/users.entity';
+import { User } from '../users/entity/users.entity';
 import { Conversation } from './entity/conversationMessage';
-import { IGetUser } from 'src/auth/interfaces/getUser.interface';
+import { IGetUser } from '../auth/interfaces/getUser.interface';
 
 @Injectable()
 export class MessagesService {

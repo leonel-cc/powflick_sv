@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Jimp from 'jimp';
 import { Buffer } from 'buffer';
-import { CreateCustomizationDto } from 'src/products/dto/create-customization.dto';
+import { CreateCustomizationDto } from '../products/dto/create-customization.dto';
 import { HttpException } from '@nestjs/common';
 
 export function killSpan(text: string): string {

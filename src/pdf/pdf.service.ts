@@ -5,8 +5,8 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { extractPaletteFromImageUrl, isWebP, killParenthesisIn } from '../utils/tools';
 import { Neck, Pants, Shorts, Socks, withOrWithoutShort } from '../utils/detail.enum';
 import { CreateCustomizationDto } from '../products/dto/create-customization.dto';
-import { PantsType, ShortsType, SocksType } from 'src/products/enum/customization.enum';
-import { SERVER_URL } from 'src/config/enviroments';
+import { PantsType, ShortsType, SocksType } from '../products/enum/customization.enum';
+import { SERVER_URL } from '../config/enviroments';
 import * as path from 'path';
 import imageSize from 'image-size';
 @Injectable()

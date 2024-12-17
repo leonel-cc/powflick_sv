@@ -4,12 +4,12 @@ import { ExcelProductsService } from './excel-products.service';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { SheetsProductsDto } from './dto/sheetsProductsDto';
 import { Request, Response } from 'express';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { GetUser } from 'src/auth/decorator/auth-user.decorator';
-import { IGetUser } from 'src/auth/interfaces/getUser.interface';
-import { Rol } from 'src/users/entity/users.entity';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
-import { Roles } from 'src/auth/decorator/roles.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
+import { GetUser } from '../auth/decorator/auth-user.decorator';
+import { IGetUser } from '../auth/interfaces/getUser.interface';
+import { Rol } from '../users/entity/users.entity';
+import { RolesGuard } from '../auth/guards/rolesGuard';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @ApiTags('Excel Products')
 @Controller('excel-products')

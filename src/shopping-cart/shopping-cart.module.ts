@@ -5,8 +5,8 @@ import { UsersService } from '../users/users.service';
 import { ProductsService } from '../products/products.service';
 import { AuthService } from '../auth/auth.service';
 import { MailService } from '../mail/mail.service';
-import { ProductsModule } from 'src/products/products.module';
-import { FilesModule } from 'src/files/files.module';
+import { ProductsModule } from '../products/products.module';
+import { FilesModule } from '../files/files.module';
 
 @Module({
   imports: [

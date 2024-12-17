@@ -1,5 +1,5 @@
 import { IsString, IsArray } from 'class-validator';
-import { CreateCustomizationDto } from 'src/products/dto/create-customization.dto';
+import { CreateCustomizationDto } from '../../products/dto/create-customization.dto';
 
 export class BulkCustomizationsToProductCartDto {
   @IsString()
