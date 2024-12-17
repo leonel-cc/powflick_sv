@@ -6,7 +6,7 @@ import { CreateCustomizationDto } from '../dto/create-customization.dto';
 import { Customization } from '../entity/customization.entity';
 import { HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
 import { createCustomizationObject, createProductDtoObject, createProductObject, createSportObject, createUserObject } from '../../../test/faker';
-import { SheetsProductsDto } from 'src/excel-products/dto/sheetsProductsDto';
+import { SheetsProductsDto } from '../excel-products/dto/sheetsProductsDto';
 import { User } from '../../users/entity/users.entity';
 import { Product } from '../entity/products.entity';
 import { UserProductFav } from '../../users/entity/userproductfav.entity';

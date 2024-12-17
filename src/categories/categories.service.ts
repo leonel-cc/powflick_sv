@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Categories } from './entity/categories.entity';
 import { Op } from 'sequelize';
-import { Product } from 'src/products/entity/products.entity';
+import { Product } from '../products/entity/products.entity';
 import { ProductCategories } from './entity/productcategories.entity';
 
 @Injectable()

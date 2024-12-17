@@ -30,9 +30,9 @@ import { HttpStatusCode } from 'axios';
 import { UserProductFav } from './entity/userproductfav.entity';
 import { Messages } from '../messages/entity/messages.entity';
 import { de } from '@faker-js/faker';
-import { Coupon } from 'src/coupon/entities/coupon.entity';
-import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
-import { Conversation } from 'src/messages/entity/conversationMessage';
+import { Coupon } from '../coupon/entities/coupon.entity';
+import { CouponUser } from '../coupon/entities/coupon-user.entity';
+import { Conversation } from '../messages/entity/conversationMessage';
 
 @Injectable()
 export class UsersService {

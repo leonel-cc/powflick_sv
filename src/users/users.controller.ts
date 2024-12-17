@@ -10,8 +10,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
 import { Rol } from './entity/users.entity';
 import { QueryUsersDto } from './dto/query-user.dto';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guards/rolesGuard';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {

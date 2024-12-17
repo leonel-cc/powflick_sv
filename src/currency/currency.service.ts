@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
-import { Product } from 'src/products/entity/products.entity';
+import { Product } from '../products/entity/products.entity';
 
 @Injectable()
 export class CurrencyService {

@@ -6,7 +6,7 @@ import { MailService } from '../mail/mail.service';
 import { AuthService } from '../auth/auth.service';
 import { VercelBlobService } from '../files/vercel-storage.service';
 import { ConfigService } from '@nestjs/config';
-import { ProductsModule } from 'src/products/products.module';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
   imports: [ProductsModule],

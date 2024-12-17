@@ -12,7 +12,7 @@ import * as xlsx from 'xlsx';
 // import { crearCarpeta, downloadImage, readFilesInFolder, uploadImageToVercel, uploadLocalImageToVercel } from '../utils/downloadImages';
 // import * as fs from 'fs';
 // import * as path from 'path';
-import { VercelBlobService } from 'src/files/vercel-storage.service';
+import { VercelBlobService } from '../files/vercel-storage.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 @Injectable()

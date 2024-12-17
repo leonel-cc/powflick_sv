@@ -10,9 +10,9 @@ import { StripeService } from '../payments/stripe.service';
 import { PdfService } from '../pdf/pdf.service';
 import { VercelBlobService } from '../files/vercel-storage.service';
 import { ConfigService } from '@nestjs/config';
-import { CurrencyService } from 'src/currency/currency.service';
-import { CouponService } from 'src/coupon/coupon.service';
-import { CouponModule } from 'src/coupon/coupon.module';
+import { CurrencyService } from '../currency/currency.service';
+import { CouponService } from '../coupon/coupon.service';
+import { CouponModule } from '../coupon/coupon.module';
 
 @Module({
   imports: [CouponModule],

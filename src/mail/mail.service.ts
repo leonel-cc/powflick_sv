@@ -3,7 +3,7 @@ import { HttpException, Injectable, InternalServerErrorException } from '@nestjs
 import { Cases, SendMailDto } from './dto/sendMail.dto';
 import { Response } from '../products/interface/serviceInterfaces';
 import { Templates } from './templates/enums/templates_enum';
-import { SERVER_URL } from 'src/config/enviroments';
+import { SERVER_URL } from '../config/enviroments';
 
 @Injectable()
 export class MailService {

@@ -15,12 +15,12 @@ import {
 import { Messages } from './entity/messages.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
 import { QueryMessagesDto } from './dto/query-messages.dto';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
-import { Rol } from 'src/users/entity/users.entity';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guards/rolesGuard';
+import { Rol } from '../users/entity/users.entity';
 import { Conversation } from './entity/conversationMessage';
-import { GetUser } from 'src/auth/decorator/auth-user.decorator';
-import { IGetUser } from 'src/auth/interfaces/getUser.interface';
+import { GetUser } from '../auth/decorator/auth-user.decorator';
+import { IGetUser } from '../auth/interfaces/getUser.interface';
 
 @ApiTags('Messages')
 @Controller('messages')

@@ -20,13 +20,13 @@ import { Customization } from './entity/customization.entity';
 import { CreateCustomizationDto } from './dto/create-customization.dto';
 import { Sequelize } from 'sequelize-typescript';
 import { UserProductFav } from '../users/entity/userproductfav.entity';
-import { User } from 'src/users/entity/users.entity';
+import { User } from '../users/entity/users.entity';
 import { UpdateProductDto } from './dto/update-products.dto';
-import { VercelBlobService } from 'src/files/vercel-storage.service';
-import { Collection } from 'src/collections/entity/collections.entity';
-import { Categories } from 'src/categories/entity/categories.entity';
-import { CollectionProduct } from 'src/collections/entity/collectionProduct.entity';
-import { Sport } from 'src/sport/entity/sport.entity';
+import { VercelBlobService } from '../files/vercel-storage.service';
+import { Collection } from '../collections/entity/collections.entity';
+import { Categories } from '../categories/entity/categories.entity';
+import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
+import { Sport } from '../sport/entity/sport.entity';
 
 @Injectable()
 export class ProductsService {

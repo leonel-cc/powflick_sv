@@ -9,7 +9,7 @@ import { CreateDirectionDto } from './dto/create-direetion.dto';
 import { UpdateDirectionDto } from './dto/update-direetion.dto';
 import { IResDirection } from './interfaces/direction.interface';
 import { Direction } from './entity/directions.entity';
-import { Order } from 'src/orders/entity/order.entity';
+import { Order } from '../orders/entity/order.entity';
 
 @Injectable()
 export class DirectionsService {

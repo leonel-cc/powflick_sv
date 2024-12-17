@@ -2,7 +2,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { put, del, list } from '@vercel/blob';
 import { BLOB_READ_WRITE_TOKEN } from '../config/enviroments';
-import { ProductsService } from 'src/products/products.service';
+import { ProductsService } from '../products/products.service';
 
 @Injectable()
 export class VercelBlobService {

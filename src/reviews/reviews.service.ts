@@ -16,7 +16,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Op, Transaction, WhereOptions } from 'sequelize';
 import { Order } from '../orders/entity/order.entity';
 import { GetAllReviewsDto } from './dto/query-get-review.dto';
-import { Product } from 'src/products/entity/products.entity';
+import { Product } from '../products/entity/products.entity';
 
 @Injectable()
 export class ReviewsService {

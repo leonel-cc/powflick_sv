@@ -10,8 +10,8 @@ import { UserProductFav } from '../../users/entity/userproductfav.entity';
 import { User } from '../../users/entity/users.entity';
 import { Order } from '../../orders/entity/order.entity';
 import { OrderProduct } from '../../orders/entity/orderProduct.entity';
-import { Collection } from 'src/collections/entity/collections.entity';
-import { CollectionProduct } from 'src/collections/entity/collectionProduct.entity';
+import { Collection } from '../../collections/entity/collections.entity';
+import { CollectionProduct } from '../../collections/entity/collectionProduct.entity';
 
 export enum StateProduct {
   Active = 'publish',

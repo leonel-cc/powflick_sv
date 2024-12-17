@@ -4,7 +4,7 @@ import { StripeService } from './stripe.service';
 import Stripe from 'stripe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { CLIENT_URL } from 'src/config/enviroments';
+import { CLIENT_URL } from '../config/enviroments';
 
 @ApiTags('Payments')
 @Controller('payments')

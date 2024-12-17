@@ -11,8 +11,8 @@ import { CreateCustomizationDto } from './dto/create-customization.dto';
 import { Response } from './interface/serviceInterfaces';
 import { UpdateProductDto } from './dto/update-products.dto';
 import { Rol } from '../users/entity/users.entity';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guards/rolesGuard';
 
 @ApiTags('Products')
 @Controller('products')

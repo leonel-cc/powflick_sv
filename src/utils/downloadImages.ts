@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
 import { put } from '@vercel/blob';
-import { BLOB_READ_WRITE_TOKEN } from 'src/config/enviroments';
+import { BLOB_READ_WRITE_TOKEN } from '../config/enviroments';
 
 export async function downloadImage(url: string, destinationDir: string, filename: string) {
   const response = await axios({

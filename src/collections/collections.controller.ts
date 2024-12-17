@@ -2,10 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Pu
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
-import { RolesGuard } from 'src/auth/guards/rolesGuard';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { Rol } from 'src/users/entity/users.entity';
+import { RolesGuard } from '../auth/guards/rolesGuard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { Rol } from '../users/entity/users.entity';
 import { Collection } from './entity/collections.entity';
 import { CollectionProduct } from './entity/collectionProduct.entity';
 
