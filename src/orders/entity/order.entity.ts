@@ -21,6 +21,7 @@ export enum OrderStateEnum {
   PAGO = 'PAID',
   RECHAZADO = 'REJECTED',
   DESPACHO = 'DISPATCHED',
+  ENCAMINO = 'ONTHEWAY',
   PENDIENTE = 'PENDING',
   ENTREGADO = 'DELIVERED',
   CANCELADO = 'CANCELLED',
@@ -83,6 +84,12 @@ export class Order extends Model {
     allowNull: true,
   })
     sessionId: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+    note: string;
 
   @Column({
     type: DataType.JSONB,

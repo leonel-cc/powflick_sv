@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, BelongsToMany } from 'sequelize-typescript';
+import { CollectionProduct } from './collectionProduct.entity';
+import { Product } from '../../products/entity/products.entity';
+
+export enum CollectionType {
+  NAVBAR = 'navbar',
+  STORE = 'store',
+  BOTH = 'both',
+  NONE = 'none',
+}
 
 @Table({
   tableName: 'Collections',
@@ -39,4 +48,15 @@ export class Collection extends Model<Collection> {
   })
     order: string;
 
+  @ApiProperty()
+  @Column({
+    type: DataType.ENUM,
+    values: Object.values(CollectionType),
+    allowNull: false,
+    defaultValue: CollectionType.BOTH,
+  })
+    type: CollectionType;
+
+  @BelongsToMany(() => Product, () => CollectionProduct)
+    products: Product[];
 }

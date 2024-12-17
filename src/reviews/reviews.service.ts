@@ -239,4 +239,21 @@ export class ReviewsService {
     }
   }
 
+  async delete(id: string) {
+    try {
+      const deletedCount = await Review.destroy({ where: { id } });
+
+      if (deletedCount === 0) {
+        throw new HttpException('Review not found', 404);
+      }
+
+      return { message: 'The Review has been deleted' };
+    } catch (error) {
+      // Manejar errores específicos de Sequelize si es necesario
+      throw new HttpException(
+        error.message || 'An error occurred when deleting the review',
+        400,
+      );
+    }
+  }
 }

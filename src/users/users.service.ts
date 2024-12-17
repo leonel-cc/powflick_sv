@@ -32,6 +32,7 @@ import { Messages } from '../messages/entity/messages.entity';
 import { de } from '@faker-js/faker';
 import { Coupon } from 'src/coupon/entities/coupon.entity';
 import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
+import { Conversation } from 'src/messages/entity/conversationMessage';
 
 @Injectable()
 export class UsersService {
@@ -208,7 +209,7 @@ export class UsersService {
   async findProfileUser(userId: string) {
     try {
       const genericResponseUser = await User.findByPk(userId, {
-        attributes: ['firstName', 'lastName', 'email', 'phone', 'image'],
+        attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'image'],
         include: [
           {
             model: CouponUser,
@@ -316,6 +317,10 @@ export class UsersService {
 
       const messages = await Messages.findAll({
         where: { email: genericResponseUser.email },
+        include: {
+          model: Conversation,
+          attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+        },
       });
 
       if (!genericResponseUser)

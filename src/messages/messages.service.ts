@@ -5,6 +5,8 @@ import { MailService } from '../mail/mail.service';
 import { IContactFormResponseContext } from '../mail/interfaces/contact-form-response-context.interface';
 import { Cases } from '../mail/dto/sendMail.dto';
 import { User } from 'src/users/entity/users.entity';
+import { Conversation } from './entity/conversationMessage';
+import { IGetUser } from 'src/auth/interfaces/getUser.interface';
 
 @Injectable()
 export class MessagesService {
@@ -12,10 +14,20 @@ export class MessagesService {
 
   async create(messageData: Partial<Messages>) {
     try {
-      await Messages.create(messageData);
+      const message = await Messages.create(messageData);
+
+      const messages = await Messages.findAll({
+        where: { email: message.email },
+        include: {
+          model: Conversation,
+          attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+        },
+      });
+
       return {
         statusCode: HttpStatus.CREATED,
         message: 'The message has been sent successfully',
+        messages,
       };
     } catch (error) {
       throw new HttpException('There was an error sending the message' + error.message, HttpStatus.BAD_REQUEST);
@@ -109,7 +121,7 @@ export class MessagesService {
 
       // Agrega la condición para verificar si el mensaje ha sido respondido o no
       if (answered !== null) {
-        where.response = answered ? { [Op.not]: null } : null;
+        where.pending = !answered;
       }
 
       // Filtra por la categoría proporcionada
@@ -132,6 +144,12 @@ export class MessagesService {
       // Realiza la consulta para obtener los mensajes con paginación
       const messages = await Messages.findAll({
         where,
+        include: [
+          {
+            model: Conversation,
+            attributes: ['text', 'imgUrl', 'name', 'createdAt'], // Especifica los atributos que deseas incluir
+          },
+        ],
         order: orderClause,
         limit,
         offset: (page - 1) * limit,
@@ -159,7 +177,14 @@ export class MessagesService {
 
   async findOne(id: string) {
     try {
-      return await Messages.findByPk(id);
+      return await Messages.findByPk(id, {
+        include: [
+          {
+            model: Conversation,
+            attributes: ['text', 'imgUrl', 'name', 'createdAt', 'from'], // Especifica los atributos que deseas incluir
+          },
+        ],
+      });
     } catch (error) {
       throw new HttpException('There was an error searching for the message', HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -172,19 +197,6 @@ export class MessagesService {
         throw new HttpException('The message could not be updated', HttpStatus.NOT_FOUND);
       }
       const updatedMessage = await Messages.findByPk(id);
-
-      const context: IContactFormResponseContext = {
-        name: updatedMessage.name,
-        userEmail: updatedMessage.email,
-        message: updatedMessage.message,
-        response: updatedMessage.response,
-      };
-
-      await this.mailService.sendMails({
-        EmailAddress: context.userEmail,
-        context,
-        subject: Cases.CONTACT_FORM_RESPONSE,
-      });
 
       return {
         statusCode: HttpStatus.OK,
@@ -209,6 +221,65 @@ export class MessagesService {
       };
     } catch (error) {
       throw new HttpException('There was an error deleting the message', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async addConversation(
+    messageId: string,
+    data: Partial<Conversation>,
+    user: IGetUser,
+  ) {
+    const admin = data.from === 'admin';
+    try {
+      const message = await this.findOne(messageId);
+      const u = await User.findOne({ where: { email: user.userEmail } });
+      if (!message) {
+        throw new Error('Message not found');
+      }
+
+      if (admin) {
+        const context: IContactFormResponseContext = {
+          name: message.name,
+          userEmail: message.email,
+          message: message.message,
+          response: data.text,
+        };
+
+        await this.mailService.sendMails({
+          EmailAddress: context.userEmail,
+          context,
+          subject: Cases.CONTACT_FORM_RESPONSE,
+        });
+
+        message.pending = false;
+        await message.save();
+      } else {
+        message.pending = true;
+        await message.save();
+      }
+
+      await Conversation.create({ ...data, messageId, name: u?.firstName + ' ' + u?.lastName, imgUrl: u?.image || '', from: data.from });
+
+      const messages = admin
+        ? await Messages.findByPk(messageId, {
+          include: {
+            model: Conversation,
+            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+          },
+        })
+        : await Messages.findAll({
+          where: { email: message.email },
+          include: {
+            model: Conversation,
+            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+          },
+        });
+      return {
+        text: 'Your message has been sended succesfully',
+        messages,
+      };
+    } catch (error) {
+      throw new HttpException('There was an error adding the message:' + error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

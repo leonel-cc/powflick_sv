@@ -102,17 +102,17 @@ export class OrdersController {
 
   //Actualizar el estado de una orden
   @ApiOperation({
-    summary: 'Actualizar estado de orden',
-    description: 'Se envia orderId y state por body',
+    summary: 'Actualizar orden',
+    description: 'Se envia orderId y body',
   })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Rol.admin)
   @Patch()
-  async patchUpdateStateOrder(
+  async patchUpdateOrder(
   @Body() updateDto: UpdateOrderDto,
   ) {
 
-    const response = await this.ordersService.updateStateOrder(updateDto);
+    const response = await this.ordersService.updateOrder(updateDto);
 
     return response;
   }

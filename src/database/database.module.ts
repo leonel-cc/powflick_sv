@@ -19,16 +19,17 @@ import { Coupon } from '../coupon/entities/coupon.entity';
 import { CouponUser } from '../coupon/entities/coupon-user.entity';
 import { Collection } from '../collections/entity/collections.entity';
 import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
+import { Conversation } from '../messages/entity/conversationMessage';
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
       dialectModule: require('pg'),
-      host: env.DBHOST,
+      host: env.DPHOST,
       port: Number(env.DBPORT),
-      username: env.DBUSERNAME,
-      password: env.DBPASSWORD,
-      database: env.DBDATABASE,
+      username: env.DPUSERNAME,
+      password: env.DPPASSWORD,
+      database: env.DPDATABASE,
       models: [
         User,
         Product,
@@ -48,6 +49,7 @@ import { CollectionProduct } from '../collections/entity/collectionProduct.entit
         CouponUser,
         Collection,
         CollectionProduct,
+        Conversation,
       ],
       ssl: true,
       dialectOptions: {

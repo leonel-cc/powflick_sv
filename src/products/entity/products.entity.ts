@@ -199,7 +199,6 @@ export class Product extends Model {
   @HasMany(() => Customization)
     customizations: Customization;
 
-  // Relación con Collections
   @BelongsToMany(() => Collection, () => CollectionProduct)
-    collection: Collection[];
+    collections: Collection[];
 }

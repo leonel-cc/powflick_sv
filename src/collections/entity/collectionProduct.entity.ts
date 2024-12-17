@@ -1,4 +1,10 @@
-import { Column, DataType, Model, Table, ForeignKey } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Model,
+  Table,
+  ForeignKey,
+} from 'sequelize-typescript';
 import { Collection } from './collections.entity';
 import { Product } from '../../products/entity/products.entity';
 

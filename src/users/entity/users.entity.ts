@@ -65,79 +65,78 @@ export class User extends Model {
     primaryKey: true,
     allowNull: false,
   })
-  id: string;
+    id: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  firstName: string;
+    firstName: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  lastName: string;
+    lastName: string;
 
   @Column({
     type: DataType.STRING,
     unique: true,
     allowNull: false,
   })
-  email: string;
+    email: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  phone: string;
+    password: string;
 
   @Column({
     type: DataType.STRING,
   })
-  image: string;
+    phone: string | null;
+
+  @Column({
+    type: DataType.STRING,
+  })
+    image: string;
 
   @Column({
     type: DataType.STRING,
     defaultValue: UserProviders.none,
     allowNull: false,
   })
-  provider: UserProviders;
+    provider: UserProviders;
 
   @Column({
     type: DataType.STRING,
     defaultValue: Rol.user,
     allowNull: false,
   })
-  rol: Rol;
+    rol: Rol;
 
   @Column(DataType.BOOLEAN)
-  isActive: boolean;
+    isActive: boolean;
 
   @HasOne(() => ShoppingCart)
-  cart: ShoppingCart;
+    cart: ShoppingCart;
 
   @HasMany(() => Direction, { onDelete: 'CASCADE', hooks: true })
-  directions: Direction[];
+    directions: Direction[];
 
   @HasMany(() => Order)
-  orders: Order[];
+    orders: Order[];
 
   @BelongsToMany(() => Product, () => UserProductFav)
-  favorites: Product[];
+    favorites: Product[];
 
   @HasMany(() => Customization)
-  customizations: Customization;
+    customizations: Customization;
 
   @HasMany(() => Review)
-  reviews: Review[];
+    reviews: Review[];
 
   @HasMany(() => CouponUser)
-  couponUsers: CouponUser[];
+    couponUsers: CouponUser[];
 }

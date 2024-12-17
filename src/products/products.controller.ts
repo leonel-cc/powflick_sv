@@ -62,6 +62,40 @@ export class ProductsController {
     return this.productsService.oneProduct(id);
   }
 
+  @ApiOperation({
+    summary: 'Obtener un solo producto mediante id pasado por parametro',
+  })
+  @Post('/admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
+  createProductAdmin(
+  @Body() updateProductDto: UpdateProductDto,
+  ) {
+    return this.productsService.create(updateProductDto);
+  }
+
+  @ApiOperation({
+    summary: 'Obtener un solo producto mediante id pasado por parametro',
+  })
+  @Get('/admin/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
+  oneProductAdmin(
+  @Param('id') id: string,
+  ) {
+    return this.productsService.oneProductAdmin(id);
+  }
+
+  @ApiOperation({
+    summary: 'Obtener un solo producto mediante id pasado por parametro',
+  })
+  @Delete('/admin/:id')
+  deleteProductAdmin(
+  @Param('id') id: string,
+  ) {
+    return this.productsService.deleteProduct(id);
+  }
+
   @ApiOperation({ summary: 'Modificar un producto' })
   @ApiBody({ type: UpdateProductDto })
   @ApiResponse({
@@ -205,6 +239,13 @@ export class ProductsController {
   async getAllProductsIds(
   ) {
     const response = await this.productsService.getAllProductsIds();
+    return response;
+  }
+
+  @Get('all/productsSlugs')
+  async getAllProductsSlugs(
+  ) {
+    const response = await this.productsService.getAllProductsSlugs();
     return response;
   }
 }
