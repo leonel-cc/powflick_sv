@@ -20,6 +20,11 @@ export class CreateMessageDto {
   @IsNotEmpty()
     message: string;
 
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+    title: string;
+
   @IsOptional()
   @ApiProperty({
     enum: ContactType,

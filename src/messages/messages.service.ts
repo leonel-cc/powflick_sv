@@ -14,10 +14,20 @@ export class MessagesService {
 
   async create(messageData: Partial<Messages>) {
     try {
-      await Messages.create(messageData);
+      const message = await Messages.create(messageData);
+
+      const messages = await Messages.findAll({
+        where: { email: message.email },
+        include: {
+          model: Conversation,
+          attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+        },
+      });
+
       return {
         statusCode: HttpStatus.CREATED,
         message: 'The message has been sent successfully',
+        messages,
       };
     } catch (error) {
       throw new HttpException('There was an error sending the message' + error.message, HttpStatus.BAD_REQUEST);
