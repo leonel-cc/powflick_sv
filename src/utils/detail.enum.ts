@@ -426,7 +426,7 @@ export const ShippingTypes =
 export const PaymentMethods = {
   text: "Secure payments worldwide. You can trust us with your credit card, whether you're in the USA or abroad.",
   image:
-    'https://emmanuela.insyst.info/wp-content/uploads/2019/01/cards-1024x156.png',
+    'https://help.pitpay.com/wp-content/uploads/2023/08/Payment-Methods-5-3.png',
 };
 
 export const SizeType = [
