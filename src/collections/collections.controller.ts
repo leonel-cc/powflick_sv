@@ -56,10 +56,10 @@ export class CollectionsController {
     }
   }
 
-  // @Post('create-with-products')
-  // createWithProducts() {
-  //   return this.collectionsService.createCollectionWithProducts();
-  // }
+  @Post('create-mock-collections')
+  createWithProducts() {
+    return this.collectionsService.createMockCollectionWithProducts();
+  }
 
   @Post('create-with-products')
   @UseGuards(JwtAuthGuard, RolesGuard)

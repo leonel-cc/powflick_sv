@@ -58,6 +58,7 @@ export class OrdersService {
               'short_description',
               'price',
               'images',
+              'slug',
               'sports',
             ],
             through: {
