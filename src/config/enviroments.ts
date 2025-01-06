@@ -24,3 +24,7 @@ export const CLOUD_SECRET = process.env.CLOUD_SECRET;
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 export const TEST_DATABASE = process.env.TEST_DATABASE;
 export const BLOB_READ_WRITE_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+export const REDIS_HOST = process.env.REDIS_HOST;
+export const REDIS_PORT = process.env.REDIS_PORT;
+export const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+export const REDIS_TTL = process.env.REDIS_TTL;
