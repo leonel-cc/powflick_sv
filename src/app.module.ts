@@ -58,6 +58,7 @@ import * as env from './config/enviroments';
         host: env.REDIS_HOST,
         port: env.REDIS_PORT,
         password: env.REDIS_PASSWORD,
+        ttl: Number(env.REDIS_TTL),
       }),
     }),
   ],
