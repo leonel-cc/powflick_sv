@@ -2,7 +2,7 @@
   "name": "Sport Zone",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "DevCodeLab",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -22,6 +22,7 @@
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
     "@nestjs-modules/mailer": "^1.10.3",
+    "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^9.4.3",
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^9.0.0",
@@ -36,6 +37,8 @@
     "@vercel/blob": "^0.23.3",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
+    "cache-manager": "^5.7.6",
+    "cache-manager-ioredis": "^2.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cors": "^2.8.5",
@@ -44,6 +47,7 @@
     "google-auth-library": "^9.6.3",
     "google-spreadsheet": "^4.1.1",
     "image-size": "^1.1.1",
+    "ioredis": "^5.4.2",
     "jimp": "^0.22.10",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",

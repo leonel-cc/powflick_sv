@@ -136,14 +136,17 @@ export class AppService {
 
       const featuredProducts = await this.getProductsByCondition({
         featured: true,
+        status: 'publish',
       });
 
       const mostSoldProducts = await this.getProductsByCondition({
         mostSold: true,
+        status: 'publish',
       });
 
       const discountProducts = await this.getProductsByCondition({
         discount: { [Op.gt]: 0 },
+        status: 'publish',
       });
 
       // Obtener los últimos productos
@@ -191,6 +194,7 @@ export class AppService {
     const randomIndex = Math.floor(Math.random() * Math.max(0, count - 2));
 
     return Product.findAll({
+      where: { status: 'publish' },
       offset: randomIndex,
       limit,
       order: Sequelize.literal('RANDOM()'),

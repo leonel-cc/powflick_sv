@@ -29,6 +29,9 @@ import { CouponController } from './coupon/coupon.controller';
 import { CouponModule } from './coupon/coupon.module';
 import { CollectionsModule } from './collections/collections.module';
 import { CollectionsService } from './collections/collections.service';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-ioredis';
+import * as env from './config/enviroments';
 
 @Module({
   imports: [
@@ -49,6 +52,15 @@ import { CollectionsService } from './collections/collections.service';
     CurrencyModule,
     CouponModule,
     CollectionsModule,
+    CacheModule.registerAsync({
+      useFactory: () => ({
+        store: redisStore,
+        host: env.REDIS_HOST,
+        port: env.REDIS_PORT,
+        password: env.REDIS_PASSWORD,
+        ttl: Number(env.REDIS_TTL),
+      }),
+    }),
   ],
   controllers: [
     AppController,

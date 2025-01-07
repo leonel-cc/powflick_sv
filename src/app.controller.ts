@@ -1,14 +1,18 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ProductsService } from './products/products.service';
 import { Product, StateProduct } from './products/entity/products.entity';
 import { Op } from 'sequelize';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly productService: ProductsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) { }
 
   @Get()
@@ -19,7 +23,16 @@ export class AppController {
   @Get('detail/:id')
   async getDetail(
   @Param('id') productid: string,
+    @Res() res: Response,
   ) {
+    const cacheKey = `product:${productid}`;
+    const cachedData = await this.cacheManager.get(cacheKey);
+
+    if (cachedData) {
+      res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
+      return res.status(200).json(cachedData);
+    }
+
     const product: Product = await this.productService.oneProduct(productid);
 
     const sugestedProducts = await this.productService.sugestedProducts({
@@ -51,14 +64,34 @@ export class AppController {
       attributes: ['id', 'title', 'price', 'sports', 'images', 'slug', 'URL'],
     });
 
-    return this.appService.getDetail(product.sports, product, sugestedProducts, frequentlyBought);
+    const result = await this.appService.getDetail(product.sports, product, sugestedProducts, frequentlyBought);
+
+    // Almacena en caché el resultado por 5 minutos
+    await this.cacheManager.set(cacheKey, result);
+
+    res.setHeader('X-Cache-Status', 'MISS'); // Indica que no estaba en el caché
+    return res.status(200).json(result);
   }
 
   @Get('landing')
-  async getLanding() {
+  async getLanding(
+  @Res() res: Response,
+  ) {
+    const cacheKey = 'landing';
+    const cachedData = await this.cacheManager.get(cacheKey);
+
+    if (cachedData) {
+      res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
+      return res.status(200).json(cachedData);
+    }
+
     const data = await this.appService.getLanding();
 
-    return data;
+    // Almacena en caché el resultado por 5 minutos
+    await this.cacheManager.set(cacheKey, data);
+
+    res.setHeader('X-Cache-Status', 'MISS'); // Indica que no estaba en el caché
+    return res.status(200).json(data);
   }
 
 }
