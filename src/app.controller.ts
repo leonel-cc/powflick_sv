@@ -67,7 +67,7 @@ export class AppController {
     const result = await this.appService.getDetail(product.sports, product, sugestedProducts, frequentlyBought);
 
     // Almacena en caché el resultado por 5 minutos
-    await this.cacheManager.set(cacheKey, result, 120);
+    await this.cacheManager.set(cacheKey, result);
 
     res.setHeader('X-Cache-Status', 'MISS'); // Indica que no estaba en el caché
     return res.status(200).json(result);
@@ -88,7 +88,7 @@ export class AppController {
     const data = await this.appService.getLanding();
 
     // Almacena en caché el resultado por 5 minutos
-    await this.cacheManager.set(cacheKey, data, 1200);
+    await this.cacheManager.set(cacheKey, data);
 
     res.setHeader('X-Cache-Status', 'MISS'); // Indica que no estaba en el caché
     return res.status(200).json(data);

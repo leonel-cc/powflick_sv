@@ -6,6 +6,10 @@ export interface PaginatedProductsResponse {
   nextPage: number | null;
   totalPages: number | null;
   total: number | null;
+  filt: {
+    title: string,
+    child: { title: string }[]
+  }[]
   products: Product[];
   count: {
     total: number;

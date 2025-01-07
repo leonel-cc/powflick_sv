@@ -481,6 +481,32 @@ export class ProductsService {
 
       const totalPages = Math.ceil(total / Number(limit));
 
+      // Agrupar categorías y colecciones
+      const categoryMap = new Map<string, { title: string; child: { title: string }[] }>();
+
+      products.forEach((product) => {
+        const categories = product.product_categories?.split('|'); // Separar categorías
+        const collection = product.collections?.[0]?.title;
+
+        if (categories) {
+          categories.forEach((category) => {
+            if (!categoryMap.has(category)) {
+              categoryMap.set(category, { title: category, child: [] });
+            }
+
+            if (collection) {
+              const children = categoryMap.get(category)!.child;
+              if (!children.find((c) => c.title === collection)) {
+                children.push({ title: collection });
+              }
+            }
+          });
+        }
+      });
+
+      // Transformar el Map en un array
+      const filt = Array.from(categoryMap.values());
+
       return {
         page: page,
         prevPage: page === 1 ? null : page - 1,
@@ -488,6 +514,7 @@ export class ProductsService {
         totalPages,
         total: limitOfPages,
         products: paginatedProducts,
+        filt,
         count: {
           total,
           sports: sportCount,
