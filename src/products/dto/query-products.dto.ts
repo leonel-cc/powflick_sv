@@ -4,6 +4,7 @@ import { IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
 export enum OrderEnum {
   ASC = 'ASC',
   DESC = 'DESC',
+  DATE = 'date',
 }
 
 enum GenderEnum {

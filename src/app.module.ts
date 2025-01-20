@@ -53,6 +53,7 @@ import * as env from './config/enviroments';
     CouponModule,
     CollectionsModule,
     CacheModule.registerAsync({
+      isGlobal: true,
       useFactory: () => ({
         store: redisStore,
         host: env.REDIS_HOST,

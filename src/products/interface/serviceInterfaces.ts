@@ -10,6 +10,7 @@ export interface PaginatedProductsResponse {
     title: string,
     child: { title: string }[]
   }[]
+  colors: string[];
   products: Product[];
   count: {
     total: number;

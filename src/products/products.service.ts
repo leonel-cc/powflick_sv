@@ -430,12 +430,14 @@ export class ProductsService {
         query[Op.and] = whereConditions;
       }
 
-      // Realizar ordenamiento
       let order;
       if (filters.order === 'ASC') {
         order = [['price', 'ASC']];
-      } else {
+      } else if (filters.order === 'DESC') {
         order = [['price', 'DESC']];
+      } else if (filters.order === 'date') {
+        // Ordenar por fecha de creación si el filtro es "date"
+        order = [['createdAt', 'ASC']];
       }
 
       // Realizar la consulta para obtener todos los productos
@@ -495,7 +497,7 @@ export class ProductsService {
             }
 
             if (collection) {
-              const children = categoryMap.get(category)!.child;
+              const children = categoryMap.get(category).child;
               if (!children.find((c) => c.title === collection)) {
                 children.push({ title: collection });
               }
@@ -507,6 +509,10 @@ export class ProductsService {
       // Transformar el Map en un array
       const filt = Array.from(categoryMap.values());
 
+      const allColors = new Set(
+        products?.flatMap(p => p.colors?.map(c => c?.trim().toLowerCase()) || []),
+      );
+
       return {
         page: page,
         prevPage: page === 1 ? null : page - 1,
@@ -514,6 +520,7 @@ export class ProductsService {
         totalPages,
         total: limitOfPages,
         products: paginatedProducts,
+        colors: [...allColors],
         filt,
         count: {
           total,
