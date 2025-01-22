@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Inject, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryProductsDto } from './dto/query-products.dto';
@@ -13,11 +13,17 @@ import { UpdateProductDto } from './dto/update-products.dto';
 import { Rol } from '../users/entity/users.entity';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { RolesGuard } from '../auth/guards/rolesGuard';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { Response as Resp } from 'express';
 
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @ApiOperation({
     summary: 'Obtener todos los productos (se debe enviar "page" y "limit" por query).',
@@ -28,10 +34,34 @@ export class ProductsController {
       'En caso de no haber error, la respuesta de la misma será un objeto con informacion del paginado y los productos solicitados, ademas de traer un conteo de sus atributos',
   })
   @Get()
-  allProducts(
+  async allProducts(
   @Query() querys: QueryProductsDto,
+    @Res() res: Resp,
   ) {
-    return this.productsService.allProducts(querys);
+    // Serializa y ordena los parámetros de la consulta
+    const cacheKey = `products:${JSON.stringify(
+      Object.entries(querys)
+        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB)) // Ordena por clave
+        .reduce((acc, [key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            acc[key] = value;
+          }
+          return acc;
+        }, {}),
+    )}`;
+
+    const cachedData = await this.cacheManager.get(cacheKey);
+
+    if (cachedData) {
+      return res.status(200).json(cachedData);
+    }
+
+    const result = await this.productsService.allProducts(querys);
+
+    // Almacena en caché el resultado por 5 minutos
+    await this.cacheManager.set(cacheKey, result);
+
+    return res.status(200).json(result);
   }
 
   @ApiOperation({
