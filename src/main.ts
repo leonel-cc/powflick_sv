@@ -14,7 +14,7 @@ async function bootstrap() {
 
   // Configuración de Swagger
   const config = new DocumentBuilder()
-    .setTitle('Sport Zone API')
+    .setTitle('Pow Flick API')
     .setDescription('All endpoints')
     .setVersion('1.0')
     .build();
