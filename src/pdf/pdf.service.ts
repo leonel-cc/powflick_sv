@@ -131,7 +131,7 @@ export class PdfService {
         if (socks && socks !== SocksType['No Socks (+$0.00)']) {
           doc.font('Helvetica-Bold').fontSize(25).text('SOCKS', 1050, 920);
           // doc.font('Helvetica').fontSize(25).text(killParenthesisIn(socks), 1370, 1110);
-          doc.image(imageBuffers[6] as Buffer, 1050, 960, { width: 100, height: 100 });
+          doc.image(imageBuffers[5] as Buffer, 1050, 960, { width: 100, height: 100 });
           doc.rect(1050, 960, 100, 100).stroke();
         }
 
@@ -339,7 +339,6 @@ export class PdfService {
         }
 
         if (frontSide.logos && imageBuffers[3] && imageBuffers[3][0]) {
-          const maxVisibleLogos = 3; // Número máximo de logotipos visibles antes de truncar
           const logos = frontSide.logos.filter(l => l.logoUrl);
 
           // Itera sobre los logotipos
@@ -378,11 +377,6 @@ export class PdfService {
 
               // Restaurar el estado original
               doc.restore();
-
-              if (index < maxVisibleLogos) {
-                // Dibuja una copia pequeña del logotipo para referencia
-                doc.image(imageBuffers[3][index] as Buffer, 1400 + 50 * index, 520, { width: 100 });
-              }
             }
 
           }
@@ -429,6 +423,12 @@ export class PdfService {
             }
           }
         }
+
+        const allLogos = [...imageBuffers[3], ...imageBuffers[4]];
+        allLogos.filter(l => l !== undefined).slice(0, 3).map((logo, i) => {
+          // Dibuja una copia pequeña del logotipo para referencia
+          doc.image(logo as Buffer, 1385 + 110 * i + 1, 520, { width: 100 });
+        });
 
         // PALETA DE COLORES DE LA CAMISETA
         if (ShirtPalette) {
