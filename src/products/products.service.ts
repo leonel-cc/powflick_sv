@@ -330,7 +330,11 @@ export class ProductsService {
       // Actualizar los campos del producto si se proporcionaron en el DTO
       for (const key in updateProductDto) {
         if (updateProductDto.hasOwnProperty(key)) {
-          product[key] = updateProductDto[key] ?? product[key];
+          if (updateProductDto['product_categories']) {
+            product['product_categories'] = updateProductDto.product_categories.join('|');
+          } else {
+            product[key] = updateProductDto[key] ?? product[key];
+          }
         }
       }
 
