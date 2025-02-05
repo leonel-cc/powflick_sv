@@ -837,13 +837,22 @@ export class ProductsService {
 
   async getAllProductsTitles(search: string, limit: boolean) {
     try {
+      // Si la búsqueda está vacía, devolver todos los títulos sin filtrado
+      if (!search.trim()) {
+        const allTitles = await Product.findAll({
+          attributes: ['title'],
+        });
+
+        return allTitles.map(({ title }) => title);
+      }
+
       // Dividir la cadena de búsqueda en palabras individuales
-      const keywords = search.trim().split(' ');
+      const keywords = search.trim().split(/\s+/); // También maneja múltiples espacios
 
       // Construir un array de condiciones de búsqueda para cada palabra
       const whereConditions = keywords.map((keyword) => ({
         title: {
-          [Op.iLike]: `%${keyword}%`,
+          [Op.iLike]: `%${keyword}%`, // Búsqueda insensible a mayúsculas
         },
       }));
 
@@ -852,17 +861,13 @@ export class ProductsService {
         where: {
           [Op.and]: whereConditions,
         },
-        attributes: ['id', 'title'],
-        limit: limit ? 10 : null, // Limitar a las primeras 20 coincidencia
+        attributes: ['slug', 'title'],
+        limit: limit ? 10 : null, // Limitar a las primeras 10 coincidencias, si se requiere
       });
 
-      if (limit) {
-        return titles;
-      } else {
-        const allTitles = [];
-        titles.forEach(({ title }) => allTitles.push(title));
-        return allTitles;
-      }
+      // Si no hay límite, devolver solo los títulos
+      return titles.map(({ title, slug }) => [title, slug]);
+
     } catch (error) {
       // Maneja los errores de manera adecuada
       throw new HttpException(

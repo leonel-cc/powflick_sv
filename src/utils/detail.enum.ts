@@ -312,42 +312,47 @@ export const Socks = [
 
 export const Shorts = [
   {
-    name: 'No Shorts (+$0.00)',
+    name: 'Default ($0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
   },
   {
-    name: 'Black (+$13.99)',
+    name: 'No Shorts (-$13.99)',
+    image:
+      'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
+  },
+  {
+    name: 'Black (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortnegro-175x300-1.jpg',
   },
   {
-    name: 'Red (+$13.99)',
+    name: 'Red (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortrojo-175x300-1.jpg',
   },
   {
-    name: 'Green (+$13.99)',
+    name: 'Green (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeoscuro-175x300-1.jpg',
   },
   {
-    name: 'White (+$13.99)',
+    name: 'White (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortblanco-175x300-1.jpg',
   },
   {
-    name: 'Blue (+$13.99)',
+    name: 'Blue (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortazul-175x300-1.jpg',
   },
   {
-    name: 'Yellow (+$13.99)',
+    name: 'Yellow (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortamarillo-175x300-1.jpg',
   },
   {
-    name: 'Lime (+$13.99)',
+    name: 'Lime (+$0.00)',
     image:
       'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeclaro-175x300-1.jpg',
   },
@@ -425,8 +430,6 @@ export const ShippingTypes =
 
 export const PaymentMethods = {
   text: "Secure payments worldwide. You can trust us with your credit card, whether you're in the USA or abroad.",
-  image:
-    'https://help.pitpay.com/wp-content/uploads/2023/08/Payment-Methods-5-3.png',
 };
 
 export const SizeType = [
