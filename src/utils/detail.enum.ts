@@ -13,7 +13,7 @@ export const sportsConfig = {
   Hockey: { neck: true, socks: true, shorts: true, pants: false },
   Running: { neck: false, socks: true, shorts: true, pants: false },
   Gaming: { neck: true, socks: true, shorts: true, pants: false },
-  Soccer: { neck: true, socks: true, shorts: false, pants: false },
+  Soccer: { neck: true, socks: true, shorts: true, pants: false },
 };
 
 export const Materials = {
