@@ -68,7 +68,7 @@ export class AppService {
         Default: defaultImage[sport],
         Neck: neck ? Neck : null,
         Socks: socks ? Socks : null,
-        Shorts: shorts ? Shorts : !pants && !shorts ? withOrWithoutShort : null,
+        Shorts: shorts ? Shorts(sport) : !pants && !shorts ? withOrWithoutShort : null,
         Pants: pants ? Pants : null,
         Materials: Materials[sport],
         PaymentMethods,

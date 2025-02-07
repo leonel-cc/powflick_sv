@@ -27,6 +27,8 @@ import { Collection } from '../collections/entity/collections.entity';
 import { Categories } from '../categories/entity/categories.entity';
 import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
 import { Sport } from '../sport/entity/sport.entity';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class ProductsService {
@@ -866,7 +868,11 @@ export class ProductsService {
       });
 
       // Si no hay límite, devolver solo los títulos
-      return titles.map(({ title, slug }) => [title, slug]);
+      if (limit) {
+        return titles.map(({ title, slug }) => [title, slug]);
+      } else {
+        return titles.map(({ title }) => title);
+      }
 
     } catch (error) {
       // Maneja los errores de manera adecuada
@@ -934,4 +940,45 @@ export class ProductsService {
       );
     }
   }
+
+  // async examFolders() {
+  //   try {
+  //     const localFolderPath = path.resolve(__dirname, '../../Existentes');
+
+  //     // 1. Obtener los títulos de los productos desde la base de datos
+  //     const products = await Product.findAll({ where: { status: 'publish' }, attributes: ['title'] });
+  //     const productTitles = products.map(({ title }) => title.trim()); // Normaliza a minúsculas
+
+  //     console.log(`Total productos en BD: ${productTitles.length}`);
+
+  //     // 2. Leer la carpeta local y obtener los nombres de las subcarpetas
+  //     const folderNames = fs.readdirSync(localFolderPath, { withFileTypes: true })
+  //       .filter(dirent => dirent.isDirectory()) // Filtrar solo carpetas
+  //       .map(dirent => dirent.name.trim()); // Normalizar
+
+  //     console.log(`Total carpetas encontradas: ${folderNames.length}`);
+
+  //     // 3. Filtrar las carpetas que no coinciden con ningún título de producto
+  //     const leastProducts = productTitles.filter(title => !folderNames.includes(title));
+
+  //     console.log(`Total productos sin carpeta: ${leastProducts.length}`);
+
+  //     // 4. Descargar imágenes para los productos sin carpeta
+  //     for (const productTitle of leastProducts) {
+  //       try {
+  //         await this.vercelBlobService.downloadImages(productTitle);
+  //         console.log(`Imágenes descargadas para: ${productTitle}`);
+  //       } catch (err) {
+  //         console.error(`Error al descargar imágenes para ${productTitle}:`, err.message);
+  //       }
+  //     }
+
+  //     return leastProducts;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       'Error al obtener carpetas sobrantes: ' + error.message,
+  //       500,
+  //     );
+  //   }
+  // }
 }

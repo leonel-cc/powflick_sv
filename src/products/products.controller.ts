@@ -278,4 +278,11 @@ export class ProductsController {
     const response = await this.productsService.getAllProductsSlugs();
     return response;
   }
+
+  // @Get('all/examFolders')
+  // async getExamFolders(
+  // ) {
+  //   const response = await this.productsService.examFolders();
+  //   return response;
+  // }
 }

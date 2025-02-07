@@ -3,6 +3,8 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { put, del, list } from '@vercel/blob';
 import { BLOB_READ_WRITE_TOKEN } from '../config/enviroments';
 import { ProductsService } from '../products/products.service';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class VercelBlobService {
@@ -128,7 +130,7 @@ export class VercelBlobService {
       await this.clearFolder(folderName);
 
       console.log('Subiendo carpeta:', folderName);
-      
+
 
       // Subir nueva carpeta
       const urls = await Promise.all(
@@ -246,7 +248,7 @@ export class VercelBlobService {
         prefix: `Products/${folderName}/`,
         token: this.token,
       });
-      
+
       await Promise.all(
         blobs.map(async (blob) => {
           try {
@@ -264,4 +266,50 @@ export class VercelBlobService {
       throw new Error(`Error clearing folder: ${error.message}`);
     }
   }
+
+  // async downloadImages(title: string): Promise<void> {
+  //   try {
+  //     const { blobs } = await list({
+  //       prefix: `Products/${title}/`,
+  //       token: this.token,
+  //     });
+
+  //     if (blobs.length === 0) {
+  //       throw new Error(`No se encontraron imágenes para el título: ${title}`);
+  //     }
+
+  //     const localFolderPath = path.join(__dirname, '..', '..', 'downloads', title);
+
+  //     // Crear la carpeta si no existe
+  //     if (!fs.existsSync(localFolderPath)) {
+  //       fs.mkdirSync(localFolderPath, { recursive: true });
+  //     }
+
+  //     await Promise.all(
+  //       blobs.map(async (blob) => {
+  //         const response = await fetch(blob.url);
+  //         const buffer = await response.arrayBuffer();
+
+  //         // Verificar si el archivo es de tipo "customization"
+  //         const isCustomization = path.basename(blob.url).toLowerCase().includes('customization');
+  //         const finalFolderPath = isCustomization
+  //           ? path.join(localFolderPath, 'Sin Logo') // Carpeta anidada para customization
+  //           : localFolderPath;
+
+  //         // Crear la subcarpeta "Sin Logo" si es necesario
+  //         if (isCustomization && !fs.existsSync(finalFolderPath)) {
+  //           fs.mkdirSync(finalFolderPath, { recursive: true });
+  //         }
+
+  //         const filePath = path.join(finalFolderPath, path.basename(blob.url));
+  //         fs.writeFileSync(filePath, Buffer.from(buffer));
+  //       }),
+  //     );
+
+  //     console.log(`Imágenes descargadas en: ${localFolderPath}`);
+  //   } catch (error) {
+  //     console.error(`Error descargando imágenes: ${error.message}`);
+  //     throw new Error(`Error descargando imágenes: ${error.message}`);
+  //   }
+  // }
 }
