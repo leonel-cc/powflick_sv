@@ -310,53 +310,68 @@ export const Socks = [
   },
 ];
 
-export const Shorts = [
-  {
-    name: 'Default ($0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
-  },
-  {
-    name: 'No Shorts (-$13.99)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
-  },
-  {
-    name: 'Black (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortnegro-175x300-1.jpg',
-  },
-  {
-    name: 'Red (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortrojo-175x300-1.jpg',
-  },
-  {
-    name: 'Green (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeoscuro-175x300-1.jpg',
-  },
-  {
-    name: 'White (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortblanco-175x300-1.jpg',
-  },
-  {
-    name: 'Blue (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortazul-175x300-1.jpg',
-  },
-  {
-    name: 'Yellow (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortamarillo-175x300-1.jpg',
-  },
-  {
-    name: 'Lime (+$0.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeclaro-175x300-1.jpg',
-  },
-];
+export const Shorts = (sport: string) => {
+  const shorts = [
+    {
+      name: 'Black (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortnegro-175x300-1.jpg',
+    },
+    {
+      name: 'Red (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortrojo-175x300-1.jpg',
+    },
+    {
+      name: 'Green (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeoscuro-175x300-1.jpg',
+    },
+    {
+      name: 'White (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortblanco-175x300-1.jpg',
+    },
+    {
+      name: 'Blue (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortazul-175x300-1.jpg',
+    },
+    {
+      name: 'Yellow (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortamarillo-175x300-1.jpg',
+    },
+    {
+      name: 'Lime (+$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeclaro-175x300-1.jpg',
+    },
+  ];
+
+  // Si el deporte es Hockey, "No Shorts" es gratis, los demás cuestan $13.99.
+  // Si es otro deporte, "No Shorts" cuesta -$13.99 y los demás son gratis.
+  if (sport === 'Hockey') {
+    shorts.unshift({
+      name: 'No Shorts (+$0.00)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
+    });
+  } else {
+    shorts.unshift({
+      name: 'No Shorts (-$13.99)',
+      image:
+        'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
+    });
+
+    // Hacemos que los demás shorts sean gratis
+    shorts.forEach((short, index) => {
+      if (index !== 0) short.name = short.name.replace('(+$13.99)', '(+$0.00)');
+    });
+  }
+
+  return shorts; // Esto es importante para que la función devuelva el array
+};
 
 export const Pants = [
   {

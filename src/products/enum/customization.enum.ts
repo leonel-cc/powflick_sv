@@ -81,6 +81,7 @@ export enum PantsType {
 }
 
 export enum ShortsType {
+  Default = 'Default (+$0.00)',
   None = 'No Shorts (+$0.00)',
   Black = 'Black (+$13.99)',
   Red = 'Red (+$13.99)',
@@ -89,6 +90,13 @@ export enum ShortsType {
   Blue = 'Blue (+$13.99)',
   Yellow = 'Yellow (+$13.99)',
   Lime = 'Lime (+$13.99)',
+  Blackfree = 'Black (+$0.00)',
+  Redfree = 'Red (+$0.00)',
+  Greenfree = 'Green (+$0.00)',
+  Whitefree = 'White (+$0.00)',
+  Bluefree = 'Blue (+$0.00)',
+  Yellowfree = 'Yellow (+$0.00)',
+  Limefree = 'Lime (+$0.00)',
   Without = 'without shorts (-$13.99)',
   With = 'with shorts (+$0.00)',
 }
