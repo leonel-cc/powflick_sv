@@ -1,5 +1,5 @@
 // pdf.service.ts
-import PDFDocument from 'pdfkit';
+import * as PDFDocument from 'pdfkit';
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { extractPaletteFromImageUrl, isWebP, killParenthesisIn } from '../utils/tools';
@@ -152,7 +152,9 @@ export class PdfService {
 
         doc.fillColor('white').font('Helvetica').fontSize(18).text(neck ? killParenthesisIn(neck) : 'No', 1405, 190);
 
-        doc.fillColor('white').font('Helvetica').fontSize(20).text(shorts && shorts !== withOrWithoutShort[1] && shorts !== Shorts[0].name ? killParenthesisIn(shorts) : 'No', 1340, 220);
+        doc.fillColor('white').font('Helvetica').fontSize(20).text(shorts && shorts !== withOrWithoutShort[1] && shorts !== Shorts(sports)[0].name ? killParenthesisIn(shorts) : 'No', 1340, 220);
+
+        doc.fillColor('white').font('Helvetica').fontSize(20).text(pants && pants, 1340, 250);
 
         if (backSide.texts[0]) {
           const maxVisibleTexts = 9; // Número máximo de textos visibles antes de truncar
