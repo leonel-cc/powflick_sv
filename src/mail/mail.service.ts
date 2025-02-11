@@ -12,6 +12,8 @@ export class MailService {
   async sendMails(sendMailDto: SendMailDto): Promise<Response> {
     const { EmailAddress, subject, context } = sendMailDto;
     const leadImageUrl = SERVER_URL + '/TheSportsLogo.png';
+    const welcomeImageUrl = SERVER_URL + '/Welcome.png';
+    const teamImageUrl = SERVER_URL + '/EMAILS_SPORTS_WELCOME.png';
 
     try {
       let mail;
@@ -33,16 +35,25 @@ export class MailService {
           break;
         case Cases.CREATE_ACCOUNT:
           mail = await this.mailerService.sendMail({
-
             to: EmailAddress,
             subject: 'New account successfully registered.',
             template: Templates.createAccount,
             context: context,
             attachments: [
               {
-                filename: 'TheSports.png',
+                filename: 'TheSportsLogo.png',
                 path: leadImageUrl,
                 cid: 'headerTheSportsLogo',
+              },
+              {
+                filename: 'Welcome.png',
+                path: welcomeImageUrl,
+                cid: 'welcomeImage',
+              },
+              {
+                filename: 'EMAILS_SPORTS_WELCOME.png',
+                path: teamImageUrl,
+                cid: 'teamImage',
               },
             ],
           });
