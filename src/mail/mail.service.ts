@@ -14,6 +14,7 @@ export class MailService {
     const leadImageUrl = SERVER_URL + '/TheSportsLogo.png';
     const welcomeImageUrl = SERVER_URL + '/Welcome.png';
     const teamImageUrl = SERVER_URL + '/EMAILS_SPORTS_WELCOME.png';
+    const requestImageUrl = SERVER_URL + '/EMAILS_REQUEST-10.png';
 
     try {
       let mail;
@@ -93,6 +94,16 @@ export class MailService {
                 filename: 'TheSports.png',
                 path: leadImageUrl,
                 cid: 'headerTheSportsLogo',
+              },
+              {
+                filename: 'Welcome.png',
+                path: welcomeImageUrl,
+                cid: 'welcomeImage',
+              },
+              {
+                filename: 'EMAILS_REQUEST-10.png',
+                path: requestImageUrl,
+                cid: 'requestImage',
               },
             ],
           });

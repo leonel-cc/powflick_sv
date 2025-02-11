@@ -1,18 +1,45 @@
 doctype html
 html(lang='en')
-  head
-    meta(charset='utf-8')
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title We have received your message
-  header(style='text-align:center; padding-top:4vh; padding-bottom:4vh; background-color:white;')
-    img(src='cid:headerTheSportsLogo', style='max-width:100%; align-content:center;')
-  body
-    article(style='border-bottom:solid #cc0000; padding-bottom:2vh;')
-      h2(style='color: #cc0000; text-align:left') Hello #{name}!
-      p(style='color:black; text-align:left') We have received your message and are working on it.
-      p(style='color:black; text-align:left') We will get back to you as soon as possible.
-      p(style='text-align:center; margin:4vh 0 4vh 0;')
-        | Thank you for contacting us.
-    footer
-      p(style='color:black; text-align:left') Do not reply to this sender
-      <p style='color:black; text-align:left'><b>Sincerely:</b> The <span style="color: #cc0000"><b>Pow Flick</b></span> Team</p>
+    head
+        meta(charset='utf-8')
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title We've Received your inquiry!
+        style.
+            body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
+            .header { text-align: center; background: url('cid:headerPowFlick') no-repeat center; background-size: cover; padding: 40px 0; }
+            .container { max-width: 600px; margin: auto; background: white; padding: 20px; text-align: center; }
+            h2 { color: #cc0000; font-size: 24px; margin-bottom: 10px; }
+            p { color: black; font-size: 16px; text-align: center; }
+            .btn { background: #cc0000; color: white; padding: 15px 25px; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block; margin: 20px 0; }
+            .footer { max-width: 600px; margin: auto; text-align: center; font-size: 12px; color: gray; margin-top: 20px; }
+            .social-icons img { width: 24px; margin: 0 5px; }
+    
+    body
+        header.header
+            img(src='cid:headerTheSportsLogo', style='max-width:100%;')
+
+        .container
+            img(src='cid:welcomeImage', style='max-width:100%;')
+            h1 We've Received your inquiry, #{name}!
+            img(src='cid:requestImage', style='max-width:100%;')
+            h2 Hello, #{name}!
+            p Thank you for reaching out to Pow Flick, We have received your ,essage amd our team is currently reviewing your inquity
+            p One of our customer support representatives will get back to you as soon as possible with more information or assistance regarding your request.
+            p If you need yo provide any additional information, feel free to reply to this email or contact our support team directly.
+            p(style="color: #cc0000;") Thank you for contacting us!
+            a.btn(href='https://powflick.com/dashboard/profile') Go to my Account
+
+        .footer
+            p(style="color: #cc0000;") Thank you choosing PowFlick. Customize Your Identity!
+            p Please do not reply to this email. For any inquiries, contact our support team.
+            p
+                a(href="https://play.google.com") 
+                    img(src="cid:googlePlay", style="width:120px;")
+                a(href="https://apps.apple.com") 
+                    img(src="cid:appStore", style="width:120px;")
+            .social-icons
+                a(href="#") img(src="cid:instagram")
+                a(href="#") img(src="cid:pinterest")
+                a(href="#") img(src="cid:facebook")
+                a(href="#") img(src="cid:youtube")
+            p You can email us at powflick@gmail.com or call us at +86 15920100486. Your headquarters are at B15-280, Xia Nan Yi Heng Base Section, Guicheng Subdistrict, Nanhai District, Foshan City, Guangdong Province, China.
