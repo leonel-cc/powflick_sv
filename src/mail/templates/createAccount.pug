@@ -6,38 +6,52 @@ html(lang='en')
         title Welcome to Pow Flick!
         style.
             body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; }
-            .header { text-align: center; background: url('cid:headerPowFlick') no-repeat center; background-size: cover; padding: 40px 0; }
-            .container { max-width: 600px; margin: auto; background: white; padding: 20px; text-align: center; }
+            .header { text-align: center; background: url('cid:headerPowFlick') no-repeat center; background-size: cover;}
+            .container { max-width: 600px; margin: auto; background: white; text-align: center; }
+            .contain { padding: 0, 40px; }
             h2 { color: #cc0000; font-size: 24px; margin-bottom: 10px; }
-            p { color: black; font-size: 16px; text-align: center; }
+            p { color: black; font-size: 12px; text-align: center; }
             .btn { background: #cc0000; color: white; padding: 15px 25px; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block; margin: 20px 0; }
             .footer { max-width: 600px; margin: auto; text-align: center; font-size: 12px; color: gray; margin-top: 20px; }
             .social-icons img { width: 24px; margin: 0 5px; }
+            .img-wrapper { position: relative; text-align: center; }
+            .text-image {
+                position: absolute; 
+                top: 50%; 
+                left: 50%; 
+                transform: translate(-50%, -50%);
+                margin: 0;
+                font-size: 24px;
+            }
     
     body
         header.header
             img(src='cid:headerTheSportsLogo', style='max-width:100%;')
 
         .container
-            img(src='cid:welcomeImage', style='max-width:100%;')
-            h1 Welcome!
-            img(src='cid:teamImage', style='max-width:100%;')
-            h2 Hello, #{firstname}!
-            p Your new account has been successfully registered. We are thrilled to have you as part of the Pow Flick community!
-            p Log in to your account and start exploring custom uniform ideas tailored to your team’s identity.
-            a.btn(href='https://powflick.com/dashboard/profile') Go to my Account
+            .img-wrapper
+                img(src='cid:welcomeImage', style='max-width:100%;')
+                h1 Welcome!
+            .contain
+                img(src='cid:teamImage', style='max-width:100%;')
+                h2 Hello, #{firstname}!
+                p Your new account has been successfully registered. We are thrilled to have you as part of the Pow Flick community!
+                p Log in to your account and start exploring custom uniform ideas tailored to your team’s identity.
+                a.btn(href='https://powflick.com/dashboard/profile') Go to my Account
 
         .footer
             p(style="color: #cc0000;") Thank you for choosing Pow Flick. Customize Your Identity!
             p Please do not reply to this email. For any inquiries, contact our support team.
             p
-                a(href="https://play.google.com") 
-                    img(src="cid:googlePlay", style="width:120px;")
-                a(href="https://apps.apple.com") 
-                    img(src="cid:appStore", style="width:120px;")
+                a(href="https://play.google.com")
+                    img(src="cid:appImage", style="width:120px;")
+                a(href="https://apps.apple.com")
+                    img(src="cid:googleImage", style="width:120px;")
             .social-icons
-                a(href="#") img(src="cid:instagram")
-                a(href="#") img(src="cid:pinterest")
-                a(href="#") img(src="cid:facebook")
-                a(href="#") img(src="cid:youtube")
+                a(href="#")
+                    img(src="cid:instagramImage")
+                a(href="#")
+                    img(src="cid:pinterestImage")
+                a(href="#")
+                    img(src="cid:facebookImage")
             p You can email us at powflick@gmail.com or call us at +86 15920100486. Your headquarters are at B15-280, Xia Nan Yi Heng Base Section, Guicheng Subdistrict, Nanhai District, Foshan City, Guangdong Province, China.

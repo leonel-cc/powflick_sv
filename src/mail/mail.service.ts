@@ -15,6 +15,12 @@ export class MailService {
     const welcomeImageUrl = SERVER_URL + '/Welcome.png';
     const teamImageUrl = SERVER_URL + '/EMAILS_SPORTS_WELCOME.png';
     const requestImageUrl = SERVER_URL + '/EMAILS_REQUEST-10.png';
+    const googleImage = SERVER_URL + '/appstore.png';
+    const AppStoreImage = SERVER_URL + '/googleplay.png';
+    const facebookImage = SERVER_URL + '/facebook.png';
+    const instagramImage = SERVER_URL + '/instagram.png';
+    const pinterestImage = SERVER_URL + '/pinterest.png';
+
 
     try {
       let mail;
@@ -55,6 +61,31 @@ export class MailService {
                 filename: 'EMAILS_SPORTS_WELCOME.png',
                 path: teamImageUrl,
                 cid: 'teamImage',
+              },
+              {
+                filename: 'googleplay.png',
+                path: googleImage,
+                cid: 'googleImage',
+              },
+              {
+                filename: 'appstore.png',
+                path: AppStoreImage,
+                cid: 'appImage',
+              },
+              {
+                filename: 'facebook.png',
+                path: facebookImage,
+                cid: 'facebookImage',
+              },
+              {
+                filename: 'instagram.png',
+                path: instagramImage,
+                cid: 'instagramImage',
+              },
+              {
+                filename: 'pinterest.png',
+                path: pinterestImage,
+                cid: 'pinterestImage',
               },
             ],
           });
@@ -104,6 +135,31 @@ export class MailService {
                 filename: 'EMAILS_REQUEST-10.png',
                 path: requestImageUrl,
                 cid: 'requestImage',
+              },
+              {
+                filename: 'googleplay.png',
+                path: googleImage,
+                cid: 'googleImage',
+              },
+              {
+                filename: 'appstore.png',
+                path: AppStoreImage,
+                cid: 'appImage',
+              },
+              {
+                filename: 'facebook.png',
+                path: facebookImage,
+                cid: 'facebookImage',
+              },
+              {
+                filename: 'instagram.png',
+                path: instagramImage,
+                cid: 'instagramImage',
+              },
+              {
+                filename: 'pinterest.png',
+                path: pinterestImage,
+                cid: 'pinterestImage',
               },
             ],
           });
