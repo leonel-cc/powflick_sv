@@ -1,5 +1,9 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { HttpException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Cases, SendMailDto } from './dto/sendMail.dto';
 import { Response } from '../products/interface/serviceInterfaces';
 import { Templates } from './templates/enums/templates_enum';
@@ -7,7 +11,7 @@ import { SERVER_URL } from '../config/enviroments';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) { }
+  constructor(private readonly mailerService: MailerService) {}
 
   async sendMails(sendMailDto: SendMailDto): Promise<Response> {
     const { EmailAddress, subject, context } = sendMailDto;
@@ -21,14 +25,14 @@ export class MailService {
     const instagramImage = SERVER_URL + '/instagram.png';
     const pinterestImage = SERVER_URL + '/pinterest.png';
 
-
     try {
       let mail;
       switch (subject) {
         case Cases.RESET_PASSWORD:
           mail = await this.mailerService.sendMail({
             to: EmailAddress,
-            subject: 'Password recovery requested for your account at TheSports.',
+            subject:
+              'Password recovery requested for your account at TheSports.',
             template: Templates.recoverPassword,
             context: context,
             attachments: [
@@ -92,7 +96,7 @@ export class MailService {
 
           break;
         case Cases.PURCHASE:
-          const attachments = sendMailDto.pdf.map(e => {
+          const attachments = sendMailDto.pdf.map((e) => {
             return {
               filename: e.name,
               content: e.buffer,
@@ -109,6 +113,36 @@ export class MailService {
                 filename: 'TheSports.png',
                 path: leadImageUrl,
                 cid: 'headerTheSportsLogo',
+              },
+              {
+                filename: 'Welcome.png',
+                path: welcomeImageUrl,
+                cid: 'welcomeImage',
+              },
+              {
+                filename: 'googleplay.png',
+                path: googleImage,
+                cid: 'googleImage',
+              },
+              {
+                filename: 'appstore.png',
+                path: AppStoreImage,
+                cid: 'appImage',
+              },
+              {
+                filename: 'facebook.png',
+                path: facebookImage,
+                cid: 'facebookImage',
+              },
+              {
+                filename: 'instagram.png',
+                path: instagramImage,
+                cid: 'instagramImage',
+              },
+              {
+                filename: 'pinterest.png',
+                path: pinterestImage,
+                cid: 'pinterestImage',
               },
               ...attachments,
             ],
@@ -205,9 +239,7 @@ export class MailService {
           message: 'The link to recover the password has been sent',
         };
       } else {
-        throw new InternalServerErrorException(
-          'Error sending recovery email',
-        );
+        throw new InternalServerErrorException('Error sending recovery email');
       }
     } catch (error) {
       console.log(error.message);
