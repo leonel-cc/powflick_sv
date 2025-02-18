@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, Inject, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Inject, Param, Patch, Post, Query, Res, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryProductsDto } from './dto/query-products.dto';
@@ -16,6 +16,7 @@ import { RolesGuard } from '../auth/guards/rolesGuard';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Response as Resp } from 'express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Products')
 @Controller('products')

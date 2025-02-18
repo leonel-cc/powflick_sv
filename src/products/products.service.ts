@@ -189,6 +189,9 @@ export class ProductsService {
       const existProductTitle = await Product.findOne({ where: { title: createProductDto.title } });
       if (existProductTitle) throw new HttpException('Has exist a product with this name.', 400);
 
+      const existProductSlug = await Product.findOne({ where: { slug: createProductDto.slug } });
+      if (existProductSlug) throw new HttpException('Has exist a product with this slug.', 400);
+
       const slug = createProductDto.title.split(' ').join('-');
 
       const productData: Partial<Product> = {
@@ -207,7 +210,6 @@ export class ProductsService {
         slug,
         // Agrega aquí más campos según tu modelo Product
       };
-      console.log(productData);
 
       // Crear un nuevo producto con los campos proporcionados
       const product = await Product.create(productData, { transaction });
@@ -314,6 +316,7 @@ export class ProductsService {
       }
 
 
+
       // Verificar si no hay datos recibidos para actualizar
       if (!Object.values(updateProductDto).some((value) => value !== undefined)) {
         return {
@@ -326,6 +329,8 @@ export class ProductsService {
       if (updateProductDto.title && updateProductDto.title !== product.title) {
         const oldTitle = product.title;
         const newTitle = updateProductDto.title;
+
+        product.title = newTitle;
         await this.vercelBlobService.renameFolder(oldTitle, newTitle);
       }
 
@@ -334,6 +339,14 @@ export class ProductsService {
         if (updateProductDto.hasOwnProperty(key)) {
           if (updateProductDto['product_categories']) {
             product['product_categories'] = updateProductDto.product_categories.join('|');
+          } else if (updateProductDto['slug']) {
+            const allProducts = await Product.findAll({ where: { slug: updateProductDto['slug'] } });
+
+            if (allProducts.length === 0) {
+              product.slug = updateProductDto['slug'];
+            } else {
+              throw new HttpException('Another product has the same slug', 400);
+            }
           } else {
             product[key] = updateProductDto[key] ?? product[key];
           }
@@ -369,6 +382,8 @@ export class ProductsService {
     try {
       // Busca el producto por su id
       const product = await Product.findByPk(productId);
+
+      await this.vercelBlobService.clearFolder(product.title);
 
       if (!product) {
         throw new Error('Producto no encontrado');
@@ -964,14 +979,14 @@ export class ProductsService {
   //     console.log(`Total productos sin carpeta: ${leastProducts.length}`);
 
   //     // 4. Descargar imágenes para los productos sin carpeta
-  //     for (const productTitle of leastProducts) {
-  //       try {
-  //         await this.vercelBlobService.downloadImages(productTitle);
-  //         console.log(`Imágenes descargadas para: ${productTitle}`);
-  //       } catch (err) {
-  //         console.error(`Error al descargar imágenes para ${productTitle}:`, err.message);
-  //       }
-  //     }
+  //     // for (const productTitle of leastProducts) {
+  //     //   try {
+  //     //     await this.vercelBlobService.downloadImages(productTitle);
+  //     //     console.log(`Imágenes descargadas para: ${productTitle}`);
+  //     //   } catch (err) {
+  //     //     console.error(`Error al descargar imágenes para ${productTitle}:`, err.message);
+  //     //   }
+  //     // }
 
   //     return leastProducts;
   //   } catch (error) {
