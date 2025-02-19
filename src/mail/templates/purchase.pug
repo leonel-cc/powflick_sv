@@ -9,68 +9,59 @@ html(lang='en')
                 font-family: Arial, sans-serif;
                 margin: 0;
                 padding: 0;
-                background: #f8f8f8;
-                }
+                background: url('https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/TheSportsLogo.png') no-repeat top;
+                background-size: fill;
+                width:100%
+            }
             .header {
                 position: relative;
                 z-index: 0;
-                margin-bottom: -80px;
-                text-align: center;
-                background: url('cid:headerPowFlick') no-repeat center;
-                background-size: cover;
-                padding: 20px;
+                display: flex;
+                justify-content:center;
+                align-items:center;
+                width: 100%;
             }
             .container {
-                position:relative;
-                z-index: 1;
                 max-width: 800px;
-                margin: auto;
+                margin: 2px auto 2px auto;
                 text-align: center;
-                overflow:hidden;
+                overflow: hidden;
             }
             .inner-container {
-                margin-top: 1rem;
                 padding: 20px;
                 text-align: center;
-                background-color: #eeeeee; /* Gris claro */
-
+                background-color: #eeeeee;
             }
-            .top-container {
-                position:relative;
-                margin-bottom: -65px;
-                display:flex;
-                z-index: 0;
-                width: 100%;
-                box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
-                }
-                .header-logo {
-                    max-width: 100%;
-                }
+            .header-logo {
+                max-width: 100%;
+            }
             .title {
-                position: relative;
-                bottom: 10px;
-                z-index: 1;
                 color: white;
-                padding: 10px 0;
+                padding: 32px 0 0 0;
                 font-size: 26px;
+                height: 60px;
+                text-align: center;
                 font-weight: bold;
-                font-style:italic;
+                background: url('https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/Welcome.png') no-repeat center;
+                background-size: cover;
+                box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+                font-style: italic;
             }
             .description {
                 color: black;
                 font-size: 16px;
                 text-align: center;
-                margin-left:1rem;
-                margin-right:1rem;
+                margin-left: 1rem;
+                margin-right: 1rem;
                 margin-bottom: 2rem;
-                line-height:2px;
-                whitespace:nowrap;
+                line-height: 2px;
+                white-space: nowrap;
             }
             h2 {
                 color: #5f0404;
                 font-size: 26px;
                 text-align: center;
-                font-style:italic;
+                font-style: italic;
             }
             p {
                 color: black;
@@ -79,10 +70,10 @@ html(lang='en')
             }
             b {
                 color: #CA0B0B;
-                font-weight:bold;
+                font-weight: bold;
             }
             span {
-                font-weight: bold
+                font-weight: bold;
             }
             h3 {
                 color: #CA0B0B;
@@ -94,43 +85,16 @@ html(lang='en')
                 font-size: 20px;
                 text-align: center;
                 margin-bottom: 0;
-                font-weight:bold;
-                line-height:0.3px;
-            }
-            .btn {
-                background: #cc0000;
-                color: white;
-                padding: 15px 25px;
-                text-decoration: none;
                 font-weight: bold;
-                border-radius: 5px;
-                display: inline-block;
-                margin: 20px 0;
+                line-height: 0.3px;
             }
             .footer {
                 text-align: center;
-                display: flex;
-                justify-content: flex-start;
-                flex-direction: column;
+                margin:auto;
                 padding: 20px;
                 align-items: center;
-                background: linear-gradient(to bottom, transparent,  #eeeeee);
+                background: linear-gradient(to bottom, transparent, #eeeeee);
                 font-size: 12px;
-            }
-            .store-icons {
-                display: flex;
-                justify-content: center;
-                margin-top: 40px;
-                margin-bottom: 40px;
-                gap:30px;
-                width: 100%;
-            }
-            .social-icons {
-                display: flex;
-                justify-content: center;
-                margin-top: 30px;
-                gap: 30px;
-                width: 100%;
             }
             .social-icons img {
                 width: 40px;
@@ -141,10 +105,8 @@ html(lang='en')
                 margin: 0 5px;
             }
             .products {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                justify-content:space-between;
+                width: 60%;
+                margin: 0 10px 0 0;
             }
             .product-item {
                 border: 2px solid black;
@@ -169,69 +131,55 @@ html(lang='en')
                 text-align: center;
                 font-style: italic;
             }
-            .product-details {
-                flex: 1;
-            }
             .order-container {
                 display: flex;
-                flex-direction: row;
                 justify-content: space-between;
                 height: 100%;
+                width: 100%;
+                margin: auto;
                 margin-top: 2rem;
-                gap: 60px;
             }
             .order-summary {
                 border: 2px solid black;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+                height: auto;
+                margin:auto;
                 border-radius: 30px;
-                width: 100%;
+                width: 60%;
             }
             .next {
-                display: flex;
-                justify-content: center;
-                flex-direction: column;
                 padding: 20px;
-                align-items: center;
                 background: white;
                 box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
             }
-
             .next h2 {
                 color: #ca0b0b;
                 font-size: 22px;
                 font-style: italic;
-                text-align: center; /* Asegura que el texto del h2 esté centrado */
+                text-align: center;
             }
             .next img {
                 width: 100%;
-                max-width: 100%; /* Asegura que la imagen no se salga del margen */
-                height: auto; /* Mantiene la relación de aspecto */
+                max-width: 100%;
+                height: auto;
             }
     body
-        .header
-            img.header-logo(src='https://back-nu-ashy.vercel.app/TheSportsLogo.png' alt='PowFlick logo')
+        div(style='height:130px')
         .container
-            img.top-container(src='https://back-nu-ashy.vercel.app/Welcome.png')
             .title Thank You for Your Purchase, Leonel!
             .inner-container
                 h2 Your Order is Confirmed!
                 .description
                     p
                     | We are excited to let you know that your purchase with
-                    span  PowFlick 
-                    | was successfully completed. 
+                    span #{' '} PowFlick #{' '}
+                    | was successfully completed.
                     p Here are the details of your order:
-
                 h3 Order Summary:
                 .order-container
                     .products
-                    each product in products
-                        .product-item
-                            img(src=product.imageURL, alt=product.productName)
-                            .product-details
+                        each product in products
+                            .product-item
+                                img(src=product.imageURL, alt=product.productName)
                                 h2 #{product.productName}
                                 each customization, index in product.customizationData
                                     p ##{index + 1}: Back Name: #{customization.text} | Number: #{customization.number}
@@ -249,10 +197,10 @@ html(lang='en')
                             b Name:
                             | #{user.firstName} #{user.lastName}
                         p
-                            b Email: 
+                            b Email:
                             | #{user.email}
                         p
-                            b Phone: 
+                            b Phone:
                             | #{user.phone}
                         h4 Shipping Address
                         p  #{direction.country}, #{direction.city}, #{direction.address}
@@ -262,33 +210,30 @@ html(lang='en')
                         p
                             b Reference:
                             |  #{direction.addressReference}
-
             .next
                 h2 What Happens Next?
                 .description
                     p Your custom uniforms are being prepared with the highest quality standards.
                     p Below is the processing your order will follow:
-                img(src='https://powflick.com/EMAILS_ICONO.png' alt='iconos')
-
+                img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/EMAILS_ICONO.png' alt='iconos')
             .footer
                 .description
-                p You will be notified at each step of the process.
-                p If you have any questions, feel free to reach out to our support team.
-
-            p(style='color: #cc0000; font-weight: bold; margin-top:80px') Thank you for choosing Pow Flick. Customize Your Identity!
+                    p You will be notified at each step of the process.
+                    p If you have any questions, feel free to reach out to our support team.
+            p(style='color: #cc0000; font-weight: bold; margin-top: 80px') Thank you for choosing Pow Flick. Customize Your Identity!
             p Please do not reply to this email. For any inquiries, contact our support team.
-            .store-icons
+            .store-icons(style="margin:60px auto 60px auto; width: 100%")
                 a(href="https://apps.apple.com")
-                img(src="https://back-nu-ashy.vercel.app/appstore.png")
+                    img(src="https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/appstore.png")
                 a(href="https://play.google.com")
-                img(src="https://back-nu-ashy.vercel.app/googleplay.png")
-            .social-icons
+                    img(src="https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/googleplay.png")
+            .social-icons(style="margin:10px auto 10px auto; width: 100%")
                 a(href="https://instagram.com")
-                img(src='https://back-nu-ashy.vercel.app/instagram.png')
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/instagram.png')
                 a(href="https://pinterest.com")
-                img(src='https://back-nu-ashy.vercel.app/pinterest.png')
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/pinterest.png')
                 a(href="https://facebook.com")
-                img(src='https://back-nu-ashy.vercel.app/FACEBOOK.png')
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/facebook.png')
                 a(href="https://youtube.com")
-                img(src='https://back-nu-ashy.vercel.app/youtube.png')
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/youtube.png')
             p(style='margin-top: 60px;') You can email us at powflick@gmail.com or call us at +86 15920100486. Your headquarters are at B15-280, Xia Nan Yi Heng Base Section, Guicheng Subdistrict, Nanhai District, Foshan City, Guangdong Province, China.

@@ -1,4 +1,4 @@
-//- insert in https://codepen.io/gnjo/pen/mYJzKM
+//- insert in "https://codepen.io/gnjo/pen/mYJzKM?editors=1010"
 doctype html
 html(lang='en')
   head
@@ -10,68 +10,52 @@ html(lang='en')
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background: #f8f8f8;
-      }
-      .header {
-        position: relative;
-        z-index: 0;
-        margin-bottom: -80px;
-        text-align: center;
-        background: url('cid:headerPowFlick') no-repeat center;
-        background-size: cover;
-        padding: 20px;
+        background: url('https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/TheSportsLogo.png') no-repeat top;
+        background-size: contain;
+        width:100%
+
       }
       .container {
-        position:relative;
-        z-index: 1;
         max-width: 800px;
-        margin: auto;
+        margin: 0px auto 2px auto;
         text-align: center;
-        overflow:hidden;
+        overflow: hidden;
       }
-     .inner-container {
-         margin-top: 1rem;
-         padding: 20px;
-         text-align: center;
-         background-color: #eeeeee; /* Gris claro */
-
-     }
-      .top-container {
-      position:relative;
-      margin-bottom: -65px;
-      display:flex;
-      z-index: 0;
-      width: 100%;
-      box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+      .inner-container {
+        padding: 20px;
+        text-align: center;
+        background-color: #eeeeee;
       }
       .header-logo {
         max-width: 100%;
       }
       .title {
-        position: relative;
-        bottom: 10px;
-        z-index: 1;
         color: white;
-        padding: 10px 0;
+        padding: 32px 0 0 0;
         font-size: 26px;
+        height: 60px;
+        text-align: center;
         font-weight: bold;
-        font-style:italic;
+        background: url('https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/Welcome.png') no-repeat center;
+        background-size: cover;
+        box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+        font-style: italic;
       }
       .description {
         color: black;
         font-size: 16px;
         text-align: center;
-        margin-left:1rem;
-        margin-right:1rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
         margin-bottom: 2rem;
-        line-height:2px;
-        whitespace:nowrap;
+        line-height: 2px;
+        white-space: nowrap;
       }
       h2 {
         color: #5f0404;
         font-size: 26px;
         text-align: center;
-        font-style:italic;
+        font-style: italic;
       }
       p {
         color: black;
@@ -80,10 +64,10 @@ html(lang='en')
       }
       b {
         color: #CA0B0B;
-        font-weight:bold;
+        font-weight: bold;
       }
       span {
-        font-weight: bold
+        font-weight: bold;
       }
       h3 {
         color: #CA0B0B;
@@ -95,43 +79,16 @@ html(lang='en')
         font-size: 20px;
         text-align: center;
         margin-bottom: 0;
-        font-weight:bold;
-        line-height:0.3px;
-      }
-      .btn {
-        background: #cc0000;
-        color: white;
-        padding: 15px 25px;
-        text-decoration: none;
         font-weight: bold;
-        border-radius: 5px;
-        display: inline-block;
-        margin: 20px 0;
+        line-height: 0.3px;
       }
       .footer {
         text-align: center;
-        display: flex;
-        justify-content: flex-start;
-        flex-direction: column;
+        margin: auto;
         padding: 20px;
         align-items: center;
-        background: linear-gradient(to bottom, transparent,  #eeeeee);
+        background: linear-gradient(to bottom, transparent, #eeeeee);
         font-size: 12px;
-      }
-      .store-icons {
-       display: flex;
-       justify-content: center;
-       margin-top: 40px;
-       margin-bottom: 40px;
-       gap:30px;
-       width: 100%;
-      }
-      .social-icons {
-       display: flex;
-       justify-content: center;
-       margin-top: 30px;
-       gap: 30px;
-       width: 100%;
       }
       .social-icons img {
         width: 40px;
@@ -142,10 +99,9 @@ html(lang='en')
         margin: 0 5px;
       }
       .products {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        justify-content:space-between;
+        width: 60%;
+        margin: 0 10px 0 0;
+        justify-content: space-between;
       }
       .product-item {
         border: 2px solid black;
@@ -170,52 +126,38 @@ html(lang='en')
         text-align: center;
         font-style: italic;
       }
-      .product-details {
-        flex: 1;
-      }
       .order-container {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
         height: 100%;
         margin-top: 2rem;
-        gap: 60px;
       }
       .order-summary {
         border: 2px solid black;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        height: auto;
+        margin: auto;
         border-radius: 30px;
-        width: 100%;
+        width: 60%;
       }
-     .next {
-         display: flex;
-         justify-content: center;
-         flex-direction: column;
-         padding: 20px;
-         align-items: center;
-         background: white;
-         box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
-     }
+      .next {
+        padding: 20px;
+        background: white;
+        box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+      }
+      .next h2 {
+        color: #ca0b0b;
+        font-size: 22px;
+        font-style: italic;
+        text-align: center;
+      }
+      .next img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
 
-     .next h2 {
-         color: #ca0b0b;
-         font-size: 22px;
-         font-style: italic;
-         text-align: center; /* Asegura que el texto del h2 esté centrado */
-     }
-     .next img {
-         width: 100%;
-         max-width: 100%; /* Asegura que la imagen no se salga del margen */
-         height: auto; /* Mantiene la relación de aspecto */
-     }
   body
-    .header
-      img.header-logo(src='http://localhost:3001/TheSportsLogo.png', alt='PowFlick logo')
+    div(style='height:180px')
     .container
-      img.top-container(src='http://localhost:3001/Welcome.png')
       .title Thank You for Your Purchase, Leonel!
       .inner-container
         h2 Your Order is Confirmed!
@@ -230,15 +172,15 @@ html(lang='en')
         .order-container
           .products
             .product-item
-             img(src="https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Products/Hockey%20Uniform%20Patterns%20Grid/HOCKEY-FRONT_1-ur8ncDDSGXJeBLSTsD8tTX2h438n2K.png" alt="Hockey Jersey")
-             h2 Hockey Uniform
-             p #1 Back Name: Leonel Behnke | Number: 30
-             p #2 Back Name: Leonel Behnke | Number: 30
+              img(src="https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Products/Hockey%20Uniform%20Patterns%20Grid/HOCKEY-FRONT_1-ur8ncDDSGXJeBLSTsD8tTX2h438n2K.png" alt="Hockey Jersey")
+              h2 Hockey Uniform
+              p #1 Back Name: Leonel Behnke | Number: 30
+              p #2 Back Name: Leonel Behnke | Number: 30
 
             .product-item
-             img(src="https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Products/Hockey%20Uniform%20Patterns%20Grid/HOCKEY-FRONT_1-ur8ncDDSGXJeBLSTsD8tTX2h438n2K.png" alt="Hockey Jersey")
-             h2 Hockey Uniform
-             p #1 Back Name: Leonel Behnke | Number: 30
+              img(src="https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Products/Hockey%20Uniform%20Patterns%20Grid/HOCKEY-FRONT_1-ur8ncDDSGXJeBLSTsD8tTX2h438n2K.png" alt="Hockey Jersey")
+              h2 Hockey Uniform
+              p #1 Back Name: Leonel Behnke | Number: 30
           .order-summary
             p
               b Total Value:
@@ -271,27 +213,27 @@ html(lang='en')
         .description 
           p Your custom uniforms are being prepared with the highest quality standards.
           p Below is the processing your order will follow:
-        img(src='http://localhost:3001/EMAILS_ICONO.png', alt='iconos')
-     
+        img(src='http://localhost:3001/EMAILS_ICONO.png' alt='iconos')
+
       .footer
         .description 
           p You will be notified at each step of the process.
           p If you have any questions, feel free to reach out to our support team.
-        
+
       p(style='color: #cc0000; font-weight: bold; margin-top:80px') Thank you for choosing Pow Flick. Customize Your Identity!
       p Please do not reply to this email. For any inquiries, contact our support team.
-      .store-icons
-         a(href="https://apps.apple.com")
+      .store-icons(style="display:flex; gap:20px; justify-content: center; margin:60px auto 60px auto; width: 100%")
+        a(href="https://apps.apple.com")
           img(src="http://localhost:3001/appstore.png")
-         a(href="https://play.google.com")
+        a(href="https://play.google.com")
           img(src="http://localhost:3001/googleplay.png")
-      .social-icons
-         a(href="https://instagram.com")
+      .social-icons(style=" margin:10px auto 10px auto; width: 100%")
+        a(href="https://instagram.com")
           img(src='http://localhost:3001/instagram.png')
-         a(href="https://pinterest.com")
+        a(href="https://pinterest.com")
           img(src='http://localhost:3001/pinterest.png')
-         a(href="https://facebook.com")
+        a(href="https://facebook.com")
           img(src='http://localhost:3001/FACEBOOK.png')
-         a(href="https://youtube.com")
+        a(href="https://youtube.com")
           img(src='http://localhost:3001/youtube.png')
       p(style='margin-top: 60px;') You can email us at powflick@gmail.com or call us at +86 15920100486. Your headquarters are at B15-280, Xia Nan Yi Heng Base Section, Guicheng Subdistrict, Nanhai District, Foshan City, Guangdong Province, China.
