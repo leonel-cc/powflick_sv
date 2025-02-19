@@ -67,7 +67,7 @@ export class StripeService {
 
     } catch (error) {
       console.log(error.message);
-      
+
       throw new HttpException('Error to create checkout session: ' + error.message, 400);
     }
   }
@@ -152,14 +152,12 @@ export class StripeService {
           customizations.forEach(({ customization }, i) =>
             customizationData.push({
               index: i + 1,
-              text: customization.backSide.texts.reduce(
-                (acc, text) => (acc += text + ' '),
-                '',
-              ),
-              number: customization.backSide.numbers.reduce(
-                (acc, text) => (acc += text + ' '),
-                '',
-              ),
+              text: customization.backSide.texts
+                .map((t) => t.text) // Extrae solo la propiedad `text`
+                .join(' '), // Une los valores con un espacio
+              number: customization.backSide.numbers
+                .map((n) => n.number) // Extrae solo la propiedad `number`
+                .join(' '),
             }),
           );
           //se agregan los productos al array para mostrarlos en el mail
@@ -178,6 +176,7 @@ export class StripeService {
 
         const context: IPurchaseContext = {
           name: thisUser.firstName + ' ' + thisUser.lastName,
+          order: orderId,
           products,
           direction: order.direction,
           user: thisUser,

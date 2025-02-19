@@ -2,56 +2,293 @@ doctype html
 html(lang='en')
     head
         meta(charset='utf-8')
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title New Purchase.
-    <header style='text-align:center; padding-top:4vh; padding-bottom:4vh; background-color:white;'>
-        <img src='cid:headerTheSportsLogo' style='max-width:100%; align-content:center;'/>
-    </header>
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+        title New Purchase
+        style.
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: #f8f8f8;
+                }
+            .header {
+                position: relative;
+                z-index: 0;
+                margin-bottom: -80px;
+                text-align: center;
+                background: url('cid:headerPowFlick') no-repeat center;
+                background-size: cover;
+                padding: 20px;
+            }
+            .container {
+                position:relative;
+                z-index: 1;
+                max-width: 800px;
+                margin: auto;
+                text-align: center;
+                overflow:hidden;
+            }
+            .inner-container {
+                margin-top: 1rem;
+                padding: 20px;
+                text-align: center;
+                background-color: #eeeeee; /* Gris claro */
+
+            }
+            .top-container {
+                position:relative;
+                margin-bottom: -65px;
+                display:flex;
+                z-index: 0;
+                width: 100%;
+                box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+                }
+                .header-logo {
+                    max-width: 100%;
+                }
+            .title {
+                position: relative;
+                bottom: 10px;
+                z-index: 1;
+                color: white;
+                padding: 10px 0;
+                font-size: 26px;
+                font-weight: bold;
+                font-style:italic;
+            }
+            .description {
+                color: black;
+                font-size: 16px;
+                text-align: center;
+                margin-left:1rem;
+                margin-right:1rem;
+                margin-bottom: 2rem;
+                line-height:2px;
+                whitespace:nowrap;
+            }
+            h2 {
+                color: #5f0404;
+                font-size: 26px;
+                text-align: center;
+                font-style:italic;
+            }
+            p {
+                color: black;
+                font-size: 15px;
+                text-align: center;
+            }
+            b {
+                color: #CA0B0B;
+                font-weight:bold;
+            }
+            span {
+                font-weight: bold
+            }
+            h3 {
+                color: #CA0B0B;
+                font-size: 20px;
+                text-align: center;
+            }
+            h4 {
+                color: #CA0B0B;
+                font-size: 20px;
+                text-align: center;
+                margin-bottom: 0;
+                font-weight:bold;
+                line-height:0.3px;
+            }
+            .btn {
+                background: #cc0000;
+                color: white;
+                padding: 15px 25px;
+                text-decoration: none;
+                font-weight: bold;
+                border-radius: 5px;
+                display: inline-block;
+                margin: 20px 0;
+            }
+            .footer {
+                text-align: center;
+                display: flex;
+                justify-content: flex-start;
+                flex-direction: column;
+                padding: 20px;
+                align-items: center;
+                background: linear-gradient(to bottom, transparent,  #eeeeee);
+                font-size: 12px;
+            }
+            .store-icons {
+                display: flex;
+                justify-content: center;
+                margin-top: 40px;
+                margin-bottom: 40px;
+                gap:30px;
+                width: 100%;
+            }
+            .social-icons {
+                display: flex;
+                justify-content: center;
+                margin-top: 30px;
+                gap: 30px;
+                width: 100%;
+            }
+            .social-icons img {
+                width: 40px;
+                margin: 0 5px;
+            }
+            .store-icons img {
+                width: 180px;
+                margin: 0 5px;
+            }
+            .products {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                justify-content:space-between;
+            }
+            .product-item {
+                border: 2px solid black;
+                border-radius: 15px;
+                padding: 5px;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            .product-item img {
+                width: 50%;
+                height: auto;
+            }
+            .product-item h2 {
+                color: #CA0B0B;
+                font-size: 20px;
+                text-align: center;
+                font-style: italic;
+            }
+            .product-item P {
+                color: black;
+                font-size: 16px;
+                text-align: center;
+                font-style: italic;
+            }
+            .product-details {
+                flex: 1;
+            }
+            .order-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                height: 100%;
+                margin-top: 2rem;
+                gap: 60px;
+            }
+            .order-summary {
+                border: 2px solid black;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                border-radius: 30px;
+                width: 100%;
+            }
+            .next {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                padding: 20px;
+                align-items: center;
+                background: white;
+                box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+            }
+
+            .next h2 {
+                color: #ca0b0b;
+                font-size: 22px;
+                font-style: italic;
+                text-align: center; /* Asegura que el texto del h2 esté centrado */
+            }
+            .next img {
+                width: 100%;
+                max-width: 100%; /* Asegura que la imagen no se salga del margen */
+                height: auto; /* Mantiene la relación de aspecto */
+            }
     body
-    <article style='border-bottom:solid #cc0000; padding-bottom:2vh;'>
-        <h2 style='color: #cc0000; text-align:left'>Hello #{name}!</h2>
-        <p style='color:black; text-align:left'>We notify you that your purchase on our platform was successfully completed.</p>
-        <p style='color:black; text-align:left'>Thank you for trusting our products and services. Below, you can see more details of the transaction and the order.</p>
-        ul
-            each product in products
-                .row
-                    .col-md-4(style='display: flex; align-items: center;')
-                        img(src=product.imageURL, alt=product.productName, style='width: auto; height: 171px; margin-right: 10px;')
-                        div(style='color:black; text-align:left;')
-                            p(style='margin-bottom: 5px;') <b>Product:</b> #{product.productName}
-                            p(style='margin-bottom: 5px;') <b>Quantity:</b> #{product.amount}
-                                each customization in product.customizationData
-                                    p(style='margin-bottom: 5px;') <b>##{customization.index}:</b> BackName: #{customization.text} | Number: #{customization.number}
+        .header
+            img.header-logo(src='https://back-nu-ashy.vercel.app/TheSportsLogo.png' alt='PowFlick logo')
+        .container
+            img.top-container(src='https://back-nu-ashy.vercel.app/Welcome.png')
+            .title Thank You for Your Purchase, Leonel!
+            .inner-container
+                h2 Your Order is Confirmed!
+                .description
+                    p
+                    | We are excited to let you know that your purchase with
+                    span  PowFlick 
+                    | was successfully completed. 
+                    p Here are the details of your order:
 
-                            p(style='margin-bottom: 5px;') <b>Price:</b> #{currencySymbol}#{product.price}
-        p(style='color:black; text-align:left') <b>Total value:</b> #{currencySymbol}#{total}
-        if cuotes
-            p(style='color:black; text-align:left') Payment plan: #{cuotes} installments of #{currencySymbol}#{cuotesValue}
-        p(style='color:black; text-align:left') <b>Purchase date:</b> #{purchaseDate}
-    </article>
-    <article style='border-bottom:solid #cc0000; padding-bottom:2vh;'>
-        div(style='display: flex; width: full; flex-direction: row; justify-content: space-between; align-items: center; height: 100%;')
-            div(style='flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;')
-                div(style='flex: 1; margin: auto')
-                    p(style='color:black; text-align:left;') <b>User data:</b>
-                div(style='flex: 1; margin: auto; padding-left: 5px;')
-                    p(style='color:black; text-align:left') <b>Name:</b> #{user.firstName} #{user.lastName}
-                    p(style='color:black; text-align:left') <b>Email:</b> #{user.email}
-                    p(style='color:black; text-align:left') <b>Phone:</b> #{user.phone}
-            div(style='flex: 1; display: flex; flex-direction: column; align-items: center')
-                div(style='flex: 1; margin: auto; padding-left: 20px;')
-                    p(style='color:black; text-align:left;') <b>Shipping address:</b>
-                div(style='flex: 1; margin: auto; padding-left: 5px;')
-                    p(style='color:black; text-align:left') <b>Country:</b> #{direction.country}
-                    p(style='color:black; text-align:left') <b>City:</b> #{direction.city}
-                    p(style='color:black; text-align:left') <b>District:</b> #{direction.district}
-                    p(style='color:black; text-align:left') <b>Address:</b> #{direction.address}
-                    p(style='color:black; text-align:left') <b>Neighborhood:</b> #{direction.neighborhood}
-                    p(style='color:black; text-align:left') <b>Postal code:</b> #{direction.postalCode}
-                    if direction.addressReference
-                        p(style='color:black; text-align:left') <b>Reference:</b> #{direction.addressReference}
+                h3 Order Summary:
+                .order-container
+                    .products
+                    each product in products
+                        .product-item
+                            img(src=product.imageURL, alt=product.productName)
+                            .product-details
+                                h2 #{product.productName}
+                                each customization, index in product.customizationData
+                                    p ##{index + 1}: Back Name: #{customization.text} | Number: #{customization.number}
+                    .order-summary
+                        p
+                            b Total Value:
+                            |  #{currencySymbol}#{total}
+                        if cuotes
+                            p Payment plan: #{cuotes} installments of #{currencySymbol}#{cuotesValue}
+                        p
+                            b Purchase Date:
+                            |  #{purchaseDate}
+                        h4 Your Information
+                        p
+                            b Name:
+                            | #{user.firstName} #{user.lastName}
+                        p
+                            b Email: 
+                            | #{user.email}
+                        p
+                            b Phone: 
+                            | #{user.phone}
+                        h4 Shipping Address
+                        p  #{direction.country}, #{direction.city}, #{direction.address}
+                        p
+                            b Postal Code:
+                            | #{direction.postalCode}
+                        p
+                            b Reference:
+                            |  #{direction.addressReference}
 
-    </article>
-    footer
-        <p style='color:black; text-align:left'>Do not reply to this sender</p>
-        <p style='color:black; text-align:left'><b>Sincerely:</b> The <span style="color: #cc0000"><b>Pow Flick</b></span> Team</p>
+            .next
+                h2 What Happens Next?
+                .description
+                    p Your custom uniforms are being prepared with the highest quality standards.
+                    p Below is the processing your order will follow:
+                img(src='https://powflick.com/EMAILS_ICONO.png' alt='iconos')
+
+            .footer
+                .description
+                p You will be notified at each step of the process.
+                p If you have any questions, feel free to reach out to our support team.
+
+            p(style='color: #cc0000; font-weight: bold; margin-top:80px') Thank you for choosing Pow Flick. Customize Your Identity!
+            p Please do not reply to this email. For any inquiries, contact our support team.
+            .store-icons
+                a(href="https://apps.apple.com")
+                img(src="https://back-nu-ashy.vercel.app/appstore.png")
+                a(href="https://play.google.com")
+                img(src="https://back-nu-ashy.vercel.app/googleplay.png")
+            .social-icons
+                a(href="https://instagram.com")
+                img(src='https://back-nu-ashy.vercel.app/instagram.png')
+                a(href="https://pinterest.com")
+                img(src='https://back-nu-ashy.vercel.app/pinterest.png')
+                a(href="https://facebook.com")
+                img(src='https://back-nu-ashy.vercel.app/FACEBOOK.png')
+                a(href="https://youtube.com")
+                img(src='https://back-nu-ashy.vercel.app/youtube.png')
+            p(style='margin-top: 60px;') You can email us at powflick@gmail.com or call us at +86 15920100486. Your headquarters are at B15-280, Xia Nan Yi Heng Base Section, Guicheng Subdistrict, Nanhai District, Foshan City, Guangdong Province, China.

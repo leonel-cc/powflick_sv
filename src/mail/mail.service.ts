@@ -109,41 +109,6 @@ export class MailService {
             template: Templates.purchase,
             context: context,
             attachments: [
-              {
-                filename: 'TheSports.png',
-                path: leadImageUrl,
-                cid: 'headerTheSportsLogo',
-              },
-              {
-                filename: 'Welcome.png',
-                path: welcomeImageUrl,
-                cid: 'welcomeImage',
-              },
-              {
-                filename: 'googleplay.png',
-                path: googleImage,
-                cid: 'googleImage',
-              },
-              {
-                filename: 'appstore.png',
-                path: AppStoreImage,
-                cid: 'appImage',
-              },
-              {
-                filename: 'facebook.png',
-                path: facebookImage,
-                cid: 'facebookImage',
-              },
-              {
-                filename: 'instagram.png',
-                path: instagramImage,
-                cid: 'instagramImage',
-              },
-              {
-                filename: 'pinterest.png',
-                path: pinterestImage,
-                cid: 'pinterestImage',
-              },
               ...attachments,
             ],
           });
