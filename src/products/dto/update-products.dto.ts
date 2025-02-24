@@ -69,6 +69,13 @@ export class UpdateProductDto {
     stock_status?: string;
 
   @IsOptional()
+  @IsString({
+    message: 'El slug del producto debe ser una cadena de caracteres.',
+  })
+  @ApiProperty({ description: 'Slugdel producto.' })
+    slug?: string;
+
+  @IsOptional()
   @IsUrl({}, {
     message: 'La URL del producto debe ser una URL válida.',
   })

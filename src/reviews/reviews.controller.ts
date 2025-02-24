@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, UseGuards, HttpException, Query, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, UseGuards, HttpException, Query, Delete, Param, Inject } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -22,11 +22,15 @@ import { Rol } from '../users/entity/users.entity';
 import { GetAllReviewsDto } from './dto/query-get-review.dto';
 import { RolesGuard } from '../auth/guards/rolesGuard';
 import { Roles } from '../auth/decorator/roles.decorator';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @ApiTags('Reviews')
 @Controller('reviews')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) { }
+  constructor(private readonly reviewsService: ReviewsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -126,6 +130,7 @@ export class ReviewsController {
   ): Promise<IReview> {
 
     const response = await this.reviewsService.update(updateReviewDto);
+    this.cacheManager.del('landing');
     return response;
   }
 

@@ -25,6 +25,8 @@ export class AppController {
   @Param('id') productid: string,
     @Res() res: Response,
   ) {
+    console.log(productid);
+    
     const cacheKey = `product:${productid}`;
     const cachedData = await this.cacheManager.get(cacheKey);
 
