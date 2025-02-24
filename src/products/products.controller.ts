@@ -143,6 +143,8 @@ export class ProductsController {
       @Param('id') productId: string,
   ): Promise<any> {
 
+    await this.cacheManager.del(`product:${updateProductDto.slug}`);
+
     return this.productsService.update(productId, updateProductDto);
   }
 
