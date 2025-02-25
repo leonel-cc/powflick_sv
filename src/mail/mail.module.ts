@@ -8,19 +8,20 @@ import { ContactController } from './mail.controller';
 import { MessagesService } from '../messages/messages.service';
 
 @Module({
-  imports: [MailerModule.forRoot({
-    transport: transporter,
-    defaults: {
-      from: 'servicioalcliente@thesports.com',
-    },
-    template: {
-      dir: join(__dirname, './templates'),
-      adapter: new PugAdapter(),
-      options: {
-        sticts: true,
+  imports: [
+    MailerModule.forRoot({
+      transport: transporter,
+      defaults: {
+        from: 'servicioalcliente@thesports.com',
       },
-    },
-  }),
+      template: {
+        dir: join(__dirname, './templates'),
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
   ],
   controllers: [ContactController],
   providers: [MailService, MessagesService],
