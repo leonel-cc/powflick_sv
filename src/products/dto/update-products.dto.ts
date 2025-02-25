@@ -15,6 +15,16 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsNotEmpty({
+    message: 'El slug del producto es obligatorio.',
+  })
+  @IsString({
+    message: 'El slug del producto debe ser una cadena de caracteres.',
+  })
+  @ApiProperty({ description: 'Slug del producto.' })
+    slug?: string;
+
+  @IsOptional()
+  @IsNotEmpty({
     message: 'El contenido del producto es obligatorio.',
   })
   @IsString({
