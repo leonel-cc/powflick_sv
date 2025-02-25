@@ -2,56 +2,238 @@ doctype html
 html(lang='en')
     head
         meta(charset='utf-8')
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title New Purchase.
-    <header style='text-align:center; padding-top:4vh; padding-bottom:4vh; background-color:white;'>
-        <img src='cid:headerTheSportsLogo' style='max-width:100%; align-content:center;'/>
-    </header>
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+        title New Purchase
+        style.
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: url('https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/TheSportsLogo.png') no-repeat top;
+                background-size: fill;
+                width:100%
+            }
+            .header {
+                position: relative;
+                z-index: 0;
+                display: flex;
+                justify-content:center;
+                align-items:center;
+                width: 100%;
+            }
+            .container {
+                max-width: 800px;
+                margin: 2px auto 2px auto;
+                text-align: center;
+                overflow: hidden;
+            }
+            .inner-container {
+                padding: 20px;
+                text-align: center;
+                background-color: #eeeeee;
+            }
+            .header-logo {
+                max-width: 100%;
+            }
+            .title {
+                color: white;
+                padding: 32px 0 0 0;
+                font-size: 26px;
+                height: 60px;
+                text-align: center;
+                font-weight: bold;
+                background: url('https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/Welcome.png') no-repeat center;
+                background-size: cover;
+                box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+                font-style: italic;
+            }
+            .description {
+                color: black;
+                font-size: 16px;
+                text-align: center;
+                margin-left: 1rem;
+                margin-right: 1rem;
+                margin-bottom: 2rem;
+                line-height: 2px;
+                white-space: nowrap;
+            }
+            h2 {
+                color: #5f0404;
+                font-size: 26px;
+                text-align: center;
+                font-style: italic;
+            }
+            p {
+                color: black;
+                font-size: 15px;
+                text-align: center;
+            }
+            b {
+                color: #CA0B0B;
+                font-weight: bold;
+            }
+            span {
+                font-weight: bold;
+            }
+            h3 {
+                color: #CA0B0B;
+                font-size: 20px;
+                text-align: center;
+            }
+            h4 {
+                color: #CA0B0B;
+                font-size: 20px;
+                text-align: center;
+                margin-bottom: 0;
+                font-weight: bold;
+                line-height: 0.3px;
+            }
+            .footer {
+                text-align: center;
+                margin:auto;
+                padding: 20px;
+                align-items: center;
+                background: linear-gradient(to bottom, transparent, #eeeeee);
+                font-size: 12px;
+            }
+            .social-icons img {
+                width: 40px;
+                margin: 0 5px;
+            }
+            .store-icons img {
+                width: 180px;
+                margin: 0 5px;
+            }
+            .products {
+                width: 60%;
+                margin: 0 10px 0 0;
+            }
+            .product-item {
+                border: 2px solid black;
+                border-radius: 15px;
+                padding: 5px;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            .product-item img {
+                width: 50%;
+                height: auto;
+            }
+            .product-item h2 {
+                color: #CA0B0B;
+                font-size: 20px;
+                text-align: center;
+                font-style: italic;
+            }
+            .product-item P {
+                color: black;
+                font-size: 16px;
+                text-align: center;
+                font-style: italic;
+            }
+            .order-container {
+                display: flex;
+                justify-content: space-between;
+                height: 100%;
+                width: 100%;
+                margin: auto;
+                margin-top: 2rem;
+            }
+            .order-summary {
+                border: 2px solid black;
+                height: auto;
+                margin:auto;
+                border-radius: 30px;
+                width: 60%;
+            }
+            .next {
+                padding: 20px;
+                background: white;
+                box-shadow: 0 15px 55px rgba(0, 0, 0, 0.2);
+            }
+            .next h2 {
+                color: #ca0b0b;
+                font-size: 22px;
+                font-style: italic;
+                text-align: center;
+            }
+            .next img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+            }
     body
-    <article style='border-bottom:solid #cc0000; padding-bottom:2vh;'>
-        <h2 style='color: #cc0000; text-align:left'>Hello #{name}!</h2>
-        <p style='color:black; text-align:left'>We notify you that your purchase on our platform was successfully completed.</p>
-        <p style='color:black; text-align:left'>Thank you for trusting our products and services. Below, you can see more details of the transaction and the order.</p>
-        ul
-            each product in products
-                .row
-                    .col-md-4(style='display: flex; align-items: center;')
-                        img(src=product.imageURL, alt=product.productName, style='width: auto; height: 171px; margin-right: 10px;')
-                        div(style='color:black; text-align:left;')
-                            p(style='margin-bottom: 5px;') <b>Product:</b> #{product.productName}
-                            p(style='margin-bottom: 5px;') <b>Quantity:</b> #{product.amount}
-                                each customization in product.customizationData
-                                    p(style='margin-bottom: 5px;') <b>##{customization.index}:</b> BackName: #{customization.text} | Number: #{customization.number}
-
-                            p(style='margin-bottom: 5px;') <b>Price:</b> #{currencySymbol}#{product.price}
-        p(style='color:black; text-align:left') <b>Total value:</b> #{currencySymbol}#{total}
-        if cuotes
-            p(style='color:black; text-align:left') Payment plan: #{cuotes} installments of #{currencySymbol}#{cuotesValue}
-        p(style='color:black; text-align:left') <b>Purchase date:</b> #{purchaseDate}
-    </article>
-    <article style='border-bottom:solid #cc0000; padding-bottom:2vh;'>
-        div(style='display: flex; width: full; flex-direction: row; justify-content: space-between; align-items: center; height: 100%;')
-            div(style='flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;')
-                div(style='flex: 1; margin: auto')
-                    p(style='color:black; text-align:left;') <b>User data:</b>
-                div(style='flex: 1; margin: auto; padding-left: 5px;')
-                    p(style='color:black; text-align:left') <b>Name:</b> #{user.firstName} #{user.lastName}
-                    p(style='color:black; text-align:left') <b>Email:</b> #{user.email}
-                    p(style='color:black; text-align:left') <b>Phone:</b> #{user.phone}
-            div(style='flex: 1; display: flex; flex-direction: column; align-items: center')
-                div(style='flex: 1; margin: auto; padding-left: 20px;')
-                    p(style='color:black; text-align:left;') <b>Shipping address:</b>
-                div(style='flex: 1; margin: auto; padding-left: 5px;')
-                    p(style='color:black; text-align:left') <b>Country:</b> #{direction.country}
-                    p(style='color:black; text-align:left') <b>City:</b> #{direction.city}
-                    p(style='color:black; text-align:left') <b>District:</b> #{direction.district}
-                    p(style='color:black; text-align:left') <b>Address:</b> #{direction.address}
-                    p(style='color:black; text-align:left') <b>Neighborhood:</b> #{direction.neighborhood}
-                    p(style='color:black; text-align:left') <b>Postal code:</b> #{direction.postalCode}
-                    if direction.addressReference
-                        p(style='color:black; text-align:left') <b>Reference:</b> #{direction.addressReference}
-
-    </article>
-    footer
-        <p style='color:black; text-align:left'>Do not reply to this sender</p>
-        <p style='color:black; text-align:left'><b>Sincerely:</b> The <span style="color: #cc0000"><b>Pow Flick</b></span> Team</p>
+        div(style='height:130px')
+        .container
+            .title Thank You for Your Purchase, Leonel!
+            .inner-container
+                h2 Your Order is Confirmed!
+                .description
+                    p
+                    | We are excited to let you know that your purchase with
+                    span #{' '} PowFlick #{' '}
+                    | was successfully completed.
+                    p Here are the details of your order:
+                h3 Order Summary:
+                .order-container
+                    .products
+                        each product in products
+                            .product-item
+                                img(src=product.imageURL, alt=product.productName)
+                                h2 #{product.productName}
+                                each customization, index in product.customizationData
+                                    p ##{index + 1}: Back Name: #{customization.text} | Number: #{customization.number}
+                    .order-summary
+                        p
+                            b Total Value:
+                            |  #{currencySymbol}#{total}
+                        if cuotes
+                            p Payment plan: #{cuotes} installments of #{currencySymbol}#{cuotesValue}
+                        p
+                            b Purchase Date:
+                            |  #{purchaseDate}
+                        h4 Your Information
+                        p
+                            b Name:
+                            | #{user.firstName} #{user.lastName}
+                        p
+                            b Email:
+                            | #{user.email}
+                        p
+                            b Phone:
+                            | #{direction.phone}
+                        h4 Shipping Address
+                        p  #{direction.country}, #{direction.city}, #{direction.address}
+                        p
+                            b Postal Code:
+                            | #{direction.postalCode}
+                        p
+                            b Reference:
+                            |  #{direction.addressReference}
+            .next
+                h2 What Happens Next?
+                .description
+                    p Your custom uniforms are being prepared with the highest quality standards.
+                    p Below is the processing your order will follow:
+                img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/EMAILS_ICONO.png' alt='iconos')
+            .footer
+                .description
+                    p You will be notified at each step of the process.
+                    p If you have any questions, feel free to reach out to our support team.
+            p(style='color: #cc0000; font-weight: bold; margin-top: 80px') Thank you for choosing Pow Flick. Customize Your Identity!
+            p Please do not reply to this email. For any inquiries, contact our support team.
+            .store-icons(style="margin:60px auto 60px auto; width: 100%")
+                a(href="https://apps.apple.com")
+                    img(src="https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/appstore.png")
+                a(href="https://play.google.com")
+                    img(src="https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/googleplay.png")
+            .social-icons(style="margin:10px auto 10px auto; width: 100%")
+                a(href="https://instagram.com")
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/instagram.png')
+                a(href="https://pinterest.com")
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/pinterest.png')
+                a(href="https://facebook.com")
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/facebook.png')
+                a(href="https://youtube.com")
+                    img(src='https://back-git-feat-email-register-sport-zone-companys-projects.vercel.app/youtube.png')
+            p(style='margin-top: 60px;') You can email us at powflick@gmail.com or call us at +86 15920100486. Your headquarters are at B15-280, Xia Nan Yi Heng Base Section, Guicheng Subdistrict, Nanhai District, Foshan City, Guangdong Province, China.

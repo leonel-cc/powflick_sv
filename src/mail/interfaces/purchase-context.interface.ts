@@ -3,6 +3,7 @@ import { User } from '../../users/entity/users.entity';
 
 export interface IPurchaseContext {
   name: string;
+  order: string;
   products: {
     productName: string;
     price: number;

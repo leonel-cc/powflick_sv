@@ -7,6 +7,7 @@ import { Cases } from '../mail/dto/sendMail.dto';
 import { User } from '../users/entity/users.entity';
 import { Conversation } from './entity/conversationMessage';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
+import { IContactFormUserContext } from 'src/mail/interfaces/contact-form-user-context.interface';
 
 @Injectable()
 export class MessagesService {
@@ -14,6 +15,7 @@ export class MessagesService {
 
   async create(messageData: Partial<Messages>) {
     try {
+      
       const message = await Messages.create(messageData);
 
       const messages = await Messages.findAll({
@@ -22,6 +24,17 @@ export class MessagesService {
           model: Conversation,
           attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
         },
+      });
+
+      // Enviar correo electrónico al usuario
+      const userContext: IContactFormUserContext = {
+        name: message.name,
+      };
+
+      await this.mailService.sendMails({
+        EmailAddress: message.email,
+        subject: Cases.CONTACT_FORM_USER,
+        context: userContext,
       });
 
       return {
