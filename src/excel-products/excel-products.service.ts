@@ -358,4 +358,63 @@ export class ExcelProductsService {
 
     return buffer;
   }
+
+  async exportProductsToExcelMerchant(products: Product[]) {
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.aoa_to_sheet([
+      // Encabezados oficiales de Google Merchant Center
+      [
+        'id', 'title', 'description', 'availability', 'availability date', 'expiration date', 'link',
+        'mobile link', 'image link', 'price', 'sale price', 'sale price effective date', 'identifier exists',
+        'gtin', 'mpn', 'brand', 'product highlight', 'product detail', 'additional image link', 'condition',
+        'adult', 'color', 'size', 'size type', 'size system', 'gender', 'material', 'pattern', 'age group',
+        'multipack', 'is bundle', 'unit pricing measure', 'unit pricing base measure', 'energy efficiency class',
+        'min energy efficiency class', 'max energy efficiency class', 'item group id', 'sell on google quantity',
+      ],
+      ...products.map(product => [
+        product.id,
+        product.title,
+        product.content || product.short_description || '', // Descripción priorizando contenido disponible
+        product.status === 'publish' ? 'in_stock' : 'out_of_stock',
+        '', // Fecha de disponibilidad (si aplica)
+        '', // Fecha de expiración (si aplica)
+        'powflick.com/products/' + product.slug,
+        'powflick.com/products/' + product.slug, // Enlace móvil (opcional)
+        product.URL || '', // Imagen principal
+        `${product.regular_price.toFixed(2)} USD`, // Precio con formato correcto
+        product.price ? `${product.price.toFixed(2)} USD` : '', // Precio en oferta si aplica
+        '', // Rango de fecha para precio en oferta (si aplica)
+        'TRUE', // `identifier exists` (puede cambiarse según disponibilidad de GTIN/MPN)
+        '', // Código de barras (si aplica)
+        product.slug || product.id, // MPN: usa el ID si no hay otro identificador
+        'Pow Flick', // Marca fija o dinámica según disponibilidad
+        '', // Resumen de características destacadas
+        '', // Detalles adicionales del producto
+        product.images?.slice(1).join(', ') || '', // Imágenes adicionales si hay más de una
+        'new', // Condición del producto (new, refurbished, used)
+        'no', // `adult` (ajustar si aplica)
+        product.colors?.join(', ') || '', // Colores
+        '', // Tallas
+        '', // Tipo de talla (regular, petite, plus, etc.)
+        '', // Sistema de tallas (US, UK, EU, etc.)
+        'unisex', // Género
+        '', // Materiales
+        '', // Patrones
+        'adult', // Grupo de edad (ajustar según el producto)
+        'no', // Multipack (si aplica)
+        'no', // Es un paquete (`is bundle`)
+        '', // Medida de precio unitario
+        '', // Base de medida de precio unitario
+        '', // Clase de eficiencia energética (si aplica)
+        '', // Mínima eficiencia energética (si aplica)
+        '', // Máxima eficiencia energética (si aplica)
+        '', // ID de grupo de artículos (para variantes)
+        '', // Cantidad vendida en Google Shopping
+      ]),
+    ]);
+
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'MerchantProducts');
+    return xlsx.write(workbook, { type: 'buffer' });
+  }
+
 }

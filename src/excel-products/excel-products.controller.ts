@@ -74,4 +74,27 @@ export class ExcelProductsController {
     // Enviar el archivo Excel como respuesta
     res.json(buffer);
   }
+
+  @ApiOperation({
+    description: 'Exportar productos a un archivo Excel compatible con Google Merchant Center.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Archivo Excel generado correctamente.',
+  })
+  @Get('merchant')
+  async exportToMerchantExcel(@Res() res: Response) {
+    // Obtener los productos desde la base de datos
+    const products = await this.excelProductsService.getExportProducts();
+
+    // Generar el archivo Excel
+    const buffer = await this.excelProductsService.exportProductsToExcelMerchant(products);
+
+    // Configurar cabeceras de respuesta
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=merchant_products.xlsx');
+
+    // Enviar el archivo como respuesta
+    res.send(buffer);
+  }
 }
