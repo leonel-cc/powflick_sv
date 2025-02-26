@@ -14,7 +14,7 @@ import {
   defaultImage,
 } from './utils/detail.enum';
 import { Product } from './products/entity/products.entity';
-import { Review } from './reviews/entity/reviews.entity';
+import { Review, ShowType } from './reviews/entity/reviews.entity';
 import { User } from './users/entity/users.entity';
 import { Op, Sequelize } from 'sequelize';
 import { CategoriesService } from './categories/categories.service';
@@ -115,7 +115,12 @@ export class AppService {
       const recent = await this.getRandomProducts(2);
       const modal = await this.getRandomProducts(5);
       const reviews = await Review.findAll({
-        where: { isActive: true },
+        where: {
+          isActive: true,
+          show: {
+            [Op.not]: ShowType.DETAIL, // Excluye las reviews con show = 'DETAIL'
+          },
+        },
         include: {
           model: User,
           attributes: ['firstName', 'lastName', 'email'],
@@ -126,6 +131,7 @@ export class AppService {
           'review',
           'type',
           'orderId',
+          'show',
           'productId',
           'rating',
           'image',
