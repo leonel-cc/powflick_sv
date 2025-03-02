@@ -476,6 +476,11 @@ export class OrdersService {
         order.note = updateDto.note;
       }
 
+      // Actualizar el código de seguimiento si se envió
+      if (updateDto.trackingCode) {
+        order.trackingCode = updateDto.trackingCode;
+      }
+
       order.state = updateDto.state;
 
       order.save();

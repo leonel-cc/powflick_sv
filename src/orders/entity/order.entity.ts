@@ -103,6 +103,12 @@ export class Order extends Model {
   })
     paymentData: object;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+    trackingCode: string;
+
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,

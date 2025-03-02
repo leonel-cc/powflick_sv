@@ -26,7 +26,6 @@ export class UpdateOrderDto {
   })
     state: OrderStateEnum;
 
-
   @ApiProperty({
     type: String,
     format: 'string',
@@ -50,4 +49,16 @@ export class UpdateOrderDto {
     message: '$property debe ser un string, en cambio enviaste: $value',
   })
     note?: string;
+
+  @ApiProperty({
+    type: String,
+    format: 'string',
+    description: 'Código de seguimiento.',
+    required: false,
+  })
+  @IsOptional()
+  @IsString({
+    message: '$property debe ser un string, en cambio enviaste: $value',
+  })
+    trackingCode?: string;
 }
