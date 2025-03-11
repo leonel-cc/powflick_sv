@@ -86,33 +86,6 @@ export class AppService {
 
   async getLanding() {
     try {
-      const categories = await this.categoryService.getAllTitles();
-      const collections =
-        await this.collectionsService.getCollectionNamesWithProducts();
-
-      // Asociar las colecciones que corresponden a cada categoría
-      const categoriesWithCollections = categories.map(category => {
-        // Filtrar las colecciones que tienen productos de esta categoría
-        const filteredCollections = collections
-          .filter(collection =>
-            collection.products.some(product =>
-              product.product_categories.toLowerCase().includes(category.title.toLocaleLowerCase()), // Verifica si el producto pertenece a la categoría
-            ),
-          )
-          .map(collection => ({
-            title: collection.title,
-            products: collection.products.filter(product =>
-              product.product_categories.toLowerCase().includes(category.title.toLocaleLowerCase()), // Solo productos de la categoría actual
-            ).slice(0, 3),
-          }));
-
-        return {
-          title: category.title,
-          child: filteredCollections, // Añadir las colecciones filtradas como "child"
-        };
-      });
-
-      const recent = await this.getRandomProducts(2);
       const modal = await this.getRandomProducts(5);
       const reviews = await Review.findAll({
         where: {
@@ -163,11 +136,6 @@ export class AppService {
 
 
       return {
-        navbar: {
-          categories: categoriesWithCollections,
-          recent,
-          collections,
-        },
         landing: {
           reviews,
           modal,
@@ -180,6 +148,48 @@ export class AppService {
             popularProducts,
             saleProducts,
           },
+        },
+      };
+    } catch (error) {
+      console.error('Error obtaining landing data:', error);
+      throw new HttpException(
+        'An error occurred while obtaining the landing data',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async getNavbar() {
+    try {
+      const categories = await this.categoryService.getAllTitles();
+      const collections =
+        await this.collectionsService.getCollectionNamesWithProducts();
+
+      // Asociar las colecciones que corresponden a cada categoría
+      const categoriesWithCollections = categories.map(category => {
+        // Filtrar las colecciones que tienen productos de esta categoría
+        const filteredCollections = collections
+          .filter(collection =>
+            collection.products.some(product =>
+              product.product_categories.toLowerCase().includes(category.title.toLocaleLowerCase()), // Verifica si el producto pertenece a la categoría
+            ),
+          )
+          .map(collection => ({
+            title: collection.title,
+            products: collection.products.filter(product =>
+              product.product_categories.toLowerCase().includes(category.title.toLocaleLowerCase()), // Solo productos de la categoría actual
+            ).slice(0, 3),
+          }));
+
+        return {
+          title: category.title,
+          child: filteredCollections, // Añadir las colecciones filtradas como "child"
+        };
+      });
+
+      return {
+        navbar: {
+          categories: categoriesWithCollections,
         },
       };
     } catch (error) {
