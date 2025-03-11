@@ -315,37 +315,37 @@ export const Shorts = (sport: string) => {
     {
       name: 'Black (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortnegro-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_NEGRO-HnqIJKb07vfTyb5tLa9lfcNjIKDrzN.png',
     },
     {
       name: 'Red (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortrojo-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_ROJO-LcWAg4eqooJQCRywjZn3gT5A8zXtUU.png',
     },
     {
       name: 'Green (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeoscuro-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_VERDE-LlY2F7N9ub9FhGMNC6SVWuYXDfCKEJ.png',
     },
     {
       name: 'White (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortblanco-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_BLANCO-yhVl7NABJAhwu95yF5M2OOrTAIhCAD.png',
     },
     {
       name: 'Blue (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortazul-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_AZUL-y14X80vYqwcP7ZJ7KwWG7Rddq9fecR.png',
     },
     {
       name: 'Yellow (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortamarillo-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_AMARILL-2QN9neWzqnlzVOftR3rO9zGdIlLrke.png',
     },
     {
       name: 'Lime (+$13.99)',
       image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/shortverdeclaro-175x300-1.jpg',
+        'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/SHORTS_LIMA-ONF8fY62GVwuQlBI65Jh7tQZ5reK7v.png',
     },
   ];
 

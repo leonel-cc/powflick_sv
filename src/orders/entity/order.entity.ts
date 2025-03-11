@@ -20,7 +20,13 @@ export enum OrderStateEnum {
   APROBADO = 'APPROVED',
   PAGO = 'PAID',
   RECHAZADO = 'REJECTED',
-  DESPACHO = 'DISPATCHED',
+  DESIGN_CREATION = 'DESIGN CREATION',
+  DESIGN_APPROVAL = 'DESIGN APPROVAL',
+  FABRIC_SAMPLE_CONFIRMATION = 'FABRIC SAMPLE CONFIRMATION',
+  PRODUCTION_QUEUE = 'PRODUCTION QUEUE',
+  PRINTING = 'PRINTING',
+  TAILORING = 'TAILORING',
+  SHIPPING_TRACKING = 'SHIPPING & TRACKING',
   ENCAMINO = 'ONTHEWAY',
   PENDIENTE = 'PENDING',
   ENTREGADO = 'DELIVERED',
@@ -96,6 +102,12 @@ export class Order extends Model {
     allowNull: true,
   })
     paymentData: object;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+    trackingCode: string;
 
   @ForeignKey(() => User)
   @Column({
