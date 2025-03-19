@@ -5,6 +5,12 @@ export enum OrderEnum {
   ASC = 'ASC',
   DESC = 'DESC',
   DATE = 'date',
+  SCORE = 'score',
+}
+
+export enum OrderDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
 enum GenderEnum {
@@ -58,10 +64,9 @@ export class QueryProductsDto {
     page: string;
 
   @IsOptional()
-  @IsEnum(OrderEnum)
   @IsString({ message: 'Ordenamiento de productos por precio' })
-  @ApiProperty({ name: 'order', required: false, enum: OrderEnum, description: 'Ordenamiento por precio' })
-    order?: OrderEnum;
+  @ApiProperty({ name: 'order', required: false, description: 'Ordenamiento por precio' })
+    order?: string;
 
   @IsOptional()
   @IsString({ message: 'Color a filtrar debe ser una cadena de caracteres' })
@@ -124,6 +129,18 @@ export class QueryProductsDto {
   @IsString({ message: 'La tag debe ser una cadena de caracteres' })
   @ApiProperty({ name: 'tag', required: false, description: 'Tag' })
     tag?: string;
+
+  @IsOptional()
+  @IsEnum(OrderDirection)
+  @IsString({ message: 'Ordenamiento de productos por fecha' })
+  @ApiProperty({ name: 'date', required: false, enum: OrderDirection, description: 'Ordenamiento por precio' })
+    date?:OrderDirection;
+
+  @IsOptional()
+  @IsEnum(OrderDirection)
+  @IsString({ message: 'Ordenamiento de productos por score' })
+  @ApiProperty({ name: 'score', required: false, enum: OrderDirection, description: 'Ordenamiento por precio' })
+    score?: OrderDirection;
 
   @IsOptional()
   @ApiProperty({ name:'status', required: false, type: String, description: 'Estado del producto' })

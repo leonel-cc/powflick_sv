@@ -20,6 +20,7 @@ export interface PaginatedProductsResponse {
     categories: Record<string, number>;
     gender: Record<string, number>;
     collection: Record<string, number>;
+    tag: Record<string, number>;
   };
 }
 

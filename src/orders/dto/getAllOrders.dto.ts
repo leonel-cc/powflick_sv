@@ -46,6 +46,21 @@ export class GetAllOrdersDto {
   @ApiProperty({ name: 'order', required: true, enum: OrderEnum, description: 'Ordenamiento por precio' })
     order: string;
 
+  @IsNotEmpty({
+    message: '$property no debe estar vacío',
+  })
+  @IsString({ message: 'la propiedad $property debe ser un número' })
+  @ApiProperty({ description: 'ordenar por', default: 'order' })
+    orderBy: string;
+
+  @IsOptional()
+  @IsEnum(OrderEnum)
+  @IsString({
+    message: 'la propiedad $property contener "ASC" o "DESC" acorde al tipo de orden que requiera',
+  })
+  @ApiProperty({ name: 'order', required: true, enum: OrderEnum, description: 'Ordenamiento por fecha' })
+    purchaseDate: string;
+
   @IsOptional()
   @IsEnum(SearchByEnum)
   @ApiProperty({ name: 'searchBy', required: false, enum: SearchByEnum, description: 'Especificar si la búsqueda es por usuario o por producto' })
