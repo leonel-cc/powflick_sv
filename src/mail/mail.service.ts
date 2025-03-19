@@ -1,213 +1,145 @@
-import { MailerService } from '@nestjs-modules/mailer';
-import {
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Cases, SendMailDto } from './dto/sendMail.dto';
 import { Response } from '../products/interface/serviceInterfaces';
 import { Templates } from './templates/enums/templates_enum';
 import { SERVER_URL } from '../config/enviroments';
+import { BrevoService } from '../brevo/brevo.service';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(private readonly brevoService: BrevoService) {}
 
   async sendMails(sendMailDto: SendMailDto): Promise<Response> {
-    const { EmailAddress, subject, context } = sendMailDto;
-    const leadImageUrl = SERVER_URL + '/TheSportsLogo.png';
-    const welcomeImageUrl = SERVER_URL + '/Welcome.png';
-    const teamImageUrl = SERVER_URL + '/EMAILS_SPORTS_WELCOME.png';
-    const requestImageUrl = SERVER_URL + '/EMAILS_REQUEST-10.png';
-    const googleImage = SERVER_URL + '/appstore.png';
-    const AppStoreImage = SERVER_URL + '/googleplay.png';
-    const facebookImage = SERVER_URL + '/facebook.png';
-    const instagramImage = SERVER_URL + '/instagram.png';
-    const pinterestImage = SERVER_URL + '/pinterest.png';
+    const { EmailAddress, subject, context, pdf } = sendMailDto;
 
     try {
-      let mail;
-      switch (subject) {
-        case Cases.RESET_PASSWORD:
-          mail = await this.mailerService.sendMail({
-            to: EmailAddress,
-            subject:
-              'Password recovery requested for your account at TheSports.',
-            template: Templates.recoverPassword,
-            context: context,
-            attachments: [
-              {
-                filename: 'TheSports.png',
-                path: leadImageUrl,
-                cid: 'headerTheSportsLogo',
-              },
-            ],
-          });
-          break;
-        case Cases.CREATE_ACCOUNT:
-          mail = await this.mailerService.sendMail({
-            to: EmailAddress,
-            subject: 'New account successfully registered.',
-            template: Templates.createAccount,
-            context: context,
-            attachments: [
-              {
-                filename: 'TheSportsLogo.png',
-                path: leadImageUrl,
-                cid: 'headerTheSportsLogo',
-              },
-              {
-                filename: 'Welcome.png',
-                path: welcomeImageUrl,
-                cid: 'welcomeImage',
-              },
-              {
-                filename: 'EMAILS_SPORTS_WELCOME.png',
-                path: teamImageUrl,
-                cid: 'teamImage',
-              },
-              {
-                filename: 'googleplay.png',
-                path: googleImage,
-                cid: 'googleImage',
-              },
-              {
-                filename: 'appstore.png',
-                path: AppStoreImage,
-                cid: 'appImage',
-              },
-              {
-                filename: 'facebook.png',
-                path: facebookImage,
-                cid: 'facebookImage',
-              },
-              {
-                filename: 'instagram.png',
-                path: instagramImage,
-                cid: 'instagramImage',
-              },
-              {
-                filename: 'pinterest.png',
-                path: pinterestImage,
-                cid: 'pinterestImage',
-              },
-            ],
-          });
+      const config = this.getEmailConfig(subject, context, pdf);
 
-          break;
-        case Cases.PURCHASE:
-          const attachments = sendMailDto.pdf.map((e) => {
-            return {
-              filename: e.name,
-              content: e.buffer,
-            };
-          });
+      await this.brevoService.sendEmail({
+        to: EmailAddress,
+        subject: config.subject,
+        template: config.template,
+        context: context,
+        attachments: config.attachments,
+      });
 
-          mail = await this.mailerService.sendMail({
-            to: EmailAddress,
-            subject: 'New purchase.',
-            template: Templates.purchase,
-            context: context,
-            attachments: [
-              ...attachments,
-            ],
-          });
-          break;
-        case Cases.CONTACT_FORM_USER:
-          mail = await this.mailerService.sendMail({
-            to: EmailAddress,
-            subject: 'We receive your query',
-            template: Templates.contactFormUser,
-            context: context,
-            attachments: [
-              {
-                filename: 'TheSports.png',
-                path: leadImageUrl,
-                cid: 'headerTheSportsLogo',
-              },
-              {
-                filename: 'Welcome.png',
-                path: welcomeImageUrl,
-                cid: 'welcomeImage',
-              },
-              {
-                filename: 'EMAILS_REQUEST-10.png',
-                path: requestImageUrl,
-                cid: 'requestImage',
-              },
-              {
-                filename: 'googleplay.png',
-                path: googleImage,
-                cid: 'googleImage',
-              },
-              {
-                filename: 'appstore.png',
-                path: AppStoreImage,
-                cid: 'appImage',
-              },
-              {
-                filename: 'facebook.png',
-                path: facebookImage,
-                cid: 'facebookImage',
-              },
-              {
-                filename: 'instagram.png',
-                path: instagramImage,
-                cid: 'instagramImage',
-              },
-              {
-                filename: 'pinterest.png',
-                path: pinterestImage,
-                cid: 'pinterestImage',
-              },
-            ],
-          });
-          break;
-        case Cases.CONTACT_FORM_RESPONSE:
-          mail = await this.mailerService.sendMail({
-            to: EmailAddress,
-            subject: 'We responded to your inquiry',
-            template: Templates.contactFormResponse,
-            context: context,
-            attachments: [
-              {
-                filename: 'TheSports.png',
-                path: leadImageUrl,
-                cid: 'headerTheSportsLogo',
-              },
-            ],
-          });
-          break;
-        case Cases.CONTACT_FORM_ADMIN:
-          if ('userId' in context)
-            mail = await this.mailerService.sendMail({
-              to: EmailAddress,
-              subject: context.userId
-                ? `Help for User ID: ${context.userId}`
-                : 'You received a General Inquiry',
-              template: Templates.contactFormAdmin,
-              context: context,
-              attachments: [
-                {
-                  filename: 'TheSports.png',
-                  path: leadImageUrl,
-                  cid: 'headerTheSportsLogo',
-                },
-              ],
-            });
-          break;
-      }
-      //If mail.accepted: [ user_email ]
-      if (mail && mail.accepted && mail.accepted.length) {
-        return {
-          status: 200,
-          message: 'The link to recover the password has been sent',
-        };
-      } else {
-        throw new InternalServerErrorException('Error sending recovery email');
-      }
+      return {
+        status: 200,
+        message: 'Email sent successfully',
+      };
     } catch (error) {
-      console.log(error.message);
+      console.error('Error sending email:', error.message);
+      throw new InternalServerErrorException('Error sending email');
+    }
+  }
+
+  private getEmailConfig(subject: string, context: any, pdf?: any[]) {
+    const images = {
+      logo: {
+        url: SERVER_URL + '/TheSportsLogo.png',
+        name: 'TheSportsLogo.png',
+      },
+      welcome: { url: SERVER_URL + '/Welcome.png', name: 'Welcome.png' },
+      team: {
+        url: SERVER_URL + '/EMAILS_SPORTS_WELCOME.png',
+        name: 'EMAILS_SPORTS_WELCOME.png',
+      },
+      request: {
+        url: SERVER_URL + '/EMAILS_REQUEST-10.png',
+        name: 'EMAILS_REQUEST-10.png',
+      },
+      google: { url: SERVER_URL + '/googleplay.png', name: 'googleplay.png' },
+      appStore: { url: SERVER_URL + '/appstore.png', name: 'appstore.png' },
+      facebook: { url: SERVER_URL + '/facebook.png', name: 'facebook.png' },
+      instagram: { url: SERVER_URL + '/instagram.png', name: 'instagram.png' },
+      pinterest: { url: SERVER_URL + '/pinterest.png', name: 'pinterest.png' },
+    };
+
+    switch (subject) {
+      case Cases.RESET_PASSWORD:
+        return {
+          subject: 'Password recovery requested for your account at TheSports.',
+          template: Templates.recoverPassword,
+          // attachments: [
+          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
+          // ],
+        };
+
+      case Cases.CREATE_ACCOUNT:
+        return {
+          subject: 'New account successfully registered.',
+          template: Templates.createAccount,
+          // attachments: [
+          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
+          //   { ...images.welcome, cid: 'welcomeImage@brevo.com' },
+          //   { ...images.team, cid: 'teamImage@brevo.com' },
+          //   { ...images.google, cid: 'googleImage@brevo.com' },
+          //   { ...images.appStore, cid: 'appImage@brevo.com' },
+          //   { ...images.facebook, cid: 'facebookImage@brevo.com' },
+          //   { ...images.instagram, cid: 'instagramImage@brevo.com' },
+          //   { ...images.pinterest, cid: 'pinterestImage@brevo.com' },
+          // ],
+        };
+
+      case Cases.PURCHASE:
+        return {
+          subject: 'New purchase.',
+          template: Templates.purchase,
+          attachments:
+            pdf?.map((item) => ({
+              content: item.buffer,
+              name: item.name,
+            })) || [],
+        };
+
+      case Cases.CONTACT_FORM_USER:
+        return {
+          subject: 'We receive your query',
+          template: Templates.contactFormUser,
+          // attachments: [
+          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
+          //   { ...images.welcome, cid: 'welcomeImage@brevo.com' },
+          //   { ...images.request, cid: 'requestImage@brevo.com' },
+          //   { ...images.google, cid: 'googleImage@brevo.com' },
+          //   { ...images.appStore, cid: 'appImage@brevo.com' },
+          //   { ...images.facebook, cid: 'facebookImage@brevo.com' },
+          //   { ...images.instagram, cid: 'instagramImage@brevo.com' },
+          //   { ...images.pinterest, cid: 'pinterestImage@brevo.com' },
+          // ],
+        };
+
+      case Cases.CONTACT_FORM_RESPONSE:
+        return {
+          subject: 'We responded to your inquiry',
+          template: Templates.contactFormResponse,
+          // attachments: [
+          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
+          // ],
+        };
+
+      case Cases.CONTACT_FORM_ADMIN:
+        return {
+          subject:
+            'userId' in context && context.userId
+              ? `Help for User ID: ${context.userId}`
+              : 'You received a General Inquiry',
+          template: Templates.contactFormAdmin,
+          // attachments: [
+          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
+          // ],
+        };
+
+      case Cases.UPDATE_ORDER:
+        return {
+          subject: 'Order status update',
+          template: Templates.updateOrder,
+          // attachments: [
+          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
+          // ],
+        };
+
+      default:
+        throw new InternalServerErrorException('Unknown email case');
     }
   }
 }

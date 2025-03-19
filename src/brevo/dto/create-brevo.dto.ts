@@ -3,5 +3,5 @@ export class CreateBrevoDto {
 
   subject: string;
 
-  htmlContent: string;
+  htmlContent?: string;
 }
