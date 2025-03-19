@@ -16,7 +16,6 @@ import { RolesGuard } from '../auth/guards/rolesGuard';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { Response as Resp } from 'express';
-import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Products')
 @Controller('products')
@@ -54,14 +53,16 @@ export class ProductsController {
     const cachedData = await this.cacheManager.get(cacheKey);
 
     if (cachedData) {
+      res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
       return res.status(200).json(cachedData);
     }
 
     const result = await this.productsService.allProducts(querys);
 
     // Almacena en caché el resultado por 5 minutos
-    await this.cacheManager.set(cacheKey, result);
 
+    await this.cacheManager.set(cacheKey, result);
+    res.setHeader('X-Cache-Status', 'MISS');
     return res.status(200).json(result);
   }
 
