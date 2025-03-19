@@ -28,3 +28,4 @@ export const REDIS_HOST = process.env.REDIS_HOST;
 export const REDIS_PORT = process.env.REDIS_PORT;
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 export const REDIS_TTL = process.env.REDIS_TTL;
+export const BREVO_API_KEY = process.env.BREVO_API_KEY;

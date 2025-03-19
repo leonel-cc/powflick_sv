@@ -32,9 +32,12 @@ import { CollectionsService } from './collections/collections.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-ioredis';
 import * as env from './config/enviroments';
+import { BrevoModule } from './brevo/brevo.module';
+import { BrevoService } from './brevo/brevo.service';
 
 @Module({
   imports: [
+    BrevoModule,
     DatabaseModule,
     ExcelProductsModule,
     ProductsModule,
@@ -71,6 +74,7 @@ import * as env from './config/enviroments';
     CouponController,
   ],
   providers: [
+    BrevoService,
     CollectionsService,
     AppService,
     PdfService,
