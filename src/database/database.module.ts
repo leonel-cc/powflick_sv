@@ -20,6 +20,8 @@ import { CouponUser } from '../coupon/entities/coupon-user.entity';
 import { Collection } from '../collections/entity/collections.entity';
 import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
 import { Conversation } from '../messages/entity/conversationMessage';
+import { Tags } from 'src/tags/entity/tags.entity';
+import { ProductTags } from 'src/tags/entity/productTags.entity';
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -50,6 +52,8 @@ import { Conversation } from '../messages/entity/conversationMessage';
         Collection,
         CollectionProduct,
         Conversation,
+        Tags,
+        ProductTags,
       ],
       ssl: true,
       dialectOptions: {

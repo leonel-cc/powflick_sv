@@ -226,7 +226,7 @@ export class VercelBlobService {
       const updateProductDto = { images: combinedImages };
 
       // Ahora llama a 'update' con ambos argumentos: el ID y el DTO
-      await this.productsService.update(productId, updateProductDto);
+      await this.productsService.updateImages(productId, updateProductDto);
       console.log('Producto actualizado con éxito:', folderName);
 
       console.log('Imagen:', updateProductDto);

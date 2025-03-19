@@ -25,13 +25,6 @@ export class AppController {
   @Param('id') productid: string,
     @Res() res: Response,
   ) {
-    const cacheKey = `product:${productid}`;
-    const cachedData = await this.cacheManager.get(cacheKey);
-
-    if (cachedData) {
-      res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
-      return res.status(200).json(cachedData);
-    }
 
     const product: Product = await this.productService.oneProduct(productid);
 
@@ -67,7 +60,6 @@ export class AppController {
     const result = await this.appService.getDetail(product.sports, product, sugestedProducts, frequentlyBought);
 
     // Almacena en caché el resultado por 5 minutos
-    await this.cacheManager.set(cacheKey, result);
 
     res.setHeader('X-Cache-Status', 'MISS'); // Indica que no estaba en el caché
     return res.status(200).json(result);

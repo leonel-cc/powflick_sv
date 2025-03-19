@@ -35,7 +35,6 @@ export class Collection extends Model<Collection> {
   @ApiProperty()
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
     content: string;
 

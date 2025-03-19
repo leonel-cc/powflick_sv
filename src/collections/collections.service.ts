@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { Collection } from './entity/collections.entity';
@@ -157,7 +157,7 @@ export class CollectionsService {
     try {
       const { products, ...coll } = collectionDto;
       // 1. Crear la categoría
-      const category = await Collection.create(coll);
+      const [collection] = await Collection.findOrCreate({ where: { title: coll.title }, defaults: { ...coll } });
 
       // 2. Buscar los productos por título y obtener sus IDs
       if (products.length > 0) {
@@ -175,14 +175,14 @@ export class CollectionsService {
         if (validIds.length > 0) {
           await CollectionProduct.bulkCreate(
             validIds.map((productId) => ({
-              collectionId: category.id,
+              collectionId: collection.id,
               productId,
             })),
           );
         }
       }
 
-      return category;
+      return collection;
     } catch (error) {
       throw new HttpException('Error creating category with products', 500);
     }
@@ -339,6 +339,17 @@ export class CollectionsService {
       await category.destroy();
     } catch (error) {
       throw new HttpException('Error deleting category and its relations', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getOrCreateCollections(title: string, index: number): Promise<string> {
+    try {
+      const [collection] = await Collection.findOrCreate({ where: { title } });
+      return collection.id;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error al consultar o crear la collection "${title}" (índice ${index}): ${error.message}`,
+      );
     }
   }
 }

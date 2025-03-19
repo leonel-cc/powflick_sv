@@ -121,6 +121,11 @@ export class QueryProductsDto {
     collection?: string;
 
   @IsOptional()
+  @IsString({ message: 'La tag debe ser una cadena de caracteres' })
+  @ApiProperty({ name: 'tag', required: false, description: 'Tag' })
+    tag?: string;
+
+  @IsOptional()
   @ApiProperty({ name:'status', required: false, type: String, description: 'Estado del producto' })
     status?: string;
 }

@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsString, IsDateString, IsNumber, IsEnum, IsUrl, IsBoolean, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsDateString, IsNumber, IsEnum, IsUrl, IsBoolean, IsOptional, IsEmpty, ValidateIf } from 'class-validator';
 
 import { StateProduct } from '../../products/entity/products.entity';
 import { Transform } from 'class-transformer';
+import { Optional } from '@nestjs/common';
 
 export class SheetsProductsDto {
   @IsNotEmpty()
@@ -40,6 +41,20 @@ export class SheetsProductsDto {
   @IsNotEmpty()
   @IsString()
     'Product Categories': string;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value === null ? '' : value) // Transformamos null a cadena vacía
+    'Product Collections': string | null;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value === null ? '' : value) // Transformamos null a cadena vacía
+    Tags: string | null;
+
+  @IsNotEmpty()
+  @IsString()
+    Score: string;
 
   @IsNotEmpty()
   @IsString()
@@ -90,6 +105,8 @@ export class SheetsProductsDto {
       Stock Status: estado del stock del producto.\n
       Stock: cantidad de stock disponible del producto.\n
       Product Categories: categorías a las que pertenece el producto. (puede enviarse mas de uno en este formato "New Arrival|Gamer Shirt")\n
+      Product Collections: collection a las que pertenece el producto. (puede enviarse mas de uno en este formato "New Arrival|Gamer Shirt")\n
+      Tags: tags delproducto. (puede enviarse mas de uno en este formato "New Arrival|Gamer Shirt")\n
       Genders: género del producto.\n
       Sports: deporte al que pertenece el producto.\n
       Colors: colores disponibles para el producto. (puede enviarse mas de uno en este formato "Red|Blue")\n

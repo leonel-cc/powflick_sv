@@ -11,6 +11,7 @@ export interface PaginatedProductsResponse {
     child: { title: string }[]
   }[]
   colors: string[];
+  tags: string[];
   products: Product[];
   count: {
     total: number;

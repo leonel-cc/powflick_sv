@@ -30,6 +30,7 @@ import { CouponModule } from './coupon/coupon.module';
 import { CollectionsModule } from './collections/collections.module';
 import { CollectionsService } from './collections/collections.service';
 import { CacheModule } from '@nestjs/cache-manager';
+import { TagsModule } from './tags/tags.module';
 import * as redisStore from 'cache-manager-ioredis';
 import * as env from './config/enviroments';
 
@@ -62,6 +63,7 @@ import * as env from './config/enviroments';
         ttl: Number(env.REDIS_TTL),
       }),
     }),
+    TagsModule,
   ],
   controllers: [
     AppController,

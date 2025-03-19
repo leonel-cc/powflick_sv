@@ -12,6 +12,8 @@ import { Order } from '../../orders/entity/order.entity';
 import { OrderProduct } from '../../orders/entity/orderProduct.entity';
 import { Collection } from '../../collections/entity/collections.entity';
 import { CollectionProduct } from '../../collections/entity/collectionProduct.entity';
+import { ProductTags } from 'src/tags/entity/productTags.entity';
+import { Tags } from 'src/tags/entity/tags.entity';
 
 export enum StateProduct {
   Active = 'publish',
@@ -108,9 +110,24 @@ export class Product extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
     product_categories: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+    product_collections: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+    product_tags: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0,
+  })
+    score: number;
 
   @Column({
     type: DataType.STRING,
@@ -190,6 +207,12 @@ export class Product extends Model {
   @BelongsToMany(() => Categories, () => ProductCategories)
     categories: Categories[];
 
+  @BelongsToMany(() => Collection, () => CollectionProduct)
+    collections: Collection[];
+
+  @BelongsToMany(() => Tags, () => ProductTags)
+    tags: Tags[];
+
   @BelongsToMany(() => User, () => UserProductFav)
     favoritedBy: User[];
 
@@ -198,7 +221,4 @@ export class Product extends Model {
 
   @HasMany(() => Customization)
     customizations: Customization;
-
-  @BelongsToMany(() => Collection, () => CollectionProduct)
-    collections: Collection[];
 }

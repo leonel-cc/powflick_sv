@@ -29,6 +29,8 @@ import { CollectionProduct } from '../collections/entity/collectionProduct.entit
 import { Sport } from '../sport/entity/sport.entity';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Tags } from '../tags/entity/tags.entity';
+import { ProductTags } from '../tags/entity/productTags.entity';
 
 @Injectable()
 export class ProductsService {
@@ -54,6 +56,9 @@ export class ProductsService {
         stock_status: product['Stock Status'],
         // URL: product.URL,
         product_categories: product['Product Categories'],
+        product_collections: product['Product Collections'],
+        product_tags: product.Tags,
+        score: product.Score,
         genders: product.Genders,
         sports: product.Sports,
         colors: product.Colors,
@@ -92,7 +97,7 @@ export class ProductsService {
     }
   }
 
-  async oneProduct(id: string): Promise<Product> {
+  async oneProduct(id: string): Promise<any> {
     try {
       const product = await Product.findOne({
         where: {
@@ -101,12 +106,28 @@ export class ProductsService {
             { slug: id },
           ],
         },
+        include: [
+          {
+            model: Collection, // Especifica el modelo relacionado
+            as: 'collections', // Asegúrate de usar el alias correcto si está definido
+            attributes: ['title'],
+          },
+          {
+            model: Tags, // Especifica el modelo relacionado
+            as: 'tags', // Asegúrate de usar el alias correcto si está definido
+            attributes: ['name'],
+          },
+        ],
       });
 
       if (!product) {
         throw new NotFoundException('Product not found');
       }
-      return product;
+      // Convertir las colecciones y etiquetas en arrays de strings
+      const collections = product.collections.map((collection) => collection.title);
+      const tags = product.tags.map((tag) => tag.name);
+
+      return { ...product.dataValues, collections, tags };
     } catch ({ message, status }) {
       throw new HttpException(message, status);
     }
@@ -124,8 +145,11 @@ export class ProductsService {
         include: [
           {
             model: Collection, // Especifica el modelo relacionado
-            as: 'collections', // Asegúrate de usar el alias correcto si está definido
             attributes: ['title'],
+          },
+          {
+            model: Tags, // Especifica el modelo relacionado
+            attributes: ['name'],
           },
         ],
       });
@@ -140,10 +164,14 @@ export class ProductsService {
       const categories = await Categories.findAll();
       const categoriesList = categories.map(c => c.name);
 
+      const tags = await Tags.findAll();
+      const tagList = tags.map(c => c.name);
+
       return {
         product,
         collectionsList,
         categoriesList,
+        tagList,
       };
 
     } catch (error) {
@@ -237,6 +265,30 @@ export class ProductsService {
         }
       }
 
+      //manejar los tags
+      if (createProductDto.tags && createProductDto.tags.length > 0) {
+        // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        for (const name of createProductDto.tags) {
+          const tag = await Tags.findOne({
+            where: { name }, // Busca por nombre de colección individual
+            transaction, // Usar la transacción
+          });
+
+          if (!tag) {
+            throw new NotFoundException(`Tag with name '${name}' not found`);
+          }
+
+          // Crear la relación en la tabla intermedia ProductTags
+          await ProductTags.findOrCreate({
+            where: {
+              productId: product.id,
+              tagId: tag.id,
+            },
+            transaction,
+          },
+          ); // Se pasa la transacción correctamente aquí
+        }
+      }
       // Confirmar la transacción
       await transaction.commit();
 
@@ -259,8 +311,21 @@ export class ProductsService {
     }
   }
 
+  async updateImages(id: string, updateProductDto: UpdateProductDto): Promise<any> {
+    try {
+      const product = await Product.findByPk(id);
+
+      product.images = updateProductDto.images;
+
+      await product.save();
+    } catch (error) {
+      throw new NotFoundException('Error updating images');
+    }
+  }
+
   async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
     const transaction = await this.sequelize.transaction(); // Iniciar la transacción
+    console.log(updateProductDto, 'dto');
 
     try {
       const product = await Product.findByPk(id, { transaction });
@@ -299,6 +364,37 @@ export class ProductsService {
           ); // Se pasa la transacción correctamente aquí
         }
       }
+      //manejar los tags
+      if (!updateProductDto.tags || updateProductDto.tags.length === 0) {
+
+        // Eliminar las relaciones existentes entre el producto y las colecciones
+        await ProductTags.destroy({
+          where: { productId: id },
+          transaction, // Usar la transacción
+        });
+      } else {
+        // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        for (const name of updateProductDto.tags) {
+          const tag = await Tags.findOne({
+            where: { name }, // Busca por nombre de colección individual
+            transaction, // Usar la transacción
+          });
+
+          if (!tag) {
+            throw new NotFoundException(`Tag with name '${name}' not found`);
+          }
+
+          // Crear la relación en la tabla intermedia ProductTags
+          await ProductTags.findOrCreate({
+            where: {
+              productId: id,
+              tagId: tag.id,
+            },
+            transaction,
+          },
+          ); // Se pasa la transacción correctamente aquí
+        }
+      }
 
       // Manejar el deporte (sports) si se proporciona
       if (updateProductDto.sports) {
@@ -314,8 +410,6 @@ export class ProductsService {
         product.sports = updateProductDto.sports;
         product.sportId = sport.id; // Asignar el ID del deporte al producto
       }
-
-
 
       // Verificar si no hay datos recibidos para actualizar
       if (!Object.values(updateProductDto).some((value) => value !== undefined)) {
@@ -337,21 +431,44 @@ export class ProductsService {
       // Actualizar los campos del producto si se proporcionaron en el DTO
       for (const key in updateProductDto) {
         if (updateProductDto.hasOwnProperty(key)) {
-          if (updateProductDto['product_categories']) {
+          if (key === 'slug' && updateProductDto['product_categories']) {
             product['product_categories'] = updateProductDto.product_categories.join('|');
-          } else if (updateProductDto['slug']) {
+          } else if (key === 'slug' && updateProductDto['slug']) {
             const allProducts = await Product.findAll({ where: { slug: updateProductDto['slug'] } });
 
-            if (allProducts.length === 0) {
+            if (allProducts.length === 0 || id === allProducts[0].id) {
               product.slug = updateProductDto['slug'];
             } else {
               throw new HttpException('Another product has the same slug', 400);
+            }
+          } else if (key === 'score' && updateProductDto['score']) {
+            const allProducts = await Product.findAll({ where: { score: updateProductDto.score } });
+
+            if (allProducts.length === 0 || id === allProducts[0].id) {
+              // Si no hay otro producto con el mismo score actualiza el score
+              product.score = updateProductDto['score'];  // Actualiza el score
+            } else {
+              // Si otro producto tiene el mismo slug, intercambia los scores
+              const conflictingProduct = allProducts[0]; // El primer producto con el mismo slug
+              const tempScore = conflictingProduct.score; // Guarda temporalmente el score del producto conflictivo
+
+              // Intercambia los scores
+              conflictingProduct.score = product.score;
+              product.score = tempScore;
+
+              // Guarda los cambios
+              await product.save();
+              await conflictingProduct.save();
+
+              // Si todo está correcto, actualiza el slug
+              product.score = updateProductDto.score;
             }
           } else {
             product[key] = updateProductDto[key] ?? product[key];
           }
         }
       }
+
 
       // Guardar el producto actualizado
       await product.save({ transaction });
@@ -451,7 +568,9 @@ export class ProductsService {
         query[Op.and] = whereConditions;
       }
 
-      let order;
+      let order: any = [
+        [Sequelize.fn('COALESCE', Sequelize.col('score'), -1), 'ASC'],
+      ];
       if (filters.order === 'ASC') {
         order = [['price', 'ASC']];
       } else if (filters.order === 'DESC') {
@@ -470,6 +589,11 @@ export class ProductsService {
             model: Collection, // Modelo relacionado
             attributes: ['title'], // Solo traer el título
             where: filters.collection ? { title: { [Op.iLike]: `%${filters.collection}%` } } : undefined,
+          },
+          {
+            model: Tags, // Modelo relacionado
+            attributes: ['name'], // Solo traer el título
+            where: filters.tag ? { name: { [Op.iLike]: `%${filters.tag}%` } } : undefined,
           },
         ],
       });
@@ -534,6 +658,10 @@ export class ProductsService {
         products?.flatMap(p => p.colors?.map(c => c?.trim().toLowerCase()) || []),
       );
 
+      const alltags = new Set(
+        products?.flatMap(p => p.tags?.map(c => c.name) || []),
+      );
+
       return {
         page: page,
         prevPage: page === 1 ? null : page - 1,
@@ -542,6 +670,7 @@ export class ProductsService {
         total: limitOfPages,
         products: paginatedProducts,
         colors: [...allColors],
+        tags: [...alltags],
         filt,
         count: {
           total,

@@ -15,11 +15,19 @@ import * as xlsx from 'xlsx';
 import { VercelBlobService } from '../files/vercel-storage.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { CollectionsService } from 'src/collections/collections.service';
+import { TagsService } from 'src/tags/tags.service';
+import { CollectionProduct } from 'src/collections/entity/collectionProduct.entity';
+import { ProductTags } from 'src/tags/entity/productTags.entity';
+import { Collection } from 'src/collections/entity/collections.entity';
+import { Tags } from 'src/tags/entity/tags.entity';
 @Injectable()
 export class ExcelProductsService {
   constructor(
     private productsService: ProductsService,
     private categoryService: CategoriesService,
+    private collectionsService: CollectionsService,
+    private tagsService: TagsService,
     private sportService: SportService,
     private vercelStorage: VercelBlobService,
   ) { }
@@ -46,7 +54,7 @@ export class ExcelProductsService {
     try {
       const miSheets = Data.sheetsByIndex[0];
 
-      const rowValues = await miSheets.getCellsInRange('A:T');
+      const rowValues = await miSheets.getCellsInRange('A:W');
       const headers = rowValues[0];
       const objectContainer = [];
 
@@ -202,6 +210,9 @@ export class ExcelProductsService {
       dbProduct.regular_price === Number(sheetProduct['Regular Price']) &&
       dbProduct.stock_status === sheetProduct['Stock Status'] &&
       dbProduct.product_categories === sheetProduct['Product Categories'] &&
+      dbProduct.product_collections === sheetProduct['Product Collections'] &&
+      dbProduct.product_tags === sheetProduct.Tags &&
+      dbProduct.score === Number(sheetProduct.Score) &&
       dbProduct.genders === sheetProduct.Genders &&
       dbProduct.sports === sheetProduct.Sports &&
       arraysAreEqualUnordered(dbProduct.colors, sheetProduct.Colors) &&
@@ -222,6 +233,9 @@ export class ExcelProductsService {
   ): Promise<void> {
     try {
       this.destructuringCategoriesStringMethod(product['Product Categories'], index, thisProduct.id);
+      this.destructuringCollectionsStringMethod(product['Product Collections'], index, thisProduct.id);
+      this.destructuringTagsStringMethod(product.Tags, index, thisProduct.id);
+
       const sportId = await this.sportService.getOrCreateSport(product.Sports, index);
       //Se actualiza el producto
       thisProduct.title = product.Title.trim();
@@ -233,6 +247,9 @@ export class ExcelProductsService {
       thisProduct.stock_status = product['Stock Status'];
       // thisProduct.URL = product.URL;
       thisProduct.product_categories = product['Product Categories'];
+      thisProduct.product_collections = product['Product Collections'];
+      thisProduct.product_tags = product.Tags;
+      thisProduct.score = Number(product.Score);
       thisProduct.genders = product.Genders;
       thisProduct.slug = product.Slug;
       thisProduct.sports = product.Sports;
@@ -269,6 +286,8 @@ export class ExcelProductsService {
       );
 
       await this.destructuringCategoriesStringMethod(product['Product Categories'], index, thisProduct.id);
+      await this.destructuringCollectionsStringMethod(product['Product Collections'], index, thisProduct.id);
+      await this.destructuringTagsStringMethod(product.Tags, index, thisProduct.id);
 
       return;
     } catch (error) {
@@ -281,6 +300,7 @@ export class ExcelProductsService {
 
   private async destructuringCategoriesStringMethod(categoryString: string, index: number, productId: string) {
     try {
+      if (!categoryString) return;
       if (categoryString.includes('|')) {
         categoryString.split('|').map(async (name) => {
           const categoryId: string = await this.categoryService.getOrCreateCategory(
@@ -313,9 +333,90 @@ export class ExcelProductsService {
     }
   }
 
+  private async destructuringCollectionsStringMethod(collectionString: string, index: number, productId: string) {
+    try {
+      if (!collectionString) return;
+      if (collectionString.includes('|')) {
+        collectionString.split('|').map(async (title) => {
+          const collectionId: string = await this.collectionsService.getOrCreateCollections(
+            title,
+            index,
+          );
+          this.createCollectionsProductRelation(productId, collectionId);
+        },
+        );
+      } else {
+        const collectionId: string = await this.collectionsService.getOrCreateCollections(
+          collectionString,
+          index,
+        );
+        this.createCollectionsProductRelation(productId, collectionId);
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  private async createCollectionsProductRelation(productId: string, collectionId: string) {
+    try {
+      await CollectionProduct.findOrCreate({ where: { productId, collectionId } });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while creating the ProductsCategories relationship. Error:' +
+        error.message,
+      );
+    }
+  }
+
+  private async destructuringTagsStringMethod(tagsString: string, index: number, productId: string) {
+    try {
+      if (!tagsString) return;
+      if (tagsString.includes('|')) {
+        tagsString.split('|').map(async (name) => {
+          const tagId: string = await this.tagsService.getOrCreateTags(
+            name,
+            index,
+          );
+          this.createTagsProductRelation(productId, tagId);
+        },
+        );
+      } else {
+        const tagId: string = await this.tagsService.getOrCreateTags(
+          tagsString,
+          index,
+        );
+        this.createTagsProductRelation(productId, tagId);
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  private async createTagsProductRelation(productId: string, tagId: string) {
+    try {
+      await ProductTags.findOrCreate({ where: { productId, tagId } });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while creating the ProductsCategories relationship. Error:' +
+        error.message,
+      );
+    }
+  }
+
   async getExportProducts(): Promise<Product[]> {
     // Aquí puedes realizar cualquier operación necesaria para recuperar los datos que deseas exportar
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+      include: [
+        {
+          model: Collection, // Modelo relacionado
+          attributes: ['title'], // Solo traer el título
+        },
+        {
+          model: Tags, // Modelo relacionado
+          attributes: ['name'], // Solo traer el título
+        },
+      ],
+    });
 
     return products;
   }
@@ -326,7 +427,7 @@ export class ExcelProductsService {
       [
         'ID', 'Title', 'Content', 'Short Description', 'Date', 'Price', 'Regular Price',
         'Stock Status', 'Stock', 'Images', 'URL', 'Genders', 'Sports', 'Product Categories',
-        'Slug', 'Colors', 'Status', 'Featured', 'Font', 'Font Color',
+        'Product Collections', 'Tags', 'Score', 'Slug', 'Colors', 'Status', 'Featured', 'Font', 'Font Color',
       ],
       ...products.map(product => [
         product.id,
@@ -343,6 +444,9 @@ export class ExcelProductsService {
         product.genders,
         product.sports,
         product.product_categories,
+        product.collections.map(c => c.title).join('|'),
+        product.tags.map(t => t.name).join('|'),
+        product.score,
         product.slug,
         product.colors ? product.colors.join('|') : null,
         product.status,

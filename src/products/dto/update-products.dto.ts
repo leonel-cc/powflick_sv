@@ -133,7 +133,17 @@ export class UpdateProductDto {
     discount?: number;
 
   @IsOptional()
+  @IsNumber()
+  @ApiProperty({ description: 'Posicionamiento del producto.' })
+    score?: number;
+
+  @IsOptional()
   @IsArray()
   @ApiProperty({ description: 'colleccion del producto.' })
     collections?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ description: 'tags del producto.' })
+    tags?: string[];
 }
