@@ -13,10 +13,12 @@ import { ConfigService } from '@nestjs/config';
 import { CurrencyService } from '../currency/currency.service';
 import { CouponService } from '../coupon/coupon.service';
 import { CouponModule } from '../coupon/coupon.module';
+import { BrevoService } from 'src/brevo/brevo.service';
 
 @Module({
   imports: [CouponModule],
   providers: [
+    BrevoService,
     OrdersService,
     ShoppingCartService,
     UsersService,

@@ -6,6 +6,7 @@ import { JWT_SECRET } from '../config/enviroments';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
+import { BrevoService } from 'src/brevo/brevo.service';
 
 @Module({
   imports: [
@@ -15,7 +16,14 @@ import { MailService } from '../mail/mail.service';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  providers: [AuthService, JwtStrategy, JwtService, UsersService, MailService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtService,
+    UsersService,
+    MailService,
+    BrevoService,
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

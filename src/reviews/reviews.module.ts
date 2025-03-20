@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 import { VercelBlobService } from '../files/vercel-storage.service';
 import { ConfigService } from '@nestjs/config';
 import { ProductsModule } from '../products/products.module';
+import { BrevoService } from 'src/brevo/brevo.service';
 
 @Module({
   imports: [ProductsModule],
@@ -17,6 +18,7 @@ import { ProductsModule } from '../products/products.module';
     AuthService,
     VercelBlobService,
     ConfigService,
+    BrevoService,
   ],
   controllers: [ReviewsController],
 })

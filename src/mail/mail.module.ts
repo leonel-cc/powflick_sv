@@ -6,6 +6,7 @@ import { join } from 'path';
 import { transporter } from '../config/mailer/mailer';
 import { ContactController } from './mail.controller';
 import { MessagesService } from '../messages/messages.service';
+import { BrevoService } from 'src/brevo/brevo.service';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { MessagesService } from '../messages/messages.service';
     }),
   ],
   controllers: [ContactController],
-  providers: [MailService, MessagesService],
+  providers: [MailService, MessagesService, BrevoService],
   exports: [MailService],
 })
 export class MailModule {}
