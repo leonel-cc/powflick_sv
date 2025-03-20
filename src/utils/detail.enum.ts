@@ -156,157 +156,157 @@ export const Socks = [
   {
     name: 'No Socks (+$0.00)',
     image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/no-socks-1-1.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/no-socks-1-1-Ys65K9k2mbFsXz5aZAtOg7mugZH3rk.png',
   },
   {
     name: 'Purple (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-970ff2ff.png',
+    hex:
+      '#a00cf4',
   },
   {
     name: 'Red (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-ff4858ff.png',
+    hex:
+      '#ff4858',
   },
   {
     name: 'White (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-ffffffff.png',
+    hex:
+      '#ffffff',
   },
   {
     name: 'Yellow (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-eaf205ff.png',
+    hex:
+      '#f0f404',
   },
   {
     name: 'Green (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-49d907ff.png',
+    hex:
+      '#50dc04',
   },
   {
     name: 'Orange (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-f24607ff.png',
+    hex:
+      '#f84404',
   },
   {
     name: 'Pink (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-fc8dcaff.png',
+    hex:
+      '#ff8ccc',
   },
   {
     name: 'Brown (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-73513dff.png',
+    hex:
+      '#78543c',
   },
   {
     name: 'Black (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-000000ff.png',
+    hex:
+      '#080404',
   },
   {
     name: 'Blue (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-3f858cff.png',
+    hex:
+      '#40848c',
   },
   {
     name: 'Canary (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-f3b562ff.png',
+    hex:
+      '#f3b562',
   },
   {
     name: 'Persian Pink (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-f2508bff.png',
+    hex:
+      '#f2508b',
   },
   {
     name: 'Violet Eggplant (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-812b8cff.png',
+    hex:
+      '#812b8c',
   },
   {
     name: 'Blue Violet (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-5c58c7ff.png',
+    hex:
+      '#5c58c7',
   },
   {
     name: 'Shiraz (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-a6035dff.png',
+    hex:
+      '#a6035d',
   },
   {
     name: 'Blue Navy (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-004294ff.png',
+    hex:
+      '#004294',
   },
   {
     name: 'Cosmic Green (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-02735eff.png',
+    hex:
+      '#02735e',
   },
   {
     name: 'Mint (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-8fc1b5ff.png',
+    hex:
+      '#8fc1b5',
   },
   {
     name: 'Cyan (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-04c4d9ff-1.png',
+    hex:
+      '#04c4d9',
   },
   {
     name: 'Tomato Red (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-d91a2aff-2.png',
+    hex:
+      '#d91a2a',
   },
   {
     name: 'Lila (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-cb63ffff.png',
+    hex:
+      '#cb63ff',
   },
   {
     name: 'Yellow Summer (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-f2d541ff.png',
+    hex:
+      '#f2d541',
   },
   {
     name: 'Orange Summer (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-f29422ff.png',
+    hex:
+      '#f29422',
   },
   {
     name: 'Sand (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-d98162ff.png',
+    hex:
+      '#d98162',
   },
   {
     name: 'Cappuccino (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-a6774eff.png',
+    hex:
+      '#a6774e',
   },
   {
     name: 'Coffee (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-593123ff.png',
+    hex:
+      '#593123',
   },
   {
     name: 'Volcano (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-bf1e0fff.png',
+    hex:
+      '#bf1e0f',
   },
   {
     name: 'Meat (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-731d1dff.png',
+    hex:
+      '#731d1d',
   },
   {
     name: 'Tutti Frutti (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-f23e2eff.png',
+    hex:
+      '#f23e2e',
   },
   {
     name: 'Military Green (+$8.00)',
-    image:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/20x20-055902ff.png',
+    hex:
+      '#055902',
   },
 ];
 
@@ -377,27 +377,27 @@ export const Pants = [
   {
     name: 'None (+$0.00)',
     image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/no-image-select-placeholder-100x100.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/no-image-select-placeholder-100x100-lbLR4frZlnnrjTOylRP5IF9uUZqAt5.png',
   },
   {
     name: 'Black Pants (+$39.99)',
     image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/WhatsApp-Image-2023-07-19-at-6.34.38-PM-3-100x100.jpeg',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/WhatsApp-Image-2023-07-19-at-6.34.38-PM-3-100x100-iyczCK366bn6RG5uYMaylk630ybt1t.jpg',
   },
   {
     name: 'White Pants (+$39.99)',
     image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/WhatsApp-Image-2023-07-19-at-6.34.38-PM-2-150x150.jpeg',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/WhatsApp-Image-2023-07-19-at-6.34.38-PM-2-150x150-m12jY85kJOYCvS9Ym2svph33hSNdAO.jpg',
   },
   {
     name: 'Blue Pants (+$39.99)',
     image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/WhatsApp-Image-2023-07-19-at-6.34.38-PM-1-150x150.jpeg',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/WhatsApp-Image-2023-07-19-at-6.34.38-PM-1-150x150-Xo5HeX0gSgf9cxR9VflvqtIN6JhVks.jpg',
   },
   {
     name: 'Red Pants (+$39.99)',
     image:
-      'https://ideasjersey.com/wp-content/uploads/2024/01/WhatsApp-Image-2023-07-19-at-6.34.38-PM-150x150.jpeg',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/WhatsApp-Image-2023-07-19-at-6.34.38-PM-150x150-eDf2fNay3t52ZObdFMR8b7iEAv5fc3.jpg',
   },
 ];
 
@@ -409,32 +409,32 @@ export const withOrWithoutShort: string[] = [
 export const SizeGuide = {
   Baseball: {
     image1:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/tablas-pulgadas_baseball.png',
-    image2: 'https://ideasjersey.com/wp-content/uploads/2024/02/BASEBALL-1.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_baseball-amWwj6TsJvognNiUpeLcGGEUN6WRz5.png',
+    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASEBALL-1-R85THakU9b5GZbdcbNj0283iqCAd1e.png',
   },
   Basketball: {
     image1:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/tablas-pulgadas_basket.png',
-    image2: 'https://ideasjersey.com/wp-content/uploads/2024/02/BASKETBALL.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_basket-JGzaJlfO7d5CH2bIVaZtNZhNIK31Y9.png',
+    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASKETBALL-LIdxmMQkUA8QRxeDj9MIGqMhvKbMAQ.png',
   },
   Gaming: {
     image1:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/tablas-pulgadas_gaming.png',
-    image2: 'https://ideasjersey.com/wp-content/uploads/2024/02/GAMING-1.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_gaming-bLMjCx1yAjEquqOw9nDFOIDlOrUpEl.png',
+    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/GAMING-1-l24CGsU52Ha2xo4IUClFSg8nQv41sp.png',
   },
   Hockey: {
     image1:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/tablas-pulgadas_hockey.png',
-    image2: 'https://ideasjersey.com/wp-content/uploads/2024/02/HOCKEY-1.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_hockey-KrlLYrN21Ba1eRSA0Y0IIoNMqcfNhb.png',
+    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/HOCKEY-1-RUfKzLyTX6Z3pctahd86BFZIjJdY7i.png',
   },
   Running: {
     image1:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/tablas-pulgadas_running.png',
-    image2: 'https://ideasjersey.com/wp-content/uploads/2024/02/RUNNING-1.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_running-0GqXzEvIVjoBzOSuGLK3tsTNxD766J.png',
+    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/RUNNING-1-xSgD44ffjP3PzIMdqaKPYvZs1tvu33.png',
   },
   Soccer: {
     image1:
-      'https://ideasjersey.com/wp-content/uploads/2024/02/tablas-pulgadas_soccer.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
     // image2:
     //   'https://app.ideasjersey.com/wp-content/uploads/2023/12/Y0mQi1nnIGwqOLu8SKrGBaRafpjlO7FQJ8mgcdsPZek.png',
   },
