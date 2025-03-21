@@ -49,9 +49,7 @@ export class User extends Model {
 
   @AfterCreate
   static async setShoppingCart(instance: User) {
-    const shoppingCart = await ShoppingCart.create();
-    shoppingCart.userId = instance.id;
-    await shoppingCart.save();
+    await ShoppingCart.create({ userId: instance.id });
   }
 
   @BeforeCreate

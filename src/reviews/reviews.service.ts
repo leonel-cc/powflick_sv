@@ -5,10 +5,10 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { CreateReviewDto } from './dto/create-review.dto';
+import { CreateMockReviewDto, CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Review, ReviewType } from './entity/reviews.entity';
-import { User } from '../users/entity/users.entity';
+import { User, UserProviders } from '../users/entity/users.entity';
 import { IReview } from './interfaces/response-review.interface';
 import { ActivateReviewDto } from './dto/activate-review.dto';
 import { UsersService } from '../users/users.service';
@@ -48,6 +48,44 @@ export class ReviewsService {
 
         await order.save();
       }
+
+      const response = {
+        statusCode: 201,
+        data: Newreview,
+      };
+
+      await transaction.commit();
+      return response;
+    } catch (error) {
+      await transaction.rollback();
+      throw new InternalServerErrorException(
+        'Something went wrong when creating the review ' + error.message,
+      );
+    }
+  }
+
+  async createMock(createReviewDto: CreateMockReviewDto): Promise<IReview> {
+    const transaction: Transaction = await this.sequelize.transaction();
+
+    // crear falso usuario
+    const { firstName, lastName } = createReviewDto;
+    const email = firstName + lastName + createReviewDto.title[0] + '@mock.com';
+    const phone = '+111111111';
+    const userImage = createReviewDto.userImage;
+    try {
+      console.log('hol');
+      
+      const user = await User.create({ firstName, lastName, email, phone, image: userImage, password: 'null' });
+      console.log(user);
+
+      const Newreview = await Review.create({
+        ...createReviewDto,
+        type: createReviewDto.type,
+        userId: user.id,
+        orderId: createReviewDto.type === ReviewType.ORDER ? createReviewDto.typeId : null,
+        isActive: false,
+      });
+      console.log(Newreview);
 
       const response = {
         statusCode: 201,
