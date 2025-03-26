@@ -41,7 +41,7 @@ export class OrdersService {
     private currencyService: CurrencyService,
     private sequelize: Sequelize,
     private couponService: CouponService,
-  ) { }
+  ) {}
 
   async findOneOrder(id: string, user: IGetUser) {
     try {
@@ -74,7 +74,9 @@ export class OrdersService {
         ],
       });
 
-      const directions = await Direction.findAll({ where: { userId: order.userId } });
+      const directions = await Direction.findAll({
+        where: { userId: order.userId },
+      });
 
       if (
         (order && order.userId === user.userId) ||
@@ -133,10 +135,31 @@ export class OrdersService {
       // Obtenemos el descuento del cupón si existe
       let discountAmount = 0;
       let appliedCoupon = null;
+
       if (couponId) {
+        const couponUser =
+          await this.couponService.findOneCouponUserByCouponIdandUserId(
+            userId,
+            couponId,
+          );
+
+        if (!couponUser || !couponUser.dataValues.active) {
+          throw new HttpException('Coupon not valid or inactive', 400);
+        }
+
+        const usedCoupon = await Order.findOne({
+          where: {
+            userId,
+            // Compara si ya usó este cupón antes
+            'coupon.id': couponId,
+          },
+        });
+        if (usedCoupon) {
+          throw new HttpException('User has already used this coupon', 400);
+        }
+
         const coupon = await this.couponService.findOne(couponId);
         if (coupon) {
-          // Calculamos el monto del descuento como un porcentaje del total
           discountAmount = (Number(total) * coupon.discount) / 100;
           appliedCoupon = coupon;
         }
@@ -202,93 +225,98 @@ export class OrdersService {
             description += `Size: ${customization.size}, `;
           }
           if (customization.neck) {
-            description += `Neck: ${customization.neck.split(' ')[1]
-              ? customization.neck.split(' ')[0] +
-              ' ' +
-              '(' +
-              currencySymbol(currency.name) +
-              this.currencyService.convertCurrency(
-                Number(
-                  eliminarCaracteresNoNumericos(
-                    String(customization.neck.split(' ').pop()),
-                  ),
-                ),
-                currency.value,
-              ) +
-              ')'
-              : customization.neck
+            description += `Neck: ${
+              customization.neck.split(' ')[1]
+                ? customization.neck.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.neck.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.neck
             }, `;
           }
           if (customization.socks) {
-            description += `Socks: ${customization.socks.split(' ')[1]
-              ? customization.socks.split(' ')[0] +
-              ' ' +
-              '(' +
-              currencySymbol(currency.name) +
-              this.currencyService.convertCurrency(
-                Number(
-                  eliminarCaracteresNoNumericos(
-                    String(customization.socks.split(' ').pop()),
-                  ),
-                ),
-                currency.value,
-              ) +
-              ')'
-              : customization.socks
+            description += `Socks: ${
+              customization.socks.split(' ')[1]
+                ? customization.socks.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.socks.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.socks
             }, `;
           }
           if (customization.pants) {
-            description += `Pants: ${customization.pants.split(' ')[1]
-              ? customization.pants.split(' ')[0] +
-              ' ' +
-              '(' +
-              currencySymbol(currency.name) +
-              this.currencyService.convertCurrency(
-                Number(
-                  eliminarCaracteresNoNumericos(
-                    String(customization.pants.split(' ').pop()),
-                  ),
-                ),
-                currency.value,
-              ) +
-              ')'
-              : customization.pants
+            description += `Pants: ${
+              customization.pants.split(' ')[1]
+                ? customization.pants.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.pants.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.pants
             }, `;
           }
           if (customization.shorts) {
-            description += `Shorts: ${customization.shorts.split(' ')[1]
-              ? customization.shorts.split(' ')[0] +
-              ' ' +
-              '(' +
-              currencySymbol(currency.name) +
-              this.currencyService.convertCurrency(
-                Number(
-                  eliminarCaracteresNoNumericos(
-                    String(customization.shorts.split(' ').pop()),
-                  ),
-                ),
-                currency.value,
-              ) +
-              ')'
-              : customization.shorts
+            description += `Shorts: ${
+              customization.shorts.split(' ')[1]
+                ? customization.shorts.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.shorts.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.shorts
             }, `;
           }
           if (customization.materials) {
-            description += `Materials: ${customization.materials.split(' ')[1]
-              ? customization.materials.split(' ')[0] +
-              ' ' +
-              '(' +
-              currencySymbol(currency.name) +
-              this.currencyService.convertCurrency(
-                Number(
-                  eliminarCaracteresNoNumericos(
-                    String(customization.materials.split(' ').pop()),
-                  ),
-                ),
-                currency.value,
-              ) +
-              ')'
-              : customization.materials
+            description += `Materials: ${
+              customization.materials.split(' ')[1]
+                ? customization.materials.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.materials.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.materials
             }, `;
           }
 
@@ -302,9 +330,10 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${'+ ' +
-                    currencySymbol(currency.name) +
-                    this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Text ${i}: ${e.text} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -313,9 +342,10 @@ export class OrdersService {
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${'+ ' +
-                    currencySymbol(currency.name) +
-                    this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Number ${i + 1}: ${e.number} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -331,9 +361,10 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${'+ ' +
-                    currencySymbol(currency.name) +
-                    this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Text ${i}: ${e.text} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -342,9 +373,10 @@ export class OrdersService {
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${'+ ' +
-                    currencySymbol(currency.name) +
-                    this.currencyService.convertCurrency(3.99, currency.value)
+                    (description += `Number ${i + 1}: ${e.number} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
