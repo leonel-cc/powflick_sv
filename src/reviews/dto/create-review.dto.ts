@@ -118,3 +118,140 @@ export class CreateReviewDto {
   })
     typeId: string;
 }
+
+export class CreateMockReviewDto {
+  //review
+  @ApiProperty({
+    description:
+      'Lo que sería la reseña en sí, aquí va escrita la opinión del usuario. Debe tener entre 10 y 500 caracteres',
+    example: 'Fua, excelente servicio',
+  })
+  @IsString({
+    message: '$property debe ser un string',
+  })
+  @IsNotEmpty({
+    message: '$property no debe estar vacío',
+  })
+  @MinLength(1, {
+    message:
+      '$property is too short, minumum length must be $constraint1, but actual is $value',
+  })
+  @MaxLength(500, {
+    message:
+      '$property is too long, maximum length must be $constraint1, but actual is $value',
+  })
+    review: string;
+
+  //review
+  @ApiProperty({
+    description:
+      'Este es el titulo de la reseña ',
+    example: 'Buenisima camiseta',
+  })
+  @IsString({
+    message: '$property debe ser un string',
+  })
+  @IsNotEmpty({
+    message: '$property no debe estar vacío',
+  })
+  @MinLength(1, {
+    message:
+      '$property is too short, minumum length must be $constraint1, but actual is $value',
+  })
+  @MaxLength(50, {
+    message:
+      '$property is too long, maximum length must be $constraint1, but actual is $value',
+  })
+    title: string;
+
+  //review
+  @ApiProperty({
+    description:
+      'Aqui se envia el url de la imagen a subir',
+    example: 'imagen.jpg',
+  })
+  @IsString({
+    message: '$property debe ser un string',
+  })
+  @IsOptional()
+    image: string;
+
+  //rating
+  @ApiProperty({
+    enum: Object.values(Rating), //['0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5'],
+    description:
+      'Valor númerico de que solo admite cierto valores según un enum. /nEstos valores van desde el 0 al 5, pasando por los valores intermedios',
+    example: '4.5',
+  })
+  @IsString({
+    message: '$property debe ser un string',
+  })
+  @IsNotEmpty({
+    message: '$property no debe estar vacío',
+  })
+  @IsEnum(Rating, {
+    message:
+      'Hay un número limitado de valores permitidos para $property y $value no lo es',
+  })
+    rating: Rating;
+
+  //type
+  @ApiProperty({
+    enum: Object.values(ReviewType),
+    description:
+      'Tipo de reviews, aqui es donde se asocia la review a una orden o a un producto',
+    example: 'ORDER',
+  })
+  @IsString({
+    message: '$property debe ser un string',
+  })
+  @IsNotEmpty({
+    message: '$property no debe estar vacío',
+  })
+  @IsEnum(ReviewType, {
+    message:
+      'Hay un número limitado de valores permitidos para $property y $value no lo es',
+  })
+    type: ReviewType;
+
+  //review
+  @ApiProperty({
+    description:
+      'Este es el id del tipo de entidad al que se lo relaciona',
+    example: 'orden_id, product_id',
+  })
+  @IsString({
+    message: '$property debe ser un string',
+  })
+  @IsNotEmpty({
+    message: '$property no debe estar vacío',
+  })
+    typeId: string;
+
+  //review
+  @ApiProperty({
+    description:
+      'Este es el id del tipo del usuario al que se lo relaciona',
+  })
+  @IsOptional()
+  @IsString({
+    message: '$property debe ser un string',
+  })
+    userId?: string;
+
+  @IsString({
+    message: '$property debe ser un string',
+  })
+    firstName?: string;
+
+  @IsString({
+    message: '$property debe ser un string',
+  })
+    lastName?: string;
+
+  @IsOptional()
+  @IsString({
+    message: '$property debe ser un string',
+  })
+    userImage?: string;
+}

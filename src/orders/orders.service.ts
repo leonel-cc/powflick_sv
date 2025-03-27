@@ -540,11 +540,14 @@ export class OrdersService {
       const page = parseInt(getAllOrdersDto.page);
       const searchTerm = getAllOrdersDto.searchTerm;
       const searchBy = getAllOrdersDto.searchBy;
+      const purchaseDate = getAllOrdersDto.purchaseDate;
+      const order = getAllOrdersDto.order;
+      const orderBy = getAllOrdersDto.orderBy;
 
       // Query base
       const baseQuery: WhereOptions = {
         where: { state: { [Op.not]: 'PENDING' } },
-        order: [['createdAt', getAllOrdersDto.order]],
+        order: [[orderBy === 'purchaseDate' ? 'createdAt' : 'id', orderBy === 'purchaseDate' ? purchaseDate : order]],
         attributes: [
           'id',
           'total',
@@ -599,7 +602,7 @@ export class OrdersService {
         }
         const ordersWithProductOrUser = await Order.findAll(baseQuery);
         const orderIdsWithProductOrUser = ordersWithProductOrUser.map(
-          (order) => order.id,
+          (o) => o.id,
         );
 
         baseQuery.include[2].where = null;

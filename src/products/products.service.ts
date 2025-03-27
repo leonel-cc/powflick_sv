@@ -571,15 +571,28 @@ export class ProductsService {
       let order: any = [
         [Sequelize.fn('COALESCE', Sequelize.col('score'), -1), 'ASC'],
       ];
-      if (filters.order === 'ASC') {
-        order = [['price', 'ASC']];
-      } else if (filters.order === 'DESC') {
-        order = [['price', 'DESC']];
-      } else if (filters.order === 'date') {
-        // Ordenar por fecha de creación si el filtro es "date"
-        order = [['createdAt', 'ASC']];
+      if (!admin) {
+        if (filters.order === 'ASC') {
+          order = [['price', 'ASC']];
+        } else if (filters.order === 'DESC') {
+          order = [['price', 'DESC']];
+        } else if (filters.order === 'date') {
+          // Ordenar por fecha de creación si el filtro es "date"
+          order = [['createdAt', 'ASC']];
+        }
+      } else {
+        if (filters.order === 'ASC') {
+          order = [['price', 'ASC']];
+        } else if (filters.order === 'DESC') {
+          order = [['price', 'DESC']];
+        } else if (filters.order === 'date') {
+          // Ordenar por fecha de creación si el filtro es "date"
+          order = [['createdAt', filters.date || 'ASC']];
+        } else if (filters.order === 'score') {
+          // Ordenar por fecha de creación si el filtro es "date"
+          order = [['score', filters.score || 'ASC']];
+        }
       }
-
       // Realizar la consulta para obtener todos los productos
       const products = await Product.findAll({
         where: query,
@@ -601,6 +614,7 @@ export class ProductsService {
       const transformedProducts = products.map((product) => ({
         ...product,
         collections: product.collections?.[0]?.title || null, // Si no hay título, será `null`
+        tags: product.tags?.[0]?.name || null,
       }));
 
       // Calcular el número total de páginas
@@ -616,6 +630,8 @@ export class ProductsService {
       const genderCount = this.countAtributes(products, 'genders');
       // Contar la cantidad de cada colleccion
       const collectionCount = this.countAtributes(transformedProducts, 'collections');
+
+      const tagCount = this.countAtributes(transformedProducts, 'tags');
 
       // Aplicar paginación
       const limit = parseInt(filters.limit);
@@ -679,6 +695,7 @@ export class ProductsService {
           categories: categoryCount,
           gender: genderCount,
           collection: collectionCount,
+          tag: tagCount,
         },
       };
     } catch (error) {

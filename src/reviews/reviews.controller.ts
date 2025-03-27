@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, UseGuards, HttpException, Query, Delete, Param, Inject } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
-import { CreateReviewDto } from './dto/create-review.dto';
+import { CreateMockReviewDto, CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ActivateReviewDto } from './dto/activate-review.dto';
 import {
@@ -56,6 +56,30 @@ export class ReviewsController {
     //Se extrae el id del objeto req.user que nos retorna el decorador @GetUser
     const { userId } = user;
     const response = await this.reviewsService.create(userId, createReviewDto);
+    return response;
+  }
+
+  @Post('/mock')
+  @ApiOperation({ summary: 'Crea una nueva reseña' })
+  //Posibles respuestas--------------------------------------------------------------------
+  @ApiNotFoundResponse({ description: 'Sucede cuando el usuario no existe' })
+  @ApiCreatedResponse({ description: 'Se creó la reseña de forma exitosa' })
+  @ApiBadRequestResponse({
+    description:
+      'No se pudo crear la reseña, se sugiere revisar la información del body',
+  })
+  @ApiInternalServerErrorResponse({
+    description:
+      'Algo salió mal en el servidor, se sugiere revisar que el usuario en cuestión no tenga un review creado aún',
+  })
+  //Para la docu del dto--------------------------------------------------------------------
+  @ApiBody({ type: CreateReviewDto })
+  //Controller------------------------------------------------------------------------------
+  async createMock(
+    @Body() createReviewDto: CreateMockReviewDto,
+  ): Promise<IReview> {
+    //Se extrae el id del objeto req.user que nos retorna el decorador @GetUser
+    const response = await this.reviewsService.createMock(createReviewDto);
     return response;
   }
 
