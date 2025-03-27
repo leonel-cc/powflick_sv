@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 import { MailService } from '../mail/mail.service';
 import { ProductsModule } from '../products/products.module';
 import { FilesModule } from '../files/files.module';
+import { BrevoService } from 'src/brevo/brevo.service';
 
 @Module({
   imports: [
@@ -15,7 +16,14 @@ import { FilesModule } from '../files/files.module';
     // Otros módulos necesarios
   ],
   controllers: [ShoppingCartController],
-  providers: [ShoppingCartService, UsersService, ProductsService, AuthService, MailService],
+  providers: [
+    ShoppingCartService,
+    UsersService,
+    ProductsService,
+    AuthService,
+    MailService,
+    BrevoService,
+  ],
   exports: [ShoppingCartService],
 })
 export class ShoppingCartModule {}

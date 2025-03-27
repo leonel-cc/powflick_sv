@@ -122,8 +122,14 @@ export class CouponService {
         ],
         where: { userId: userId },
       });
-      if (existingCouponUser) {
-        return { message: 'User already has this coupon.' };
+
+      console.log(!!existingCouponUser);
+
+      if (!!existingCouponUser) {
+        throw new HttpException(
+          'User already has this coupon.',
+          HttpStatus.CONFLICT,
+        );
       }
 
       // Crear CouponUser
@@ -180,6 +186,22 @@ export class CouponService {
     try {
       return await this.couponUserModel.findAll({
         where: { userId, active: true },
+        include: [
+          {
+            model: this.couponModel,
+            attributes: ['title', 'content', 'discount'],
+          },
+        ],
+      });
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
+  }
+
+  async findOneCouponUserByCouponIdandUserId(userId: string, couponId: string) {
+    try {
+      return await this.couponUserModel.findOne({
+        where: { userId, couponId, active: true },
         include: [
           {
             model: this.couponModel,
