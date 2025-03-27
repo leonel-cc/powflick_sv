@@ -150,8 +150,8 @@ export class OrdersService {
         const usedCoupon = await Order.findOne({
           where: {
             userId,
-            // Compara si ya usó este cupón antes
             'coupon.id': couponId,
+            state: OrderStateEnum.APROBADO, // Verifica que el estado sea APROBADO
           },
         });
         if (usedCoupon) {
