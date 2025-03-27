@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUUID, IsString } from 'class-validator';
 
 export class CreateOrderDto {
   @IsUUID('4', { message: 'Se debe proporcionar el Id del usuario' })
@@ -21,4 +21,15 @@ export class CreateOrderDto {
 
   @IsOptional({ message: 'El campo $coupon puede estar vacio' })
     couponId: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'Nota del cliente.',
+    required: false,
+  })
+  @IsOptional()
+  @IsString({
+    message: '$property debe ser un string, en cambio enviaste: $value',
+  })
+    note?: string;
 }

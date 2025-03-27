@@ -76,18 +76,23 @@ export class OrdersController {
     @Headers('Currency') currency: string,
     @Headers('CurrencyValue') currencyValue: string,
   ) {
-    const response = await this.ordersService.create({
-      couponId: createOrder.couponId,
-      userId,
-      directionId: createOrder.directionId,
-    }, { name: currency, value: +currencyValue });
+    const response = await this.ordersService.create(
+      {
+        couponId: createOrder.couponId,
+        userId,
+        directionId: createOrder.directionId,
+        note: createOrder.note, // Asegurarse de pasar el campo note
+      },
+      { name: currency, value: +currencyValue },
+    );
     return response;
   }
 
   /* Ajustar despues para que solo los usuarios de Rol x puedan acceder a la misma */
   @ApiOperation({
     summary: 'Obtener todas las ordenes',
-    description: 'Se debe enviar por query paginado limite y orden, ademas se puede filtrar por estado.',
+    description:
+      'Se debe enviar por query paginado limite y orden, ademas se puede filtrar por estado.',
   })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Rol.admin)
@@ -95,7 +100,6 @@ export class OrdersController {
   async getAllOrders(
     @Query() getAllOrders: GetAllOrdersDto,
   ): Promise<IGetOrders> {
-
     const response = await this.ordersService.findAll(getAllOrders);
     return response;
   }
@@ -108,10 +112,7 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Rol.admin)
   @Patch()
-  async patchUpdateOrder(
-  @Body() updateDto: UpdateOrderDto,
-  ) {
-
+  async patchUpdateOrder(@Body() updateDto: UpdateOrderDto) {
     const response = await this.ordersService.updateOrder(updateDto);
 
     return response;
