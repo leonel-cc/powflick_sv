@@ -107,7 +107,7 @@ export class OrdersService {
     const transaction: Transaction = await this.sequelize.transaction();
 
     try {
-      const { userId, directionId, couponId } = data;
+      const { userId, directionId, couponId, note } = data;
       //Obtenemos el id del carrito del usuario que realiza la peticion
       const thisUser = await this.userService.findByPkGenericUser(userId, {
         include: [
@@ -174,6 +174,7 @@ export class OrdersService {
         userId: string;
         directionId: string;
         coupon?: any;
+        note?: string;
       } = {
         total: this.currencyService.convertCurrency(
           Number(totalWithDiscount),
@@ -182,6 +183,7 @@ export class OrdersService {
         currency: { name: currency.name, value: currency.value },
         userId,
         directionId,
+        note,
       };
 
       // Incluimos el cupón en el objeto si existe
@@ -511,6 +513,11 @@ export class OrdersService {
       // Actualizar el código de seguimiento si se envió
       if (updateDto.trackingCode) {
         order.trackingCode = updateDto.trackingCode;
+      }
+
+      // Actualizar los comentarios adicionales si se envió
+      if (updateDto.note) {
+        order.note = updateDto.note;
       }
 
       order.state = updateDto.state;
