@@ -17,7 +17,8 @@ export class SheetsProductsDto {
   @IsString()
     Content: string;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @Transform(({ value }) => value === null ? '' : value) // Transformamos null a cadena vacía
   @IsString()
     'Short Description': string;
 
@@ -64,9 +65,9 @@ export class SheetsProductsDto {
   @IsString()
     Sports: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString({ each: true }) // Valida que cada elemento del array sea un string
-  @Transform(({ value }) => value.split('|')) // Realiza la transformación del string a un array
+  @Transform(({ value }) => value === null ? [] : value.split('|')) // Realiza la transformación del string a un array
     Colors: string[];
 
   @IsNotEmpty()

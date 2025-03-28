@@ -59,16 +59,17 @@ export class ExcelProductsService {
       const objectContainer = [];
 
       for (const val of Object(rowValues.slice(1, rowValues.length))) {
-        const object = {};
+        const object: any = {};
         headers.forEach((header: string, index: number) => {
           object[header] = val[index] !== '' && val[index] !== undefined ? val[index] : null;
         });
         const productValidated = await this.validateProduct(object);
-
         objectContainer.push(productValidated);
       }
+
       return objectContainer;
     } catch (error) {
+
       throw new BadRequestException(error.message);
     }
   }
@@ -90,7 +91,7 @@ export class ExcelProductsService {
       });
 
       // Lanza una excepción con todos los errores concatenados
-      throw new HttpException(`Validation Errors ${productInstance.ID}: \n ${errorMessages.join(' \n ')}`, 400);
+      throw new HttpException(`Validation Errors ${productInstance.ID}: \n ${errorMessages.join(' \n ')}`, 402);
     } else {
       console.log('Validación Success. El objeto es válido.');
       return productInstance;
@@ -112,6 +113,7 @@ export class ExcelProductsService {
               word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
           )
           .join(' ');
+
         /////////////////////////////////////////////////// Guardar imagenes de productos en una carpeta local
         // // Crear carpeta para el producto
         // const basePath = 'uploads/products';
@@ -178,7 +180,7 @@ export class ExcelProductsService {
         message: 'Products created / updated successfully!',
       };
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+      throw new HttpException(error.message + 'JSONTODATABASE', error.status);
     }
   }
 
@@ -318,7 +320,7 @@ export class ExcelProductsService {
         this.createCategoryProductRelation(productId, categoryId);
       }
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+      throw new HttpException(error.message + 'categories', error.status);
     }
   }
 
@@ -353,7 +355,7 @@ export class ExcelProductsService {
         this.createCollectionsProductRelation(productId, collectionId);
       }
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+      throw new HttpException(error.message + 'collections', error.status);
     }
   }
 
@@ -388,7 +390,7 @@ export class ExcelProductsService {
         this.createTagsProductRelation(productId, tagId);
       }
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+      throw new HttpException(error.message + 'tags', error.status);
     }
   }
 
@@ -441,18 +443,18 @@ export class ExcelProductsService {
         product.stock,
         product.images ? product.images.join('|') : null,
         product.URL,
-        product.genders,
+        product.genders || 'Men|Women|Kids',
         product.sports,
         product.product_categories,
-        product.collections.map(c => c.title).join('|'),
-        product.tags.map(t => t.name).join('|'),
+        product.product_collections,
+        product.product_tags,
         product.score,
         product.slug,
         product.colors ? product.colors.join('|') : null,
         product.status,
         product.featured,
-        product.font,
-        product.font_color,
+        product.font || 'Arial',
+        product.font_color || '#ffffff',
       ]),
     ]);
 
@@ -482,8 +484,8 @@ export class ExcelProductsService {
         product.status === 'publish' ? 'in_stock' : 'out_of_stock',
         '', // Fecha de disponibilidad (si aplica)
         '', // Fecha de expiración (si aplica)
-        'powflick.com/products/' + product.slug,
-        'powflick.com/products/' + product.slug, // Enlace móvil (opcional)
+        'https://www.powflick.com/products/' + product.slug,
+        'https://www.powflick.com/products/' + product.slug, // Enlace móvil (opcional)
         product.URL || '', // Imagen principal
         `${product.regular_price.toFixed(2)} USD`, // Precio con formato correcto
         product.price ? `${product.price.toFixed(2)} USD` : '', // Precio en oferta si aplica
@@ -498,7 +500,7 @@ export class ExcelProductsService {
         'new', // Condición del producto (new, refurbished, used)
         'no', // `adult` (ajustar si aplica)
         product.colors?.join(', ') || '', // Colores
-        '', // Tallas
+        'All', // Tallas
         '', // Tipo de talla (regular, petite, plus, etc.)
         '', // Sistema de tallas (US, UK, EU, etc.)
         'unisex', // Género
