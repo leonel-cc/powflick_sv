@@ -71,7 +71,7 @@ export class CollectionsService {
   async createMockCollectionWithProducts(): Promise<string> {
     // Obtener todos los productos
     const products = await Product.findAll();
-    console.log('Productos encontrados:', products);
+    console.log('Productos encontrados:', products.length);
 
     // Extraer todas las palabras clave de los títulos de los productos
     const sports = [
@@ -102,7 +102,7 @@ export class CollectionsService {
       collection.title = keyword;
       collection.content = `Collection of products with "${keyword}" in the title`;
       await collection.save();
-      console.log('Colección creada:', collection);
+      console.log('Colección creada:', collection.title);
 
       // Encontrar todos los productos relacionados que contienen la palabra clave en el título
       const relatedProducts = await Product.findAll({
@@ -112,7 +112,7 @@ export class CollectionsService {
           },
         },
       });
-      console.log(`Productos relacionados con "${keyword}":`, relatedProducts);
+      console.log(`Productos relacionados con "${keyword}":`, relatedProducts.length);
 
       // Asociar los productos relacionados con la colección
       for (const product of relatedProducts) {

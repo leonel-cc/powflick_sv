@@ -115,4 +115,16 @@ export class AppController {
     return res.status(200).json(data);
   }
 
+  @Get('cacheReset')
+  async cacheReset() {
+    await this.cacheManager.reset();
+    return 'Cache reset succesfully';
+  }
+
+  @Get('cacheReset/detail/:slug')
+  async cacheResetDetail(@Param('slug') slug: string) {
+    await this.cacheManager.del(`product:${slug}`);
+    return 'Cache reset detail succesfully';
+  }
+
 }
