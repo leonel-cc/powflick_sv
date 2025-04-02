@@ -5,11 +5,14 @@ import Stripe from 'stripe';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CLIENT_URL } from '../config/enviroments';
+import { LianlianPayService } from './lianlianpay.service';
 
 @ApiTags('Payments')
 @Controller('payments')
 export class PaymentsController {
-  constructor(private readonly stripeService: StripeService) {}
+  constructor(private readonly stripeService: StripeService,
+    private readonly lianlianPayService: LianlianPayService, // 
+  ) {}
 
   @Post('create-checkout-session')
   async createCheckoutSession(@Body() body: { lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] }) {
@@ -17,6 +20,14 @@ export class PaymentsController {
     const sessionUrl = await this.stripeService.createCheckoutSession(lineItems);
     return { sessionUrl };
   }
+
+  @Post('create-payment-lianlianPay')
+  async createPaymentLianlianPay(@Body() body: { orderId: string; amount: number }) {
+    const { orderId, amount } = body;
+    const paymentUrl = await this.lianlianPayService.createPayment(orderId, amount);
+    return { paymentUrl };
+  }
+  
 
   // Ruta para manejar un pago exitoso
   @Get('success/:orderid')
