@@ -1,4 +1,4 @@
-import { AfterCreate, AfterUpdate, AllowNull, BeforeCreate, BeforeUpdate, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { Categories } from '../../categories/entity/categories.entity';
 import { ProductCategories } from '../../categories/entity/productcategories.entity';
 import { Sport } from '../../sport/entity/sport.entity';

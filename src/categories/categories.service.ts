@@ -3,6 +3,7 @@ import { Categories } from './entity/categories.entity';
 import { Op } from 'sequelize';
 import { Product } from '../products/entity/products.entity';
 import { ProductCategories } from './entity/productcategories.entity';
+import { deleteIfNoRelations } from 'src/utils/hooks';
 
 @Injectable()
 export class CategoriesService {
@@ -94,9 +95,11 @@ export class CategoriesService {
     productTitle: string[],
   ) {
     try {
-      // 1. Crear la categoría
-      const category = await Categories.create({ name: categoryName });
+      const formattedName =
+      categoryName.charAt(0).toUpperCase() + categoryName.slice(1).toLowerCase();
 
+      // 1. Crear la categoría
+      const category = await Categories.create({ name: formattedName });
       // 2. Buscar los productos por título y obtener sus IDs
       if (productTitle.length > 0) {
         const ids = await Promise.all(
@@ -222,6 +225,18 @@ export class CategoriesService {
       await category.destroy();
     } catch (error) {
       throw new HttpException('Error deleting category and its relations', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteRelationsWithProductId(productId: string): Promise<void> {
+    const relations = await ProductCategories.findAll({ where: { productId } });
+    await ProductCategories.destroy({ where: { productId } });
+
+    for (const rel of relations) {
+      const category = await Categories.findByPk(rel.categoryId);
+      if (category) {
+        await deleteIfNoRelations(category, 'products');
+      }
     }
   }
 }
