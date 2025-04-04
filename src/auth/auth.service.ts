@@ -79,13 +79,13 @@ export class AuthService {
 
       // Generar token de recuperación
       const token = jwt.sign({ sub: user.email }, JWT_SECRET, {
-        expiresIn: '30m',
+        expiresIn: '48h',
       });
 
       // Configurar datos del correo
       const context = {
         name: user.firstName,
-        link: `${CLIENT_URL}/login/recoverPassword?token=${token}`,
+        link: `${CLIENT_URL}/recoverPassword?token=${token}`,
       };
       const mailData = {
         EmailAddress: user.email,
