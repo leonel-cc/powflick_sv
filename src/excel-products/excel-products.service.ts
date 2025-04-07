@@ -321,8 +321,11 @@ export class ExcelProductsService {
         },
         );
       } else {
+        const formattedName =
+        categoryString.charAt(0).toUpperCase() + categoryString.slice(1).toLowerCase();
+
         const categoryId: string = await this.categoryService.getOrCreateCategory(
-          categoryString,
+          formattedName,
           index,
         );
         this.createCategoryProductRelation(productId, categoryId);
@@ -364,8 +367,11 @@ export class ExcelProductsService {
         },
         );
       } else {
+        const formattedName =
+        collectionString.charAt(0).toUpperCase() + collectionString.slice(1).toLowerCase();
+
         const collectionId: string = await this.collectionsService.getOrCreateCollections(
-          collectionString,
+          formattedName,
           index,
         );
         this.createCollectionsProductRelation(productId, collectionId);
@@ -407,8 +413,11 @@ export class ExcelProductsService {
         },
         );
       } else {
+        const formattedName =
+        tagsString.charAt(0).toUpperCase() + tagsString.slice(1).toLowerCase();
+
         const tagId: string = await this.tagsService.getOrCreateTags(
-          tagsString,
+          formattedName,
           index,
         );
         this.createTagsProductRelation(productId, tagId);
