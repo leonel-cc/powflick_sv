@@ -309,7 +309,9 @@ export class ExcelProductsService {
       }
 
       if (categoryString.includes('|')) {
-        categoryString.split('|').map(async (name) => {
+        const names = categoryString.split('|');
+
+        for (const name of names) {
           const formattedName =
             name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 
@@ -317,12 +319,12 @@ export class ExcelProductsService {
             formattedName,
             index,
           );
-          this.createCategoryProductRelation(productId, categoryId);
-        },
-        );
+
+          await this.createCategoryProductRelation(productId, categoryId);
+        }
       } else {
         const formattedName =
-        categoryString.charAt(0).toUpperCase() + categoryString.slice(1).toLowerCase();
+          categoryString.charAt(0).toUpperCase() + categoryString.slice(1).toLowerCase();
 
         const categoryId: string = await this.categoryService.getOrCreateCategory(
           formattedName,
@@ -355,7 +357,9 @@ export class ExcelProductsService {
       }
 
       if (collectionString.includes('|')) {
-        collectionString.split('|').map(async (title) => {
+        const titles = collectionString.split('|');
+
+        for (const title of titles) {
           const formattedName =
             title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
 
@@ -363,12 +367,12 @@ export class ExcelProductsService {
             formattedName,
             index,
           );
-          this.createCollectionsProductRelation(productId, collectionId);
-        },
-        );
+
+          await this.createCollectionsProductRelation(productId, collectionId);
+        }
       } else {
         const formattedName =
-        collectionString.charAt(0).toUpperCase() + collectionString.slice(1).toLowerCase();
+          collectionString.charAt(0).toUpperCase() + collectionString.slice(1).toLowerCase();
 
         const collectionId: string = await this.collectionsService.getOrCreateCollections(
           formattedName,
@@ -401,7 +405,9 @@ export class ExcelProductsService {
       }
 
       if (tagsString.includes('|')) {
-        tagsString.split('|').map(async (name) => {
+        const names = tagsString.split('|');
+
+        for (const name of names) {
           const formattedName =
             name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 
@@ -409,12 +415,12 @@ export class ExcelProductsService {
             formattedName,
             index,
           );
-          this.createTagsProductRelation(productId, tagId);
-        },
-        );
+
+          await this.createTagsProductRelation(productId, tagId);
+        }
       } else {
         const formattedName =
-        tagsString.charAt(0).toUpperCase() + tagsString.slice(1).toLowerCase();
+          tagsString.charAt(0).toUpperCase() + tagsString.slice(1).toLowerCase();
 
         const tagId: string = await this.tagsService.getOrCreateTags(
           formattedName,
