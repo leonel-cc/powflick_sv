@@ -40,11 +40,10 @@ export class CategoriesService {
       // Obtener el total de categorías
       const total = await Categories.count({ where: whereClause });
 
-      console.log(whereClause);
-
       // Obtener las categorías paginadas
       const allCategories = await Categories.findAll({
         where: whereClause,
+        include: [Product],
         offset,
         limit,
       });
@@ -60,6 +59,7 @@ export class CategoriesService {
         categories: allCategories.map((category) => ({
           id: category.id,
           name: category.name,
+          products: category.products,
         })),
       };
     } catch (error) {

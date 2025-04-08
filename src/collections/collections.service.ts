@@ -158,7 +158,7 @@ export class CollectionsService {
     try {
       const { products, ...coll } = collectionDto;
       const formattedName =
-      coll.title.charAt(0).toUpperCase() + coll.title.slice(1).toLowerCase();
+        coll.title.charAt(0).toUpperCase() + coll.title.slice(1).toLowerCase();
 
       // 1. Crear la categoría
       const [collection] = await Collection.findOrCreate({ where: { title: formattedName }, defaults: { ...coll } });
@@ -206,6 +206,7 @@ export class CollectionsService {
       // Obtener las categorías paginadas
       const allCollection = await Collection.findAll({
         where: whereClause,
+        include: [Product],
         offset,
         limit,
       });
