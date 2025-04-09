@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import * as crypto from 'crypto'; // Para la firma digital
+import * as crypto from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
+import qs from 'qs'; // Asegúrate de usar 'qs' y no destructurar stringify
 import {
   LLP_PRIVATE_KEY,
   LLP_SECONDARY_MERCHANT_NUMBER,
@@ -10,86 +13,102 @@ import {
 
 @Injectable()
 export class LianlianPayService {
-  private readonly apiUrl = LLP_API_URL;
-    
   private readonly merchantId = LLP_MERCHANT_NUMBER;
-    
+  
   private readonly subMerchantId = LLP_SECONDARY_MERCHANT_NUMBER;
-    
-  private readonly privateKey = LLP_PRIVATE_KEY; // Clave privada RSA
 
-  async createPayment(orderId: string, amount: number) {
-    const url = `${this.apiUrl}/v3/merchants/${this.merchantId}/payments`;
+  private readonly apiUrl = LLP_API_URL;
 
-    const payload = {
-      merchant_transaction_id: orderId,
-      merchant_id: this.merchantId,
-      sub_merchant_id: this.subMerchantId,
-      merchant_order: {
-        merchant_order_id: orderId,
-        merchant_order_time: new Date().toISOString().replace(/[-T:.Z]/g, ''), // Formato YYYYMMDDHHMMSS
-        order_amount: amount.toString(),
-        order_currency_code: 'USD',
-        products: [
-          {
-            product_id: 'productid_1',
-            name: 'Producto de prueba',
-            price: amount.toString(),
-            quantity: '1',
-            sku: 'sku_1',
-            url: 'https://www.example.com',
-            shipping_provider: 'other',
-          },
-        ],
-        shipping: {
-          name: 'John Doe',
-          phone: '1234567890',
-          cycle: '48h',
-          address: {
-            line1: '123 Main St',
-            city: 'New York',
-            state: 'NY',
-            country: 'US',
-            postal_code: '10001',
-          },
-        },
-        merchant_user_no: '123456789',
-      },
-      notification_url: 'https://tudominio.com/webhook-lianlianpay',
-      redirect_url: 'https://tudominio.com/success',
-      cancel_url: 'https://tudominio.com/cancel',
-      country: 'US',
-    };
+  // Leer la clave privada desde un archivo externo (formato PKCS#8 sin passphrase)
+  private readonly privateKey = fs.readFileSync(
+    path.resolve(__dirname, '../../private_key.pem'),
+    'utf8',
+  );
 
-    // 🔒 **Generar Firma Digital**
-    const signature = this.signPayload(payload);
-
+  async createPayment(payload: any): Promise<any> {
     try {
-      const response = await axios.post(url, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Merchant-Number': this.merchantId,
-          'X-Sub-Merchant-Number': this.subMerchantId,
-          'X-Signature': signature, // Enviar la firma en el header
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error(
-        'Error en la solicitud de pago:',
-        error.response?.data || error.message,
-      );
-      throw new Error('Error al procesar el pago');
-    }
-  }
+      // 1. Timestamp en formato GMT+8
+      const offset = 8 * 60;
+      const now = new Date(Date.now() + offset * 60 * 1000);
+      const timestamp = now
+        .toISOString()
+        .replace(/[-T:.Z]/g, '')
+        .slice(0, 14); // YYYYMMDDHHMMSS
 
-  // 🔐 **Método para Firmar la Solicitud**
-  private signPayload(payload: object): string {
-    const signData = JSON.stringify(payload);
-    const sign = crypto.createSign('RSA-SHA256');
-    sign.update(signData);
-    sign.end();
-    const privateKey = this.privateKey.replace(/\\n/g, '\n'); // Asegurar formato correcto
-    return sign.sign(privateKey, 'base64');
+      // 2. Ruta del endpoint
+      const apiPath = `/v3/merchants/${this.merchantId}/payments`;
+      const contentType = 'application/json';
+      const method = 'POST';
+
+      // 3. Ordenar los parámetros del payload
+      const sortedPayload = JSON.parse(
+        JSON.stringify(payload, Object.keys(payload).sort()),
+      );
+
+      // 4. Convertir a string con reglas correctas
+      const payloadString = qs.stringify(sortedPayload, {
+        encode: false,
+        arrayFormat: 'indices', // "products[0].name"
+        allowDots: true, // "shipping.address.line1"
+      });
+
+      // 🔍 Logs para depuración
+      console.log(
+        '▶ Payload JSON (request):',
+        JSON.stringify(payload, null, 2),
+      );
+      console.log('▶ Payload ordenado:', sortedPayload);
+      console.log('▶ String firmado:', payloadString);
+
+      // 5. Firma RSA-SHA256
+      const signer = crypto.createSign('RSA-SHA256');
+      signer.update(payloadString, 'utf8');
+      signer.end();
+      const signature = signer.sign(this.privateKey, 'base64');
+
+      // 🔍 Log de la firma generada
+      console.log('▶ Firma generada:', signature);
+
+      // 6. Headers requeridos
+      const headers = {
+        'Content-Type': contentType,
+        'X-Merchant-Number': this.merchantId,
+        'X-Sub-Merchant-Number': this.subMerchantId,
+        Timestamp: timestamp,
+        Timezone: '+08',
+        Signature: signature,
+      };
+
+      // 7. Enviar solicitud
+      const response = await axios.post(`${this.apiUrl}${apiPath}`, payload, {
+        headers,
+      });
+
+      // 8. Manejo de respuesta
+      if (response.data.code !== 200000) {
+        throw new Error(
+          `Error en API LianLian: ${response.data.message || 'Desconocido'}`,
+        );
+      }
+
+      return {
+        message: 'Pago creado exitosamente',
+        data: response.data,
+      };
+    } catch (error) {
+      const status = error.response?.status || 'N/A';
+      const responseData = error.response?.data || error.message;
+
+      console.error('❌ Error en la solicitud de pago:', {
+        status,
+        responseData,
+      });
+
+      throw new Error(
+        `Error al procesar el pago: ${
+          responseData.message || responseData.return_message || error.message
+        }`,
+      );
+    }
   }
 }
