@@ -1,5 +1,5 @@
 // pdf.service.ts
-import * as PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit';
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { extractPaletteFromImageUrl, isWebP, killParenthesisIn } from '../utils/tools';
