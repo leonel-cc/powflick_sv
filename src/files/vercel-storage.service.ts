@@ -203,14 +203,16 @@ export class VercelBlobService {
         const score = (url) => {
           const containsCustomization = url.includes('_customization');
           const contains1 = url.includes('_1');
-          const containsPerson = url.includes('person');
-          const contains3 = url.includes('_3');
-          if (!containsCustomization && contains1) return 1; // Mayor prioridad // Imagen frontal
-          if (!containsCustomization && !containsPerson) return 2; // Siguiente prioridad // imagen trasera
-          if (containsCustomization && contains1) return 3; // Luego estas // imagen sin logo frontal
-          if (containsCustomization && !contains1) return 4; // Luego estas // imagen sin logo trasera
-          if (containsPerson && contains3) return 5; // Luego estas // imagen persona frontal
-          return 6;
+          const containsPerson = url.includes('person') || url.includes('G-ADDITIONAL');
+
+          if (containsPerson) return 99; // Siempre al final
+
+          if (!containsCustomization && contains1) return 1; // Imagen frontal
+          if (!containsCustomization && !contains1) return 2; // Imagen trasera
+          if (containsCustomization && contains1) return 3; // Sin logo frontal
+          if (containsCustomization && !contains1) return 4; // Sin logo trasera
+
+          return 5; // Otros
         };
 
         // Calcula la puntuación para ambas URLs

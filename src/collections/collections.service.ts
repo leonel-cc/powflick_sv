@@ -137,6 +137,12 @@ export class CollectionsService {
   async getCollectionNamesWithProducts(): Promise<{ title: string, products: Product[] }[]> {
     const collections = await Collection.findAll({
       attributes: ['title'],
+      order: [['order', 'ASC']],
+      where: {
+        type: {
+          [Op.or]: ['both', 'navbar'],
+        },
+      },
       include: [
         {
           model: Product,
@@ -207,6 +213,7 @@ export class CollectionsService {
       const allCollection = await Collection.findAll({
         where: whereClause,
         include: [Product],
+        order: [['order', 'ASC']],
         offset,
         limit,
       });
