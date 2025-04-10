@@ -302,19 +302,32 @@ export class ExcelProductsService {
 
   private async destructuringCategoriesStringMethod(categoryString: string, index: number, productId: string) {
     try {
-      if (!categoryString) return;
+      await this.categoryService.deleteRelationsWithProductId(productId);
+
+      if (!categoryString) {
+        return;
+      }
+
       if (categoryString.includes('|')) {
-        categoryString.split('|').map(async (name) => {
+        const names = categoryString.split('|');
+
+        for (const name of names) {
+          const formattedName =
+            name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
           const categoryId: string = await this.categoryService.getOrCreateCategory(
-            name,
+            formattedName,
             index,
           );
-          this.createCategoryProductRelation(productId, categoryId);
-        },
-        );
+
+          await this.createCategoryProductRelation(productId, categoryId);
+        }
       } else {
+        const formattedName =
+          categoryString.charAt(0).toUpperCase() + categoryString.slice(1).toLowerCase();
+
         const categoryId: string = await this.categoryService.getOrCreateCategory(
-          categoryString,
+          formattedName,
           index,
         );
         this.createCategoryProductRelation(productId, categoryId);
@@ -337,19 +350,32 @@ export class ExcelProductsService {
 
   private async destructuringCollectionsStringMethod(collectionString: string, index: number, productId: string) {
     try {
-      if (!collectionString) return;
+      await this.collectionsService.deleteRelationsWithProductId(productId);
+
+      if (!collectionString) {
+        return;
+      }
+
       if (collectionString.includes('|')) {
-        collectionString.split('|').map(async (title) => {
+        const titles = collectionString.split('|');
+
+        for (const title of titles) {
+          const formattedName =
+            title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
+
           const collectionId: string = await this.collectionsService.getOrCreateCollections(
-            title,
+            formattedName,
             index,
           );
-          this.createCollectionsProductRelation(productId, collectionId);
-        },
-        );
+
+          await this.createCollectionsProductRelation(productId, collectionId);
+        }
       } else {
+        const formattedName =
+          collectionString.charAt(0).toUpperCase() + collectionString.slice(1).toLowerCase();
+
         const collectionId: string = await this.collectionsService.getOrCreateCollections(
-          collectionString,
+          formattedName,
           index,
         );
         this.createCollectionsProductRelation(productId, collectionId);
@@ -372,19 +398,32 @@ export class ExcelProductsService {
 
   private async destructuringTagsStringMethod(tagsString: string, index: number, productId: string) {
     try {
-      if (!tagsString) return;
+      await this.tagsService.deleteRelationsWithProductId(productId);
+
+      if (!tagsString) {
+        return;
+      }
+
       if (tagsString.includes('|')) {
-        tagsString.split('|').map(async (name) => {
+        const names = tagsString.split('|');
+
+        for (const name of names) {
+          const formattedName =
+            name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
           const tagId: string = await this.tagsService.getOrCreateTags(
-            name,
+            formattedName,
             index,
           );
-          this.createTagsProductRelation(productId, tagId);
-        },
-        );
+
+          await this.createTagsProductRelation(productId, tagId);
+        }
       } else {
+        const formattedName =
+          tagsString.charAt(0).toUpperCase() + tagsString.slice(1).toLowerCase();
+
         const tagId: string = await this.tagsService.getOrCreateTags(
-          tagsString,
+          formattedName,
           index,
         );
         this.createTagsProductRelation(productId, tagId);

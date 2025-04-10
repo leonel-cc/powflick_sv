@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { Collection } from './entity/collections.entity';
 import { CollectionProduct } from './entity/collectionProduct.entity';
 import { Product } from '../products/entity/products.entity';
 import { Op } from 'sequelize';
+import { deleteIfNoRelations } from 'src/utils/hooks';
 
 @Injectable()
 export class CollectionsService {
@@ -136,6 +137,12 @@ export class CollectionsService {
   async getCollectionNamesWithProducts(): Promise<{ title: string, products: Product[] }[]> {
     const collections = await Collection.findAll({
       attributes: ['title'],
+      order: [['order', 'ASC']],
+      where: {
+        type: {
+          [Op.or]: ['both', 'navbar'],
+        },
+      },
       include: [
         {
           model: Product,
@@ -156,8 +163,11 @@ export class CollectionsService {
   ) {
     try {
       const { products, ...coll } = collectionDto;
+      const formattedName =
+        coll.title.charAt(0).toUpperCase() + coll.title.slice(1).toLowerCase();
+
       // 1. Crear la categoría
-      const [collection] = await Collection.findOrCreate({ where: { title: coll.title }, defaults: { ...coll } });
+      const [collection] = await Collection.findOrCreate({ where: { title: formattedName }, defaults: { ...coll } });
 
       // 2. Buscar los productos por título y obtener sus IDs
       if (products.length > 0) {
@@ -202,6 +212,8 @@ export class CollectionsService {
       // Obtener las categorías paginadas
       const allCollection = await Collection.findAll({
         where: whereClause,
+        include: [Product],
+        order: [['order', 'ASC']],
         offset,
         limit,
       });
@@ -339,6 +351,18 @@ export class CollectionsService {
       await category.destroy();
     } catch (error) {
       throw new HttpException('Error deleting category and its relations', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteRelationsWithProductId(productId: string): Promise<void> {
+    const relations = await CollectionProduct.findAll({ where: { productId } });
+    await CollectionProduct.destroy({ where: { productId } });
+
+    for (const rel of relations) {
+      const collection = await Collection.findByPk(rel.collectionId);
+      if (collection) {
+        await deleteIfNoRelations(collection, 'products');
+      }
     }
   }
 
