@@ -3,7 +3,7 @@ import { Categories } from './entity/categories.entity';
 import { Op } from 'sequelize';
 import { Product } from '../products/entity/products.entity';
 import { ProductCategories } from './entity/productcategories.entity';
-import { deleteIfNoRelations } from 'src/utils/hooks';
+import { deleteIfNoRelations } from '../utils/hooks';
 
 @Injectable()
 export class CategoriesService {

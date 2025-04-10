@@ -5,7 +5,7 @@ import { Collection } from './entity/collections.entity';
 import { CollectionProduct } from './entity/collectionProduct.entity';
 import { Product } from '../products/entity/products.entity';
 import { Op } from 'sequelize';
-import { deleteIfNoRelations } from 'src/utils/hooks';
+import { deleteIfNoRelations } from '../utils/hooks';
 
 @Injectable()
 export class CollectionsService {
