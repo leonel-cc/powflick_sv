@@ -58,7 +58,7 @@ export class MailService {
     switch (subject) {
       case Cases.RESET_PASSWORD:
         return {
-          subject: 'Password recovery requested for your account at TheSports.',
+          subject: 'Reset Your Password - Action Required.',
           template: Templates.recoverPassword,
           // attachments: [
           //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
