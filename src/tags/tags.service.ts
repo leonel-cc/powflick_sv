@@ -3,7 +3,7 @@ import { Tags } from './entity/tags.entity';
 import { Product } from 'src/products/entity/products.entity';
 import { Op } from 'sequelize';
 import { ProductTags } from './entity/productTags.entity';
-import { deleteIfNoRelations } from 'src/utils/hooks';
+import { deleteIfNoRelations } from '../utils/hooks';
 
 @Injectable()
 export class TagsService {
