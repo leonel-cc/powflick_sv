@@ -283,6 +283,13 @@ export class ProductsController {
     return response;
   }
 
+  // @Get('all/products')
+  // async getAllProductsToIntercomChat(
+  // ) {
+  //   const response = await this.productsService.getAllProductsToIntercom();
+  //   return response;
+  // }
+
   // @Get('all/examFolders')
   // async getExamFolders(
   // ) {
