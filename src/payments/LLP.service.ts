@@ -94,7 +94,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
           country: 'US',
           redirect_url: `${SERVER_URL}/payments/success/` + orderId,
           notification_url: `${SERVER_URL}/payments/webhook`,
-          cancel_url: `${SERVER_URL}/payments/cancel/` + orderId,
+          cancel_url: `${SERVER_URL}/payments/failure/` + orderId,
           additional_info: JSON.stringify({
             site_url: 'https://www.powflick.com',
           }),
@@ -168,6 +168,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
       const thisUser = await User.findByPk(userId);
       if (state == 'failure') {
         order.state = OrderStateEnum.RECHAZADO;
+        await order.save();
       }
       if (state == 'success') {
         if (coupon) {

@@ -53,7 +53,7 @@ export class PaymentsController {
   ) {
     await this.llpService.actualizePayment('failure', orderid);
 
-    res.redirect(CLIENT_URL + '/paymentgateway'); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
+    res.redirect(CLIENT_URL + '/checkout'); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
   }
 
   @Post('webhook/:orderid')
