@@ -24,7 +24,6 @@ import {
 import { GetAllOrdersDto, SearchByEnum } from './dto/getAllOrders.dto';
 import { Rol, User } from '../users/entity/users.entity';
 import { Response } from '../products/interface/serviceInterfaces';
-import Stripe from 'stripe';
 import { StripeService } from '../payments/stripe.service';
 import { Customization } from '../products/entity/customization.entity';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
@@ -37,14 +36,14 @@ import {
   CustomerDto,
   ShippingDto,
 } from 'src/payments/dto/create-llp-payment.dto';
-import { Stripe2Service } from 'src/payments/stripe2.service';
+import { LLPService } from 'src/payments/LLP.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private shoppingCartService: ShoppingCartService,
     private paymentsService: StripeService,
-    private llpService: Stripe2Service,
+    private llpService: LLPService,
     private userService: UsersService,
     private currencyService: CurrencyService,
     private sequelize: Sequelize,

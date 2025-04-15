@@ -25,7 +25,7 @@ import { currencySymbol } from 'src/utils/tools';
 import { Order, OrderStateEnum } from '../orders/entity/order.entity';
 
 @Injectable()
-export class Stripe2Service {
+export class LLPService {
   private lianlianPay: typeof GaPayment;
 
   constructor(
@@ -149,7 +149,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
     }
   }
 
-  async actualizePayment(state: string, orderId: string, merchant_id: string) {
+  async actualizePayment(state: string, orderId: string) {
     const transaction: Transaction = await this.sequelize.transaction();
     try {
       const order = await Order.findByPk(orderId, {
@@ -182,7 +182,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
           );
         }
 
-        const paymentIntent = await this.checkPay(orderId, merchant_id);
+        const paymentIntent = await this.checkPay(orderId, LLP_MERCHANT_NUMBER);
 
         const parsedBody = JSON.parse(paymentIntent.body);
         const paymentAmount = parsedBody.order.payment_data.payment_amount;
@@ -291,9 +291,9 @@ cbW0zY24fmpv/DKaNpuAfkg=
     try {
       console.log('Received Stripe event:', event.type);
       if (event.type === 'payment_intent.succeeded')
-        await this.actualizePayment('success', orderId, '');
+        await this.actualizePayment('success', orderId);
       if (event.type === 'payment_intent.payment_failed')
-        await this.actualizePayment('failure', orderId, '');
+        await this.actualizePayment('failure', orderId);
       // await this.stripe.webhookEndpoints.del(order.webhookId);
     } catch (error) {
       // await this.stripe.webhookEndpoints.del(order.webhookId);

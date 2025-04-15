@@ -35,7 +35,7 @@ import * as redisStore from 'cache-manager-ioredis';
 import * as env from './config/enviroments';
 import { BrevoModule } from './brevo/brevo.module';
 import { BrevoService } from './brevo/brevo.service';
-import { Stripe2Service } from './payments/stripe2.service';
+import { LLPService } from './payments/LLP.service';
 
 @Module({
   imports: [
@@ -84,7 +84,7 @@ import { Stripe2Service } from './payments/stripe2.service';
     StripeService,
     VercelBlobService,
     ConfigService,
-    Stripe2Service,
+    LLPService,
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,

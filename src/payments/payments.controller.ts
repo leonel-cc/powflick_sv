@@ -14,14 +14,14 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CLIENT_URL } from '../config/enviroments';
 import { StripeService } from './stripe.service';
-import { Stripe2Service } from './stripe2.service';
+import { LLPService } from './LLP.service';
 
 @ApiTags('Payments')
 @Controller('payments')
 export class PaymentsController {
   constructor(
     private readonly stripeService: StripeService,
-    private readonly stripe2Service: Stripe2Service,
+    private readonly llpService: LLPService,
   ) {}
 
   @Post('create-checkout-session')
@@ -36,13 +36,8 @@ export class PaymentsController {
   async handleSuccessPayment(
     @Res() res: Response,
     @Param('orderid') orderid: string,
-    @Query('merchant_id') merchant_id: string,
-    @Query('merchant_transaction_id') merchant_transaction_id: string,
   ) {
-    console.log(merchant_id, ' merchant id');
-    console.log(merchant_transaction_id, ' merchant transatcion id');
-
-    await this.stripe2Service.actualizePayment('success', orderid, merchant_id);
+    await this.llpService.actualizePayment('success', orderid);
 
     res.redirect(CLIENT_URL + '/thanks-for-buying/' + orderid); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
   }
@@ -56,7 +51,7 @@ export class PaymentsController {
     @Res() res: Response,
     @Param('orderid') orderid: string,
   ) {
-    await this.stripeService.actualizePayment('failure', orderid);
+    await this.llpService.actualizePayment('failure', orderid);
 
     res.redirect(CLIENT_URL + '/paymentgateway'); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
   }
@@ -69,7 +64,7 @@ export class PaymentsController {
   ) {
     // Maneja el evento recibido desde Stripe
     try {
-      await this.stripe2Service.handleEvent(event, orderid);
+      await this.llpService.handleEvent(event, orderid);
     } catch (error) {
       console.error('Error handling Stripe event:', error);
     }
@@ -81,7 +76,7 @@ export class PaymentsController {
     { body, orderId, email }: { body: any; orderId: number; email: string },
   ) {
     try {
-      const response = await this.stripe2Service.createOrderLLP(
+      const response = await this.llpService.createOrderLLP(
         body,
         orderId,
         email,
