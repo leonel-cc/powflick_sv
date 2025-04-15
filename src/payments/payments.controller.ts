@@ -5,61 +5,44 @@ import {
   Body,
   Get,
   Param,
+  Query,
   Res,
   HttpCode,
   HttpStatus,
-  HttpException,
 } from '@nestjs/common';
-import { StripeService } from './stripe.service';
-import Stripe from 'stripe';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CLIENT_URL } from '../config/enviroments';
-import { LianlianPayService } from './lianlianpay.service';
+import { StripeService } from './stripe.service';
+import { Stripe2Service } from './stripe2.service';
 
 @ApiTags('Payments')
 @Controller('payments')
 export class PaymentsController {
   constructor(
     private readonly stripeService: StripeService,
-    private readonly lianlianPayService: LianlianPayService, //
+    private readonly stripe2Service: Stripe2Service,
   ) {}
 
   @Post('create-checkout-session')
-  async createCheckoutSession(
-  @Body() body: { lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] },
-  ) {
-    const { lineItems } = body;
-    const sessionUrl = await this.stripeService.createCheckoutSession(
-      lineItems,
+  async createCheckoutSession(@Body() body: { lineItems: any[] }) {
+    const { urlBuy } = await this.stripeService.createCheckoutSession(
+      body.lineItems,
     );
-    return { sessionUrl };
+    return { sessionUrl: urlBuy };
   }
 
-  @Post('create-payment-lianlianPay')
-  async createPaymentLianlianPay(@Body() payload: any) {
-    try {
-      const response = await this.lianlianPayService.createPayment(payload);
-      return response;
-    } catch (error) {
-      console.error('Error en el controlador:', error.message);
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: error.message,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  // Ruta para manejar un pago exitoso
   @Get('success/:orderid')
   async handleSuccessPayment(
-  @Res() res: Response,
+    @Res() res: Response,
     @Param('orderid') orderid: string,
+    @Query('merchant_id') merchant_id: string,
+    @Query('merchant_transaction_id') merchant_transaction_id: string,
   ) {
-    await this.stripeService.actualizePayment('success', orderid);
+    console.log(merchant_id, ' merchant id');
+    console.log(merchant_transaction_id, ' merchant transatcion id');
+
+    await this.stripe2Service.actualizePayment('success', orderid, merchant_id);
 
     res.redirect(CLIENT_URL + '/thanks-for-buying/' + orderid); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
   }
@@ -70,7 +53,7 @@ export class PaymentsController {
   })
   @Get('failure/:orderid')
   async handleFailurePayment(
-  @Res() res: Response,
+    @Res() res: Response,
     @Param('orderid') orderid: string,
   ) {
     await this.stripeService.actualizePayment('failure', orderid);
@@ -81,14 +64,32 @@ export class PaymentsController {
   @Post('webhook/:orderid')
   @HttpCode(200) // Responde con código 200 para confirmar la recepción del evento
   async handleStripeEvent(
-  @Body() event: any,
+    @Body() event: any,
     @Param('orderid') orderid: string,
   ) {
     // Maneja el evento recibido desde Stripe
     try {
-      await this.stripeService.handleEvent(event, orderid);
+      await this.stripe2Service.handleEvent(event, orderid);
     } catch (error) {
       console.error('Error handling Stripe event:', error);
+    }
+  }
+
+  @Post('LLpay')
+  async createLLPay(
+    @Body()
+    { body, orderId, email }: { body: any; orderId: number; email: string },
+  ) {
+    try {
+      const response = await this.stripe2Service.createOrderLLP(
+        body,
+        orderId,
+        email,
+      );
+      return response;
+    } catch (error) {
+      console.error('Error creating LLPay order:', error);
+      throw new Error('Error al crear el pago con LianLianPay');
     }
   }
 }

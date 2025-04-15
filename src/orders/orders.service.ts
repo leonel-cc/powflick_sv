@@ -31,12 +31,20 @@ import { IGetUser } from '../auth/interfaces/getUser.interface';
 import { CurrencyService } from '../currency/currency.service';
 import { currencySymbol, eliminarCaracteresNoNumericos } from '../utils/tools';
 import { CouponService } from '../coupon/coupon.service';
+import {
+  CreateLlpPaymentDto,
+  ProductDto,
+  CustomerDto,
+  ShippingDto,
+} from 'src/payments/dto/create-llp-payment.dto';
+import { Stripe2Service } from 'src/payments/stripe2.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private shoppingCartService: ShoppingCartService,
     private paymentsService: StripeService,
+    private llpService: Stripe2Service,
     private userService: UsersService,
     private currencyService: CurrencyService,
     private sequelize: Sequelize,
@@ -198,7 +206,7 @@ export class OrdersService {
 
       const newOrder = await Order.create(orderData, { transaction });
 
-      const lineitems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+      const lineitems: any[] = [];
       const customizations: {
         productId: string;
         customization: Customization;
@@ -398,16 +406,20 @@ export class OrdersService {
           }
 
           lineitems.push({
-            price_data: {
-              currency: currency.name.toLowerCase(),
-              product_data: {
-                name: product.title,
-                description,
-                images: product.images,
-              },
-              unit_amount: Math.floor(unitAmoutByCurrency),
-            },
+            product_id: product.id,
+            name: product.title,
+            description: description,
+            price: Number(
+              this.currencyService.convertCurrency(
+                Number(product.subtotal),
+                currency.value,
+              ),
+            ),
             quantity: 1,
+            category: 'Custom Jerseys',
+            sku: product.slug,
+            url: product.images[0] || '',
+            shipping_provider: 'other',
           });
 
           customizations.push({
@@ -547,7 +559,12 @@ export class OrdersService {
       // Query base
       const baseQuery: WhereOptions = {
         where: { state: { [Op.not]: 'PENDING' } },
-        order: [[orderBy === 'purchaseDate' ? 'createdAt' : 'id', orderBy === 'purchaseDate' ? purchaseDate : order]],
+        order: [
+          [
+            orderBy === 'purchaseDate' ? 'createdAt' : 'id',
+            orderBy === 'purchaseDate' ? purchaseDate : order,
+          ],
+        ],
         attributes: [
           'id',
           'total',
@@ -691,6 +708,404 @@ export class OrdersService {
       };
     } catch (error) {
       throw new HttpException(error.message, error.status);
+    }
+  }
+
+  async createOrderLLP(
+    data: CreateOrderDto,
+    currency: { name: string; value: number },
+  ): Promise<object> {
+    const transaction: Transaction = await this.sequelize.transaction();
+
+    try {
+      const { userId, directionId, couponId, note } = data;
+      //Obtenemos el id del carrito del usuario que realiza la peticion
+      const thisUser = await this.userService.findByPkGenericUser(userId, {
+        include: [
+          {
+            model: ShoppingCart,
+            attributes: ['id'],
+            include: [
+              {
+                model: Product,
+                attributes: ['id', 'stock', 'price', 'images'],
+              },
+            ],
+          },
+        ],
+        transaction,
+      });
+
+      const thisDirection = await Direction.findByPk(directionId);
+
+      //Aqui obtenemos el monto total y los productos para realizar la orden
+      const { total, products } =
+        await this.shoppingCartService.getCartProducts(thisUser.cart.id);
+
+      if (products.length === 0)
+        throw new HttpException('The cart is empty', 400);
+
+      // Obtenemos el descuento del cupón si existe
+      let discountAmount = 0;
+      let appliedCoupon = null;
+
+      if (couponId) {
+        const couponUser =
+          await this.couponService.findOneCouponUserByCouponIdandUserId(
+            userId,
+            couponId,
+          );
+
+        if (!couponUser || !couponUser.dataValues.active) {
+          throw new HttpException('Coupon not valid or inactive', 400);
+        }
+
+        const usedCoupon = await Order.findOne({
+          where: {
+            userId,
+            'coupon.id': couponId,
+            state: OrderStateEnum.APROBADO, // Verifica que el estado sea APROBADO
+          },
+        });
+        if (usedCoupon) {
+          throw new HttpException('User has already used this coupon', 400);
+        }
+
+        const coupon = await this.couponService.findOne(couponId);
+        if (coupon) {
+          discountAmount = (Number(total) * coupon.discount) / 100;
+          appliedCoupon = coupon;
+        }
+      }
+
+      // Aplicamos el descuento al total
+      const totalWithDiscount = Number(total) - discountAmount;
+
+      const orderData: {
+        total: string;
+        currency: { name: string; value: number };
+        userId: string;
+        directionId: string;
+        coupon?: any;
+        note?: string;
+      } = {
+        total: this.currencyService.convertCurrency(
+          Number(totalWithDiscount),
+          currency.value,
+        ),
+        currency: { name: currency.name, value: currency.value },
+        userId,
+        directionId,
+        note,
+      };
+
+      // Incluimos el cupón en el objeto si existe
+      if (appliedCoupon) {
+        orderData.coupon = {
+          id: appliedCoupon.dataValues.id,
+          discount: appliedCoupon.dataValues.discount,
+          title: appliedCoupon.dataValues.title,
+          content: appliedCoupon.dataValues.content,
+        };
+      }
+
+      const newOrder = await Order.create(orderData, { transaction });
+
+      const lineitems: any[] = [];
+      const customizations: {
+        productId: string;
+        customization: Customization;
+      }[] = [];
+
+      for (const product of Object(products)) {
+        await OrderProduct.create(
+          {
+            amount: product.amount,
+            price: Number(
+              this.currencyService.convertCurrency(
+                Number(product.subtotal),
+                currency.value,
+              ),
+            ),
+            orderId: newOrder.id,
+            productId: product.id,
+          },
+          { transaction },
+        );
+
+        for (const customization of product.customizations) {
+          let description = '';
+
+          if (customization.size) {
+            description += `Size: ${customization.size}, `;
+          }
+          if (customization.neck) {
+            description += `Neck: ${
+              customization.neck.split(' ')[1]
+                ? customization.neck.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.neck.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.neck
+            }, `;
+          }
+          if (customization.socks) {
+            description += `Socks: ${
+              customization.socks.split(' ')[1]
+                ? customization.socks.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.socks.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.socks
+            }, `;
+          }
+          if (customization.pants) {
+            description += `Pants: ${
+              customization.pants.split(' ')[1]
+                ? customization.pants.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.pants.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.pants
+            }, `;
+          }
+          if (customization.shorts) {
+            description += `Shorts: ${
+              customization.shorts.split(' ')[1]
+                ? customization.shorts.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.shorts.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.shorts
+            }, `;
+          }
+          if (customization.materials) {
+            description += `Materials: ${
+              customization.materials.split(' ')[1]
+                ? customization.materials.split(' ')[0] +
+                  ' ' +
+                  '(' +
+                  currencySymbol(currency.name) +
+                  this.currencyService.convertCurrency(
+                    Number(
+                      eliminarCaracteresNoNumericos(
+                        String(customization.materials.split(' ').pop()),
+                      ),
+                    ),
+                    currency.value,
+                  ) +
+                  ')'
+                : customization.materials
+            }, `;
+          }
+
+          if (
+            customization.frontSide.texts.some((e) => e.text) ||
+            customization.frontSide.numbers.some((e) => e.number)
+          ) {
+            description += ' | Front side: ';
+            if (customization.frontSide.texts.some((e) => e.text)) {
+              customization.frontSide.texts
+                .filter((e) => e.text)
+                .forEach(
+                  (e, i) =>
+                    (description += `Text ${i}: ${e.text} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
+                    }, `),
+                );
+            }
+            if (customization.frontSide.numbers.some((e) => e.number)) {
+              customization.frontSide.numbers
+                .filter((e) => e.number)
+                .forEach(
+                  (e, i) =>
+                    (description += `Number ${i + 1}: ${e.number} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
+                    }, `),
+                );
+            }
+          }
+
+          if (
+            customization.backSide.texts.some((e) => e.text) ||
+            customization.backSide.numbers.some((e) => e.number)
+          ) {
+            description += ' | Back side: ';
+            if (customization.backSide.texts.some((e) => e.text)) {
+              customization.backSide.texts
+                .filter((e) => e.text)
+                .forEach(
+                  (e, i) =>
+                    (description += `Text ${i}: ${e.text} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
+                    }, `),
+                );
+            }
+            if (customization.backSide.numbers.some((e) => e.number)) {
+              customization.backSide.numbers
+                .filter((e) => e.number)
+                .forEach(
+                  (e, i) =>
+                    (description += `Number ${i + 1}: ${e.number} ${
+                      '+ ' +
+                      currencySymbol(currency.name) +
+                      this.currencyService.convertCurrency(3.99, currency.value)
+                    }, `),
+                );
+            }
+          }
+          const currencyChanged = this.currencyService.convertCurrency(
+            product.price + customization.price,
+            currency.value,
+          );
+          let unitAmoutByCurrency = Number(currencyChanged) * 100;
+
+          if (appliedCoupon?.discount) {
+            // Calcular el monto del descuento
+            discountAmount =
+              unitAmoutByCurrency * (appliedCoupon.discount / 100);
+
+            unitAmoutByCurrency -= discountAmount;
+          }
+
+          lineitems.push({
+            product_id: product.id,
+            name: product.title,
+            price: Number(
+              this.currencyService.convertCurrency(
+                Number(product.subtotal),
+                currency.value,
+              ),
+            ),
+            description,
+            category: 'custom jersey',
+            sku: product.id,
+            url: 'https://www.powflick.com' + '/products/' + product.id,
+            quantity: 1,
+            shipping_provider: 'other',
+          });
+
+          customizations.push({
+            productId: product.id,
+            customization: customization,
+          });
+        }
+      }
+      const address = {
+        line1: 'Calle Principal 123',
+        line2: 'Apto 4B',
+        country: 'US',
+        city: 'New York',
+        state: 'NY',
+        postal_code: '10001',
+        district: 'Manhattan',
+      };
+
+      const shipping = {
+        first_name: thisUser.firstName,
+        last_name: thisUser.lastName,
+        name: thisUser.firstName + thisUser.lastName,
+        phone: thisDirection.phone,
+        cycle: '24h',
+        address,
+      };
+
+      const customer = {
+        customer_type: 'I', // I = Individual
+        first_name: thisUser.firstName,
+        last_name: thisUser.lastName,
+        full_name: thisUser.firstName + thisUser.lastName,
+        gender: 'male',
+        email: thisUser.email,
+        phone: thisUser.phone,
+        address,
+      };
+
+      const payload: CreateLlpPaymentDto = {
+        order_amount: Number(total), // suma de todos los montos
+        order_currency_code: 'USD',
+        order_description: 'Custom jerseys order',
+        shipping,
+        customer,
+        products: lineitems,
+      };
+
+      console.log('payload', payload);
+
+      // Url para generar el pago
+      const { urlBuy, sessionId } = await this.llpService.createOrderLLP(
+        payload,
+        newOrder.id,
+        thisUser.email,
+      );
+
+      newOrder.sessionId = String(sessionId);
+      newOrder.customizations = customizations;
+      await newOrder.save({ transaction });
+
+      await this.shoppingCartService.destroyShoppingCart(
+        { userId },
+        transaction,
+      );
+      await this.shoppingCartService.CreateShoppingCart(
+        { userId },
+        transaction,
+      );
+
+      await transaction.commit();
+      return {
+        statusCode: 201,
+        data: `New order created successfully. _id: ${newOrder.id}`,
+        orderId: newOrder.id,
+        urlBuy,
+      };
+    } catch (error) {
+      transaction.rollback();
+      throw new InternalServerErrorException(
+        `An error occurred while creating your order. \n ${error.message}`,
+      );
     }
   }
 }
