@@ -7,6 +7,7 @@ import {
   Param,
   Query,
   Res,
+  Header,
   HttpCode,
   HttpStatus,
   Req,
@@ -16,6 +17,7 @@ import { Response } from 'express';
 import { CLIENT_URL } from '../config/enviroments';
 import { StripeService } from './stripe.service';
 import { LLPService } from './LLP.service';
+import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -82,6 +84,25 @@ export class PaymentsController {
         orderId,
         email,
       );
+      return response;
+    } catch (error) {
+      console.error('Error creating LLPay order:', error);
+      throw new Error('Error al crear el pago con LianLianPay');
+    }
+  }
+
+  @Post('LLpay3DS')
+  async createLLPay3DS(
+    @Body()
+    payload: {
+      body: CreateLlpPaymentDto;
+      orderId: number;
+    },
+  ) {
+    const { body, orderId } = payload;
+
+    try {
+      const response = await this.llpService.createLLP3DS(body, orderId);
       return response;
     } catch (error) {
       console.error('Error creating LLPay order:', error);

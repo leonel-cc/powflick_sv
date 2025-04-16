@@ -10,7 +10,6 @@ import {
   LLP_PUBLIC_KEY,
   LLP_MERCHANT_NUMBER,
   LLP_SECONDARY_MERCHANT_NUMBER,
-  LLP_PRIVATE_KEY,
 } from '../config/enviroments';
 import * as moment from 'moment-timezone';
 import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
@@ -83,9 +82,6 @@ cbW0zY24fmpv/DKaNpuAfkg=
     try {
       const now = moment().tz('Asia/Shanghai');
 
-      console.log(orderId);
-      console.log(dto.products.length);
-
       const payload = {
         params: {
           merchant_id: LLP_MERCHANT_NUMBER,
@@ -106,13 +102,11 @@ cbW0zY24fmpv/DKaNpuAfkg=
             order_amount: dto.order_amount,
             order_currency_code: dto.order_currency_code,
             products: dto.products,
-            shipping: dto.shipping,
+            // shipping: dto.shipping,
           },
           customer: { ...dto.customer },
         },
       };
-
-      console.log(payload, 'payload');
 
       const response = await new Promise<any>((resolve, reject) => {
         this.lianlianPay.pay({
@@ -125,8 +119,6 @@ cbW0zY24fmpv/DKaNpuAfkg=
           },
         });
       });
-
-      console.log(response, 'hasta aca');
 
       const parsedBody = JSON.parse(response.body);
 
@@ -183,7 +175,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
           );
         }
 
-        const paymentIntent = await this.checkPay(orderId, LLP_MERCHANT_NUMBER);
+        const paymentIntent = await this.checkPay(orderId);
 
         const parsedBody = JSON.parse(paymentIntent.body);
         const paymentAmount = parsedBody.order.payment_data.payment_amount;
@@ -274,7 +266,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
       }
 
       await Order.destroy({
-        where: { state: OrderStateEnum.PENDIENTE },
+        where: { state: OrderStateEnum.PENDIENTE, userId: thisUser.id },
         transaction,
       }); // Elimina todas las ordenes pendientes anteriores.
 
@@ -288,7 +280,6 @@ cbW0zY24fmpv/DKaNpuAfkg=
 
   async handleEvent(event: any, orderId: string) {
     // Aquí puedes implementar la lógica para manejar los diferentes tipos de eventos de Stripe
-    const order = await Order.findByPk(orderId);
     try {
       console.log('Received Stripe event:', event.type);
       if (event.type === 'payment_intent.succeeded')
@@ -302,7 +293,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
     }
   }
 
-  async checkPay(orderId: string, merchant_id: string) {
+  async checkPay(orderId: string) {
     try {
       const payload = {
         params: {
@@ -339,5 +330,86 @@ cbW0zY24fmpv/DKaNpuAfkg=
         400,
       );
     }
+  }
+
+  //post createLLP3DS
+
+  async createLLP3DS(dto: CreateLlpPaymentDto, orderId: number): Promise<any> {
+    try {
+      const now = moment().tz('Asia/Shanghai');
+
+      console.log(orderId);
+      console.log(dto.products.length);
+
+      const payload = {
+        params: {
+          merchant_id: LLP_MERCHANT_NUMBER,
+          sub_merchant_id: LLP_SECONDARY_MERCHANT_NUMBER,
+          merchant_transaction_id: orderId,
+          country: 'US',
+          redirect_url: `${SERVER_URL}/payments/success/` + orderId,
+          notification_url: `${SERVER_URL}/payments/notification/` + orderId,
+          cancel_url: `${SERVER_URL}/payments/failure/` + orderId,
+          additional_info: JSON.stringify({
+            site_url: 'https://www.powflick.com',
+          }),
+          merchant_order: {
+            merchant_order_id: orderId,
+            merchant_user_no: 1,
+            merchant_order_time: now.format('YYYYMMDDHHmmss'),
+            order_description: dto.order_description,
+            order_amount: dto.order_amount,
+            order_currency_code: dto.order_currency_code,
+            products: dto.products,
+            // shipping: dto.shipping,
+          },
+          customer: { ...dto.customer },
+        },
+      };
+
+      console.log(payload, 'payload');
+
+      const response = await new Promise<any>((resolve, reject) => {
+        this.lianlianPay.pay({
+          ...payload,
+          successcb: (res: any) => {
+            resolve(res);
+          },
+          failcb: (err: any) => {
+            reject(err);
+          },
+        });
+      });
+
+      console.log(response, 'hasta aca');
+
+      const parsedBody = JSON.parse(response.body);
+
+      return {
+        urlBuy3DS:
+          parsedBody.order.payment_url +
+          '&payment_method=3ds&ll_transaction_id=' +
+          parsedBody.order.ll_transaction_id,
+        sessionId3DS: parsedBody.order.ll_transaction_id,
+      };
+    } catch (error) {
+      console.error('LianLianPay SDK Error:', error.message);
+
+      throw new HttpException(
+        {
+          message: 'Error creando checkout LianLianPay',
+          error: error?.message || 'Unknown error',
+          stack: error?.stack,
+          raw: JSON.stringify(error, null, 2),
+        },
+        400,
+      );
+    }
+  }
+
+  async notification() {
+    try {
+      return 'success';
+    } catch (error) {}
   }
 }
