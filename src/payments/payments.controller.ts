@@ -9,6 +9,7 @@ import {
   Res,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -22,7 +23,7 @@ export class PaymentsController {
   constructor(
     private readonly stripeService: StripeService,
     private readonly llpService: LLPService,
-  ) {}
+  ) { }
 
   @Post('create-checkout-session')
   async createCheckoutSession(@Body() body: { lineItems: any[] }) {
@@ -86,5 +87,19 @@ export class PaymentsController {
       console.error('Error creating LLPay order:', error);
       throw new Error('Error al crear el pago con LianLianPay');
     }
+  }
+
+  @Post('notification')
+  @HttpCode(200)
+  async handleLlpNotification(@Req() req: Request, @Res() res: Response) {
+    console.log('✅ Notificación recibida:', req.body);
+
+    // Procesá el body, guardá en DB, etc. si lo necesitás
+
+    // Respuesta obligatoria según la doc de LianLian
+    res.json({
+      code: '200',
+      message: 'success',
+    });
   }
 }

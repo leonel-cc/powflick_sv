@@ -93,7 +93,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
           merchant_transaction_id: orderId,
           country: 'US',
           redirect_url: `${SERVER_URL}/payments/success/` + orderId,
-          notification_url: `${SERVER_URL}/payments/webhook`,
+          notification_url: `${SERVER_URL}/payments/notification`,
           cancel_url: `${SERVER_URL}/payments/failure/` + orderId,
           additional_info: JSON.stringify({
             site_url: 'https://www.powflick.com',
