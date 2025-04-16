@@ -1032,14 +1032,15 @@ export class OrdersService {
           });
         }
       }
+
       const address = {
-        line1: 'Calle Principal 123',
-        line2: 'Apto 4B',
-        country: 'US',
-        city: 'New York',
-        state: 'NY',
-        postal_code: '10001',
-        district: 'Manhattan',
+        line1: 'Calle Principal 123', //address
+        line2: 'Apto 4B', //apartment
+        country: 'US', // country
+        city: 'New York', // city
+        state: 'NY', // state
+        postal_code: '10001', // postal code
+        district: 'Manhattan', // locacion -> district
       };
 
       const shipping = {
@@ -1059,10 +1060,10 @@ export class OrdersService {
         gender: 'male',
         email: thisUser.email,
         phone: thisUser.phone,
-        address,
+        // address,
       };
 
-      const payload: CreateLlpPaymentDto = {
+      const payload: any = {
         order_amount: Number(total), // suma de todos los montos
         order_currency_code: 'USD',
         order_description: 'Custom jerseys order',

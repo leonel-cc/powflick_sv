@@ -7,6 +7,8 @@ import {
   Param,
   Query,
   Res,
+  Req,
+  Header,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -15,6 +17,7 @@ import { Response } from 'express';
 import { CLIENT_URL } from '../config/enviroments';
 import { StripeService } from './stripe.service';
 import { LLPService } from './LLP.service';
+import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -86,5 +89,38 @@ export class PaymentsController {
       console.error('Error creating LLPay order:', error);
       throw new Error('Error al crear el pago con LianLianPay');
     }
+  }
+
+  @Post('LLpay3DS')
+  async createLLPay3DS(
+    @Body()
+    payload: {
+      body: CreateLlpPaymentDto;
+      orderId: number;
+    },
+  ) {
+    const { body, orderId } = payload;
+
+    try {
+      const response = await this.llpService.createLLP3DS(body, orderId);
+      return response;
+    } catch (error) {
+      console.error('Error creating LLPay order:', error);
+      throw new Error('Error al crear el pago con LianLianPay');
+    }
+  }
+
+  @Post('notification')
+  @HttpCode(200)
+  async handleLlpNotification(@Req() req: Request, @Res() res: Response) {
+    console.log('✅ Notificación recibida:', req.body);
+
+    // Procesá el body, guardá en DB, etc. si lo necesitás
+
+    // Respuesta obligatoria según la doc de LianLian
+    res.json({
+      code: '200',
+      message: 'success',
+    });
   }
 }
