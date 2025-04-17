@@ -1,0 +1,11 @@
+name: Dummy Check
+
+on:
+  pull_request:
+
+jobs:
+  always-pass:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dummy step
+        run: echo "Este check es solo para validar el estado de la PR."

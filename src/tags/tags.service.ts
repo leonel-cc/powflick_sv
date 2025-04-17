@@ -3,6 +3,7 @@ import { Tags } from './entity/tags.entity';
 import { Product } from 'src/products/entity/products.entity';
 import { Op } from 'sequelize';
 import { ProductTags } from './entity/productTags.entity';
+import { deleteIfNoRelations } from '../utils/hooks';
 
 @Injectable()
 export class TagsService {
@@ -15,9 +16,6 @@ export class TagsService {
         },
       ],
     });
-
-    console.log(tags);
-
 
     // Añadir la cantidad de productos asociados a cada colección
     tags.forEach(tag => {
@@ -96,8 +94,11 @@ export class TagsService {
     try {
       const { products, ...t } = tagDto;
 
+      const formattedName =
+        t.name.charAt(0).toUpperCase() + t.name.slice(1).toLowerCase();
+
       // 1. Crear o encontrar la etiqueta
-      const [tag] = await Tags.findOrCreate({ where: { name: t.name } });
+      const [tag] = await Tags.findOrCreate({ where: { name: formattedName } });
 
       // 2. Buscar los productos por título y obtener sus IDs
       if (products.length > 0) {
@@ -240,6 +241,18 @@ export class TagsService {
       await tag.destroy();
     } catch (error) {
       throw new HttpException('Error deleting category and its relations', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteRelationsWithProductId(productId: string): Promise<void> {
+    const relations = await ProductTags.findAll({ where: { productId } });
+    await ProductTags.destroy({ where: { productId } });
+
+    for (const rel of relations) {
+      const tag = await Tags.findByPk(rel.tagId);
+      if (tag) {
+        await deleteIfNoRelations(tag, 'products');
+      }
     }
   }
 }

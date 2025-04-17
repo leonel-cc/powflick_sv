@@ -1,5 +1,5 @@
 // pdf.service.ts
-import * as PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit';
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import {
@@ -23,7 +23,6 @@ import {
 import { SERVER_URL } from '../config/enviroments';
 import * as path from 'path';
 import imageSize from 'image-size';
-import { Index } from 'sequelize-typescript';
 @Injectable()
 export class PdfService {
   async generatePdf(
