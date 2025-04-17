@@ -30,3 +30,12 @@ export const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 export const REDIS_TTL = process.env.REDIS_TTL;
 export const BREVO_API_KEY = process.env.BREVO_API_KEY;
 export const USE_BREVO = process.env.USE_BREVO;
+export const LLP_API_URL = process.env.LLP_API_URL;
+export const LLP_MERCHANT_NAME = process.env.LLP_MERCHANT_NAME;
+export const LLP_MERCHANT_NUMBER = process.env.LLP_MERCHANT_NUMBER;
+export const LLP_SECONDARY_MERCHANT_NUMBER = process.env.LLP_SECONDARY_MERCHANT_NUMBER;
+export const LLP_PRIVATE_KEY = process.env.LLP_PRIVATE_KEY;
+export const LLP_PUBLIC_KEY = process.env.LLP_PUBLIC_KEY;
+export const LLP_LOGIN_ACCOUNT = process.env.LLP_LOGIN_ACCOUNT;
+export const LLP_LOGIN_PASSWORD = process.env.LLP_LOGIN_PASSWORD; 
+

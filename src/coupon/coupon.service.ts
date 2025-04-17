@@ -128,7 +128,7 @@ export class CouponService {
       if (!!existingCouponUser) {
         throw new HttpException(
           'User already has this coupon.',
-          HttpStatus.CONFLICT,
+          HttpStatus.NOT_MODIFIED,
         );
       }
 
@@ -146,8 +146,9 @@ export class CouponService {
         couponUser,
       };
     } catch (error) {
-      throw new HttpException(error.message, 500);
-    }
+      console.log(error);
+
+      throw new HttpException(error.message, error.status ?? HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   async findAllCouponUsers() {

@@ -2,17 +2,36 @@
 import PDFDocument from 'pdfkit';
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
-import { extractPaletteFromImageUrl, isWebP, killParenthesisIn } from '../utils/tools';
-import { Neck, Shorts, Socks, withOrWithoutShort } from '../utils/detail.enum';
+import {
+  extractPaletteFromImageUrl,
+  isWebP,
+  killParenthesisIn,
+} from '../utils/tools';
+import {
+  Neck,
+  Pants,
+  Shorts,
+  Socks,
+  withOrWithoutShort,
+} from '../utils/detail.enum';
 import { CreateCustomizationDto } from '../products/dto/create-customization.dto';
-import { SocksType } from '../products/enum/customization.enum';
+import {
+  PantsType,
+  ShortsType,
+  SocksType,
+} from '../products/enum/customization.enum';
 import { SERVER_URL } from '../config/enviroments';
 import * as path from 'path';
 import imageSize from 'image-size';
 @Injectable()
 export class PdfService {
-  async generatePdf(customization: CreateCustomizationDto, product, order?): Promise<Buffer> {
-    const { neck, pants, size, materials, shorts, socks, frontSide, backSide } = customization;
+  async generatePdf(
+    customization: CreateCustomizationDto,
+    product,
+    order?,
+  ): Promise<Buffer> {
+    const { neck, pants, size, materials, shorts, socks, frontSide, backSide } =
+      customization;
     const { images, sports } = product;
 
     try {
@@ -22,10 +41,22 @@ export class PdfService {
 
         // Definir rutas de las fuentes usando path.join
         const antonPath = path.join(__dirname, 'fonts/Anton/Anton-Regular.ttf');
-        const rasiolinePath = path.join(__dirname, 'fonts/Rasioline/DD rasioline.otf');
-        const spotlightPath = path.join(__dirname, 'fonts/Spot Light/Spot Light.otf');
-        const uninorthPath = path.join(__dirname, 'fonts/Uni North/UNINorth-College.otf');
-        const timesromanPath = path.join(__dirname, 'fonts/Times New Roman/TNR.ttf');
+        const rasiolinePath = path.join(
+          __dirname,
+          'fonts/Rasioline/DD rasioline.otf',
+        );
+        const spotlightPath = path.join(
+          __dirname,
+          'fonts/Spot Light/Spot Light.otf',
+        );
+        const uninorthPath = path.join(
+          __dirname,
+          'fonts/Uni North/UNINorth-College.otf',
+        );
+        const timesromanPath = path.join(
+          __dirname,
+          'fonts/Times New Roman/TNR.ttf',
+        );
         const arialPath = path.join(__dirname, 'fonts/Arial/ARIAL.ttf');
         const courierPath = path.join(__dirname, 'fonts/Courier New/cour.ttf');
         const verdanaPath = path.join(__dirname, 'fonts/Verdana/Verdana.ttf');
@@ -55,7 +86,9 @@ export class PdfService {
         // Cargar la imagen
         const imagePath = SERVER_URL + '/PdfBackground.png';
         try {
-          const { data } = await axios.get(imagePath, { responseType: 'arraybuffer' });
+          const { data } = await axios.get(imagePath, {
+            responseType: 'arraybuffer',
+          });
 
           // Convertir los datos de la respuesta en un buffer
           const imageBuffer = Buffer.from(data);
@@ -66,7 +99,6 @@ export class PdfService {
           doc.image(imageBuffer, {
             fit: [bgImageX, bgImageY], // Ajustar la imagen al tamaño del PDF
           });
-
         } catch (error) {
           console.log('Error al cargar la imagen:' + error.message);
         }
@@ -74,16 +106,24 @@ export class PdfService {
         // Descargar las imágenes de las URLs
         const imageUrls = [
           images[2] || images[0], // frontal remera
-          images[3] || images[1],  // posterior remera
-          neck ? Neck.find(n => n.name === neck).image : null, // cuello
-          frontSide.logos?.reduce((acc, logo) => acc += logo.logoUrl + '|', '') ?? null, // logo,
-          backSide.logos?.reduce((acc, logo) => acc += logo.logoUrl + '|', '') ?? null, // logo Back,
-          socks ? Socks.find(s => s.name === socks).image : null, // color de medias
+          images[3] || images[1], // posterior remera
+          neck ? Neck.find((n) => n.name === neck).image : null, // cuello
+          frontSide.logos?.reduce(
+            (acc, logo) => (acc += logo.logoUrl + '|'),
+            '',
+          ) ?? null, // logo,
+          backSide.logos?.reduce(
+            (acc, logo) => (acc += logo.logoUrl + '|'),
+            '',
+          ) ?? null, // logo Back,
+          socks ? Socks.find((s) => s.name === socks).image : null, // color de medias
         ];
 
         const fetchImageBuffer = async (url) => {
           try {
-            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            const response = await axios.get(url, {
+              responseType: 'arraybuffer',
+            });
             const buffer = Buffer.from(response.data);
             return isWebP(buffer) ? undefined : buffer;
           } catch (error) {
@@ -92,21 +132,23 @@ export class PdfService {
           }
         };
 
-        const imageBuffers: (Buffer | Buffer[] | void[])[] = await Promise.all(imageUrls.map(async (imageUrl) => {
-          if (imageUrl !== null && imageUrl.includes('|')) {
-            // Si imageUrl es un array, obtener buffers para cada URL en el array
-            const bffrs: Buffer[] = [];
-            for (const url of imageUrl.split('|').filter((l) => l !== '')) {
-              bffrs.push(await fetchImageBuffer(url));
+        const imageBuffers: (Buffer | Buffer[] | void[])[] = await Promise.all(
+          imageUrls.map(async (imageUrl) => {
+            if (imageUrl !== null && imageUrl.includes('|')) {
+              // Si imageUrl es un array, obtener buffers para cada URL en el array
+              const bffrs: Buffer[] = [];
+              for (const url of imageUrl.split('|').filter((l) => l !== '')) {
+                bffrs.push(await fetchImageBuffer(url));
+              }
+              return bffrs.filter((buffer) => buffer !== null); // Filtrar buffers nulos
+            } else if (imageUrl != null) {
+              // Si imageUrl es una única URL
+              const bffr = await fetchImageBuffer(imageUrl);
+              return bffr;
             }
-            return bffrs.filter(buffer => buffer !== null); // Filtrar buffers nulos
-          } else if (imageUrl != null) {
-            // Si imageUrl es una única URL
-            const bffr = await fetchImageBuffer(imageUrl);
-            return bffr;
-          }
-          return null;
-        }));
+            return null;
+          }),
+        );
 
         // Calcular las coordenadas de las imágenes
         const x1 = 200;
@@ -117,43 +159,104 @@ export class PdfService {
         let ShirtPalette = null;
         if (imageBuffers[0]) {
           ShirtPalette = await extractPaletteFromImageUrl(imageUrls[0]);
-          doc.image(imageBuffers[0] as Buffer, x1, y, { width: 500, height: 500 });
+          doc.image(imageBuffers[0] as Buffer, x1, y, {
+            width: 500,
+            height: 500,
+          });
         }
-        if (imageBuffers[1]) doc.image(imageBuffers[1] as Buffer, x2, y, { width: 500, height: 500 });
+        if (imageBuffers[1])
+          doc.image(imageBuffers[1] as Buffer, x2, y, {
+            width: 500,
+            height: 500,
+          });
 
         // // Agregar texto
 
         if (neck && imageBuffers[2]) {
-          doc.image(imageBuffers[2] as Buffer, 1460, 300, { width: 150, height: 150 });
+          doc.image(imageBuffers[2] as Buffer, 1460, 300, {
+            width: 150,
+            height: 150,
+          });
         }
 
         if (socks && socks !== SocksType['No Socks (+$0.00)']) {
           doc.font('Helvetica-Bold').fontSize(25).text('SOCKS', 1050, 920);
           // doc.font('Helvetica').fontSize(25).text(killParenthesisIn(socks), 1370, 1110);
-          doc.image(imageBuffers[5] as Buffer, 1050, 960, { width: 100, height: 100 });
+          doc.image(imageBuffers[5] as Buffer, 1050, 960, {
+            width: 100,
+            height: 100,
+          });
           doc.rect(1050, 960, 100, 100).stroke();
         }
 
         if (order) {
-          doc.fillColor('white').font('Helvetica-Bold').fontSize(25).text('ORDER:', 500, 200);
-          doc.fillColor('white').font('Helvetica').fontSize(25).text('#' + order, 600, 200);
+          doc
+            .fillColor('white')
+            .font('Helvetica-Bold')
+            .fontSize(25)
+            .text('ORDER:', 500, 200);
+          doc
+            .fillColor('white')
+            .font('Helvetica')
+            .fontSize(25)
+            .text('#' + order, 600, 200);
         }
 
-        doc.fillColor('white').font('Helvetica').fontSize(25).text(sports, 635, 200);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(25)
+          .text(sports, 635, 200);
 
-        doc.fillColor('white').font('Helvetica').fontSize(20).text('1', 1000, 160);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(20)
+          .text('1', 1000, 160);
 
-        doc.fillColor('white').font('Helvetica').fontSize(20).text(size.split('-').pop(), 980, 190);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(20)
+          .text(size.split('-').pop(), 980, 190);
 
-        doc.fillColor('white').font('Helvetica').fontSize(20).text(size, 935, 220);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(20)
+          .text(size, 935, 220);
 
-        doc.fillColor('white').font('Helvetica').fontSize(18).text(killParenthesisIn(materials), 1370, 160);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(18)
+          .text(killParenthesisIn(materials), 1370, 160);
 
-        doc.fillColor('white').font('Helvetica').fontSize(18).text(neck ? killParenthesisIn(neck) : 'No', 1405, 190);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(18)
+          .text(neck ? killParenthesisIn(neck) : 'No', 1405, 190);
 
-        doc.fillColor('white').font('Helvetica').fontSize(20).text(shorts && shorts !== withOrWithoutShort[1] && shorts !== Shorts(sports)[0].name ? killParenthesisIn(shorts) : 'No', 1340, 220);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(20)
+          .text(
+            shorts &&
+              shorts !== withOrWithoutShort[1] &&
+              shorts !== Shorts(sports)[0].name
+              ? killParenthesisIn(shorts)
+              : 'No',
+            1340,
+            220,
+          );
 
-        doc.fillColor('white').font('Helvetica').fontSize(20).text(pants && pants, 1340, 250);
+        doc
+          .fillColor('white')
+          .font('Helvetica')
+          .fontSize(20)
+          .text(pants && pants, 1340, 250);
 
         if (backSide.texts[0]) {
           const maxVisibleTexts = 9; // Número máximo de textos visibles antes de truncar
@@ -163,7 +266,10 @@ export class PdfService {
           for (const [index, each] of backSide.texts.entries()) {
             if (index < maxVisibleTexts) {
               // Configurar la fuente, tamaño y color del texto
-              doc.font(each.font || 'Helvetica').fontSize(each.textSize).fillColor(each.textColor);
+              doc
+                .font(each.font || 'Helvetica')
+                .fontSize(each.textSize)
+                .fillColor(each.textColor);
 
               // Calcular el tamaño del texto
               const textWidth = doc.widthOfString(each.text);
@@ -194,16 +300,24 @@ export class PdfService {
               if (each.font) {
                 fontsSet.add(each.font);
               }
-
             } else {
               // Si se ha llegado al máximo de textos visibles, sale del bucle
               break;
             }
           }
-          doc.fillColor('black').font(backSide.texts[0].font).text(backSide.texts[0].font, 775, 980);
-          doc.fillColor('black').font('Helvetica').fontSize(20).text(backSide.texts.map(t => t.text).join(', '), 1390, 1015, { width: 400, align: 'left' });
+          doc
+            .fillColor('black')
+            .font(backSide.texts[0].font)
+            .text(backSide.texts[0].font, 775, 980);
+          doc
+            .fillColor('black')
+            .font('Helvetica')
+            .fontSize(20)
+            .text(backSide.texts.map((t) => t.text).join(', '), 1390, 1015, {
+              width: 400,
+              align: 'left',
+            });
         }
-
 
         if (backSide.numbers[0]) {
           const maxVisibleNumbers = 9; // Número máximo de números visibles antes de truncar
@@ -213,7 +327,10 @@ export class PdfService {
           for (const [index, each] of backSide.numbers.entries()) {
             if (index < maxVisibleNumbers) {
               // Configurar la fuente, tamaño y color del número
-              doc.font(each.font || 'Helvetica').fontSize(each.numberSize).fillColor(each.numberColor);
+              doc
+                .font(each.font || 'Helvetica')
+                .fontSize(each.numberSize)
+                .fillColor(each.numberColor);
 
               // Calcular el tamaño del número
               const numberWidth = doc.widthOfString(each.number);
@@ -247,7 +364,14 @@ export class PdfService {
             }
           }
 
-          doc.fillColor('black').font('Helvetica').fontSize(20).text(backSide.numbers.map(n => n.number).join(', '), 1390, 915, { width: 350, align: 'left' });
+          doc
+            .fillColor('black')
+            .font('Helvetica')
+            .fontSize(20)
+            .text(backSide.numbers.map((n) => n.number).join(', '), 1390, 915, {
+              width: 350,
+              align: 'left',
+            });
         }
 
         if (frontSide.texts[0]) {
@@ -262,7 +386,10 @@ export class PdfService {
               doc.save();
 
               // Configurar la fuente, tamaño y color del texto
-              doc.font(each.font || 'Helvetica').fontSize(each.textSize).fillColor(each.textColor);
+              doc
+                .font(each.font || 'Helvetica')
+                .fontSize(each.textSize)
+                .fillColor(each.textColor);
 
               // Calcular el tamaño del texto
               const textWidth = doc.widthOfString(each.text);
@@ -294,7 +421,14 @@ export class PdfService {
             }
           }
 
-          doc.fillColor('black').font('Helvetica').fontSize(20).text(frontSide.texts.map(t => t.text).join(', '), 1390, 780, { width: 400, align: 'left' });
+          doc
+            .fillColor('black')
+            .font('Helvetica')
+            .fontSize(20)
+            .text(frontSide.texts.map((t) => t.text).join(', '), 1390, 780, {
+              width: 400,
+              align: 'left',
+            });
         }
 
         if (frontSide.numbers[0]) {
@@ -304,7 +438,10 @@ export class PdfService {
           for (const [index, each] of frontSide.numbers.entries()) {
             if (index < maxVisibleNumbers) {
               // Configurar la fuente, tamaño y color del número
-              doc.font(each.font || 'Helvetica').fontSize(each.numberSize).fillColor(each.numberColor);
+              doc
+                .font(each.font || 'Helvetica')
+                .fontSize(each.numberSize)
+                .fillColor(each.numberColor);
 
               // Calcular el tamaño del número
               const numberWidth = doc.widthOfString(each.number);
@@ -330,23 +467,30 @@ export class PdfService {
 
               // Restaurar el estado original
               doc.restore();
-
             } else {
               // Si se ha llegado al máximo de números visibles, sale del bucle
               break;
             }
           }
-          doc.fillColor('black').font('Helvetica').fontSize(20).text(frontSide.numbers.map(n => n.number).join(', '), 1390, 690, { width: 350, align: 'left' });
+          doc
+            .fillColor('black')
+            .font('Helvetica')
+            .fontSize(20)
+            .text(
+              frontSide.numbers.map((n) => n.number).join(', '),
+              1390,
+              690,
+              { width: 350, align: 'left' },
+            );
         }
 
         if (frontSide.logos && imageBuffers[3] && imageBuffers[3][0]) {
-          const logos = frontSide.logos.filter(l => l.logoUrl);
+          const logos = frontSide.logos.filter((l) => l.logoUrl);
 
           // Itera sobre los logotipos
           for (const [index, each] of logos.entries()) {
             // Obtén el tamaño de la imagen
             if (imageBuffers[3][index] !== undefined) {
-
               const dimensions = imageSize(imageBuffers[3][index] as Buffer);
               const imageW = dimensions.width;
               const imageH = dimensions.height;
@@ -374,17 +518,21 @@ export class PdfService {
               doc.rotate(each.rotate || 0);
 
               // Dibujar el logotipo centrado en el nuevo origen
-              doc.image(imageBuffers[3][index] as Buffer, -scaledWidth / 2, -scaledHeight / 2, { width: scaledWidth });
+              doc.image(
+                imageBuffers[3][index] as Buffer,
+                -scaledWidth / 2,
+                -scaledHeight / 2,
+                { width: scaledWidth },
+              );
 
               // Restaurar el estado original
               doc.restore();
             }
-
           }
         }
 
         if (backSide.logos && imageBuffers[4] && imageBuffers[4][0]) {
-          const logos = backSide.logos.filter(l => l.logoUrl);
+          const logos = backSide.logos.filter((l) => l.logoUrl);
 
           // Itera sobre los logotipos
           for (const [index, each] of logos.entries()) {
@@ -417,7 +565,12 @@ export class PdfService {
               doc.rotate(each.rotate || 0);
 
               // Dibujar el logotipo centrado en el nuevo origen
-              doc.image(imageBuffers[4][index] as Buffer, -scaledWidth / 2, -scaledHeight / 2, { width: scaledWidth });
+              doc.image(
+                imageBuffers[4][index] as Buffer,
+                -scaledWidth / 2,
+                -scaledHeight / 2,
+                { width: scaledWidth },
+              );
 
               // Restaurar el estado original
               doc.restore();
@@ -426,10 +579,13 @@ export class PdfService {
         }
 
         const allLogos = [...imageBuffers[3], ...imageBuffers[4]];
-        allLogos.filter(l => l !== undefined).slice(0, 3).map((logo, i) => {
-          // Dibuja una copia pequeña del logotipo para referencia
-          doc.image(logo as Buffer, 1385 + 110 * i + 1, 520, { width: 100 });
-        });
+        allLogos
+          .filter((l) => l !== undefined)
+          .slice(0, 3)
+          .map((logo, i) => {
+            // Dibuja una copia pequeña del logotipo para referencia
+            doc.image(logo as Buffer, 1385 + 110 * i + 1, 520, { width: 100 });
+          });
 
         // PALETA DE COLORES DE LA CAMISETA
         if (ShirtPalette) {

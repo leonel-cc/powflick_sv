@@ -14,6 +14,7 @@ import { CurrencyService } from '../currency/currency.service';
 import { CouponService } from '../coupon/coupon.service';
 import { CouponModule } from '../coupon/coupon.module';
 import { BrevoService } from 'src/brevo/brevo.service';
+import { LLPService } from 'src/payments/LLP.service';
 
 @Module({
   imports: [CouponModule],
@@ -31,6 +32,7 @@ import { BrevoService } from 'src/brevo/brevo.service';
     ConfigService,
     CurrencyService,
     CouponService,
+    LLPService,
   ],
   controllers: [OrdersController],
 })
