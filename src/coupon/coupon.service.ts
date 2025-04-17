@@ -148,8 +148,7 @@ export class CouponService {
     } catch (error) {
       console.log(error);
 
-      throw new HttpException(error.message, error.status);
-    }
+      throw new HttpException(error.message, error.status ?? HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   async findAllCouponUsers() {
