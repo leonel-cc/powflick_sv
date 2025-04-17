@@ -11,7 +11,7 @@ import {
   LLP_MERCHANT_NUMBER,
   LLP_SECONDARY_MERCHANT_NUMBER,
 } from '../config/enviroments';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
 import { Transaction } from 'sequelize';
 import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
@@ -19,8 +19,8 @@ import { Direction } from 'src/directions/entity/directions.entity';
 import { Cases } from 'src/mail/dto/sendMail.dto';
 import { IPurchaseContext } from 'src/mail/interfaces/purchase-context.interface';
 import { Product } from 'src/products/entity/products.entity';
-import { User } from 'src/users/entity/users.entity';
-import { currencySymbol } from 'src/utils/tools';
+import { User } from '../users/entity/users.entity';
+import { currencySymbol } from '../utils/tools';
 import { Order, OrderStateEnum } from '../orders/entity/order.entity';
 
 @Injectable()
