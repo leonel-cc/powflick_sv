@@ -255,12 +255,14 @@ export class ProductsService {
           }
 
           // Crear la relación en la tabla intermedia CollectionProduct
-          await CollectionProduct.create(
+          await CollectionProduct.findOrCreate(
             {
-              productId: product.id,
-              collectionId: collection.id,
+              where: {
+                productId: product.id,
+                collectionId: collection.id,
+              },
+              transaction,
             },
-            { transaction },
           );
         }
       }
@@ -1102,6 +1104,22 @@ export class ProductsService {
     }
   }
 
+  async getAllProductsToIntercom() {
+    try {
+      const products = await Product.findAll({ attributes: ['title', 'slug', 'URL', 'colors'] });
+
+      const returned = products.map((p) => {
+        return { title: p.title, link: 'https://www.powflick.com/products/' + (p.slug.replace(' ', '%20')), image: p.URL, colors: p.colors };
+      });
+
+      return returned;
+    } catch (error) {
+      throw new HttpException(
+        'Error getting products: ' + error.message,
+        500,
+      );
+    }
+  }
   // async examFolders() {
   //   try {
   //     const localFolderPath = path.resolve(__dirname, '../../Existentes');
