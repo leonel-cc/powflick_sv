@@ -85,7 +85,7 @@ export class AuthService {
       // Configurar datos del correo
       const context = {
         name: user.firstName,
-        link: `${CLIENT_URL}/recoverPassword?token=${token}`,
+        link: `${CLIENT_URL}/?token=${token}`,
       };
       const mailData = {
         EmailAddress: user.email,
