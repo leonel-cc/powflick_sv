@@ -46,7 +46,7 @@ export class OrdersController {
   @Get(':id')
   async findOneOrder(
     @GetUser() user: IGetUser,
-      @Param('id') id: string,
+    @Param('id') id: string,
   ): Promise<IOrder> {
     const response = await this.ordersService.findOneOrder(id, user);
     return response;
@@ -71,17 +71,19 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
-  @GetUser() { userId }: IGetUser,
-    @Body() createOrder: CreateOrderDto,
+    @GetUser() { userId }: IGetUser,
+    @Body()
+    { couponId, directionId, note, cartProducts }: CreateOrderDto,
     @Headers('Currency') currency: string,
     @Headers('CurrencyValue') currencyValue: string,
   ) {
     const response = await this.ordersService.createOrderLLP(
       {
-        couponId: createOrder.couponId,
+        couponId,
         userId,
-        directionId: createOrder.directionId,
-        note: createOrder.note, // Asegurarse de pasar el campo note
+        directionId,
+        note,
+        cartProducts,
       },
       { name: currency, value: +currencyValue },
     );

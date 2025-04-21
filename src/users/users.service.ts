@@ -21,7 +21,6 @@ import { Product } from '../products/entity/products.entity';
 import { Cases } from '../mail/dto/sendMail.dto';
 import { ICreateUserContext } from '../mail/interfaces/create-account-context.interface';
 import { MailService } from '../mail/mail.service';
-import { ShoppingCart } from '../shopping-cart/entity/shopping-cart.entity';
 import { Order } from '../orders/entity/order.entity';
 import { Sport } from '../sport/entity/sport.entity';
 import { Direction } from '../directions/entity/directions.entity';
@@ -40,11 +39,12 @@ export class UsersService {
     private readonly sequelize: Sequelize,
     private readonly mailsService: MailService,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<ICreateUser> {
     try {
-      const { firstName, lastName, email, password, phone, image, provider } = createUserDto;
+      const { firstName, lastName, email, password, phone, image, provider } =
+        createUserDto;
 
       const userData = {
         firstName,
@@ -52,14 +52,20 @@ export class UsersService {
         email,
         phone,
         image: image ?? null,
-        password: password ? await this.authService.generatePassword(password) : '',
+        password: password
+          ? await this.authService.generatePassword(password)
+          : '',
         provider: provider || UserProviders.none,
       };
 
       const newUser = await User.create(userData);
 
       // Generar el token
-      const token = await this.authService.generateToken(newUser.id, newUser.email, newUser.rol);
+      const token = await this.authService.generateToken(
+        newUser.id,
+        newUser.email,
+        newUser.rol,
+      );
 
       // Enviar correo de confirmación
       await this.mailsService.sendMails({
@@ -89,13 +95,17 @@ export class UsersService {
       const user = await User.findOne({ where: { email } });
 
       if (user) {
-        throw new ConflictException('An account with this email already exists.');
+        throw new ConflictException(
+          'An account with this email already exists.',
+        );
       }
       return true;
     } catch (error) {
       throw error instanceof ConflictException
         ? error
-        : new InternalServerErrorException('Internal server error, try again later');
+        : new InternalServerErrorException(
+            'Internal server error, try again later',
+          );
     }
   }
 
@@ -109,16 +119,24 @@ export class UsersService {
       }
 
       // Si no se pasa password o no coincide, gestionar el flujo
-      if (password && !(await this.authService.comparePassword(password, checkUser.password))) {
-        const errorMessage = checkUser.provider === UserProviders.none
-          ? 'Invalid password, please try again.'
-          : `This account was registered with ${checkUser.provider}. Please use ${checkUser.provider} to log in.`;
+      if (
+        password &&
+        !(await this.authService.comparePassword(password, checkUser.password))
+      ) {
+        const errorMessage =
+          checkUser.provider === UserProviders.none
+            ? 'Invalid password, please try again.'
+            : `This account was registered with ${checkUser.provider}. Please use ${checkUser.provider} to log in.`;
 
         throw new UnauthorizedException(errorMessage);
       }
 
       // Generar el token y fecha de expiración
-      const token = await this.authService.generateToken(checkUser.id, checkUser.email, checkUser.rol);
+      const token = await this.authService.generateToken(
+        checkUser.id,
+        checkUser.email,
+        checkUser.rol,
+      );
       const tokenExpiration = this.authService.getTokenExpirationDate(token);
 
       return {
@@ -139,13 +157,14 @@ export class UsersService {
     }
   }
 
-
   public async findOneByEmail(email: string): Promise<User> {
     try {
       const user = await User.findOne({ where: { email } });
 
       if (!user) {
-        throw new UnauthorizedException('The email entered does not correspond to any registered user.');
+        throw new UnauthorizedException(
+          'The email entered does not correspond to any registered user.',
+        );
       }
 
       return user;
@@ -156,7 +175,6 @@ export class UsersService {
         : new InternalServerErrorException('Internal server error.');
     }
   }
-
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
@@ -183,7 +201,9 @@ export class UsersService {
     } catch (error) {
       // Se agrega el detalle del error para mejor diagnóstico
       throw new InternalServerErrorException(
-        `Server error, try again later. Error: ${error?.message || 'Unknown error'}`,
+        `Server error, try again later. Error: ${
+          error?.message || 'Unknown error'
+        }`,
       );
     }
   }
@@ -204,7 +224,6 @@ export class UsersService {
       );
     }
   }
-
 
   async findProfileUser(userId: string) {
     try {
@@ -227,19 +246,6 @@ export class UsersService {
               {
                 model: Product,
                 attributes: ['id', 'title'],
-              },
-            ],
-          },
-          {
-            model: ShoppingCart,
-            attributes: ['id'],
-
-            include: [
-              {
-                model: Product,
-                attributes: ['id', 'title', 'price', 'images'],
-                include: [{ model: Sport }],
-                through: { attributes: ['id', 'amount'] },
               },
             ],
           },
@@ -335,7 +341,7 @@ export class UsersService {
         default:
           throw new InternalServerErrorException(
             'An error occurred while working with the User entity when investigating the user profile.\n' +
-            error.message,
+              error.message,
           );
       }
     }
@@ -403,17 +409,17 @@ export class UsersService {
 
       if (!user.isActive) {
         /* Realiza la eliminación del carrito de compras dentro de la transacción. */
-        await ShoppingCart.destroy({ where: { userId: id } });
         return {
-          message: `The User's account was inactivated: ${user.firstName + ' ' + user.lastName
+          message: `The User's account was inactivated: ${
+            user.firstName + ' ' + user.lastName
           } correctly.`,
           status: HttpStatusCode.NoContent,
         };
       } else {
         /* Realiza la creación del carrito de compras dentro de la transacción. */
-        await ShoppingCart.create({ userId: id });
         return {
-          message: `The Users account has been restored ${user.firstName + ' ' + user.lastName
+          message: `The Users account has been restored ${
+            user.firstName + ' ' + user.lastName
           } correctly.`,
           status: HttpStatusCode.Ok,
         };

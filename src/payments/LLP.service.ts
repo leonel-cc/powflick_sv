@@ -11,7 +11,7 @@ import {
   LLP_MERCHANT_NUMBER,
   LLP_SECONDARY_MERCHANT_NUMBER,
 } from '../config/enviroments';
-import moment from 'moment-timezone';
+import * as moment from 'moment-timezone';
 import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
 import { Transaction } from 'sequelize';
 import { CouponUser } from 'src/coupon/entities/coupon-user.entity';
@@ -133,7 +133,6 @@ cbW0zY24fmpv/DKaNpuAfkg=
         {
           message: 'Error creando checkout LianLianPay',
           error: error?.message || 'Unknown error',
-          stack: error?.stack,
           raw: JSON.stringify(error, null, 2),
         },
         400,

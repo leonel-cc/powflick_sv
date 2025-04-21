@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "neondb_owner",
-    "password": "pjXB41rVnWPv",
+    "password": "npg_xS6rjqf2QIFb",
     "database": "neondb",
-    "host": "ep-withered-thunder-a5iv8bme.us-east-2.aws.neon.tech",
+    "host": "ep-rough-dawn-a4x8kgvp-pooler.us-east-1.aws.neon.tech",
     "port": "5432",
     "dialect": "postgres",
     "dialectOptions": {
@@ -14,10 +14,10 @@
     }
   },
   "test": {
-   "username": "neondb_owner",
-    "password": "pjXB41rVnWPv",
+    "username": "neondb_owner",
+    "password": "npg_xS6rjqf2QIFb",
     "database": "neondb",
-    "host": "ep-withered-thunder-a5iv8bme.us-east-2.aws.neon.tech",
+    "host": "ep-rough-dawn-a4x8kgvp-pooler.us-east-1.aws.neon.tech",
     "port": "5432",
     "dialect": "postgres",
     "dialectOptions": {
