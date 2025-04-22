@@ -808,166 +808,73 @@ export class OrdersService {
         for (const customization of customizations) {
           let description = '';
 
-          if (customization.size) {
-            description += `Size: ${customization.size}, `;
-          }
-          if (customization.neck) {
-            description += `Neck: ${
-              customization.neck.split(' ')[1]
-                ? customization.neck.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.neck.split(' ').pop()),
-                      ),
-                    ),
+          // Función auxiliar para procesar personalizaciones comunes
+          const processCustomization = (type: string, value: string) => {
+            if (value) {
+              const [name, price] = value.split(' ');
+              const formattedPrice = price
+                ? ` (${currencySymbol(
+                    currency.name,
+                  )}${this.currencyService.convertCurrency(
+                    Number(eliminarCaracteresNoNumericos(price)),
                     currency.value,
-                  ) +
-                  ')'
-                : customization.neck
-            }, `;
-          }
-          if (customization.socks) {
-            description += `Socks: ${
-              customization.socks.split(' ')[1]
-                ? customization.socks.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.socks.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.socks
-            }, `;
-          }
-          if (customization.pants) {
-            description += `Pants: ${
-              customization.pants.split(' ')[1]
-                ? customization.pants.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.pants.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.pants
-            }, `;
-          }
-          if (customization.shorts) {
-            description += `Shorts: ${
-              customization.shorts.split(' ')[1]
-                ? customization.shorts.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.shorts.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.shorts
-            }, `;
-          }
-          if (customization.materials) {
-            description += `Materials: ${
-              customization.materials.split(' ')[1]
-                ? customization.materials.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.materials.split(' ').pop()),
-                      ),
-                    ),
-                    currency.value,
-                  ) +
-                  ')'
-                : customization.materials
-            }, `;
-          }
+                  )})`
+                : '';
+              description += `${type}: ${name}${formattedPrice}, `;
+            }
+          };
 
-          if (
-            customization.frontSide.texts.some((e) => e.text) ||
-            customization.frontSide.numbers.some((e) => e.number)
-          ) {
-            description += ' | Front side: ';
-            if (customization.frontSide.texts.some((e) => e.text)) {
-              customization.frontSide.texts
+          // Procesar personalizaciones comunes
+          processCustomization('Size', customization.size);
+          processCustomization('Neck', customization.neck);
+          processCustomization('Socks', customization.socks);
+          processCustomization('Pants', customization.pants);
+          processCustomization('Shorts', customization.shorts);
+          processCustomization('Materials', customization.materials);
+
+          // Procesar textos y números del lado frontal
+          const processSide = (side: string, texts: any[], numbers: any[]) => {
+            if (texts.some((e) => e.text) || numbers.some((e) => e.number)) {
+              description += ` | ${side}: `;
+              texts
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
-                    }, `),
+                    (description += `Text ${i}: ${e.text} (+ ${currencySymbol(
+                      currency.name,
+                    )}${this.currencyService.convertCurrency(
+                      3.99,
+                      currency.value,
+                    )}), `),
                 );
-            }
-            if (customization.frontSide.numbers.some((e) => e.number)) {
-              customization.frontSide.numbers
+              numbers
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
-                    }, `),
+                    (description += `Number ${i + 1}: ${
+                      e.number
+                    } (+ ${currencySymbol(
+                      currency.name,
+                    )}${this.currencyService.convertCurrency(
+                      3.99,
+                      currency.value,
+                    )}), `),
                 );
             }
-          }
+          };
 
-          if (
-            customization.backSide.texts.some((e) => e.text) ||
-            customization.backSide.numbers.some((e) => e.number)
-          ) {
-            description += ' | Back side: ';
-            if (customization.backSide.texts.some((e) => e.text)) {
-              customization.backSide.texts
-                .filter((e) => e.text)
-                .forEach(
-                  (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
-                    }, `),
-                );
-            }
-            if (customization.backSide.numbers.some((e) => e.number)) {
-              customization.backSide.numbers
-                .filter((e) => e.number)
-                .forEach(
-                  (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
-                    }, `),
-                );
-            }
-          }
+          // Procesar lados frontal y trasero
+          processSide(
+            'Front side',
+            customization.frontSide.texts,
+            customization.frontSide.numbers,
+          );
+          processSide(
+            'Back side',
+            customization.backSide.texts,
+            customization.backSide.numbers,
+          );
+
           const currencyChanged = this.currencyService.convertCurrency(
             product.price + customization.price,
             currency.value,
@@ -991,10 +898,14 @@ export class OrdersService {
                 currency.value,
               ),
             ),
-            description: '',
+            description: description
+              .replace(/[^a-zA-Z0-9\s,:]/g, '') // Elimina caracteres especiales
+              .slice(0, 128), // Limita la longitud a 128 caracteres
             category: 'custom jersey',
             sku: product.id,
-            url: 'https://www.powflick.com' + '/products/' + product.id,
+            url:
+              product.images[0] ||
+              'https://www.powflick.com/products/' + product.id, // Actualización aquí
             quantity: 1,
             shipping_provider: 'other',
           });
