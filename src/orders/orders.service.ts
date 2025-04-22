@@ -779,7 +779,7 @@ export class OrdersService {
       const lineitems: any[] = [];
       const customizationsOrder: {
         productId: string;
-        customization: Customization;
+        customization: any;
       }[] = [];
 
       for (const {
@@ -910,9 +910,21 @@ export class OrdersService {
             shipping_provider: 'other',
           });
 
+          const customWithDesignName = {
+            ...customization,
+            designName:
+              (
+                thisUser.firstName.slice(0, 4) +
+                Math.floor(Math.random() * (99 - 10 + 1)) +
+                10 +
+                '-' +
+                product.slug
+              ).toUpperCase() + '.pdf',
+          };
+
           customizationsOrder.push({
             productId: product.id,
-            customization: customization,
+            customization: customWithDesignName,
           });
         }
       }
