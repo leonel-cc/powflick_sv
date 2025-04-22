@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
-import { ShoppingCartService } from '../shopping-cart/shopping-cart.service';
 import { UsersService } from '../users/users.service';
 import { ProductsService } from '../products/products.service';
 import { MailService } from '../mail/mail.service';
@@ -21,7 +20,6 @@ import { LLPService } from 'src/payments/LLP.service';
   providers: [
     BrevoService,
     OrdersService,
-    ShoppingCartService,
     UsersService,
     ProductsService,
     MailService,

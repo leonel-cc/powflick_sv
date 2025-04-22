@@ -8,7 +8,6 @@ import { CategoriesModule } from './categories/categories.module';
 import { SportModule } from './sport/sport.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { MailModule } from './mail/mail.module';
 import { PdfService } from './pdf/pdf.service';
 import { PdfController } from './pdf/pdf.controller';
@@ -47,7 +46,6 @@ import { LLPService } from './payments/LLP.service';
     SportModule,
     UsersModule,
     AuthModule,
-    ShoppingCartModule,
     MailModule,
     DirectionsModule,
     OrdersModule,
