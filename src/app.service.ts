@@ -171,14 +171,15 @@ export class AppService {
         const filteredCollections = collections
           .filter(collection =>
             collection.products.some(product =>
-              product.product_categories.toLowerCase().includes(category.title.toLocaleLowerCase()), // Verifica si el producto pertenece a la categoría
+              product.categories.some(c => c.name.toLowerCase() === category.title.toLowerCase()), // Verifica si el producto pertenece a la categoría
             ),
           )
           .map(collection => ({
             title: collection.title,
             products: collection.products.filter(product =>
-              product.product_categories.toLowerCase().includes(category.title.toLocaleLowerCase()), // Solo productos de la categoría actual
-            ).slice(0, 3),
+              product.categories.some(c => c.name.toLowerCase() === category.title.toLocaleLowerCase()), // Solo productos de la categoría actual
+            ).sort((a, b) => a.score - b.score) // Orden por score descendente
+              .slice(0, 3),
           }));
 
         return {
@@ -193,7 +194,7 @@ export class AppService {
         },
       };
     } catch (error) {
-      console.error('Error obtaining landing data:', error);
+      console.error('Error obtaining navbar data:', error);
       throw new HttpException(
         'An error occurred while obtaining the landing data',
         HttpStatus.BAD_REQUEST,

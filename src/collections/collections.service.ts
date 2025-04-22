@@ -6,6 +6,7 @@ import { CollectionProduct } from './entity/collectionProduct.entity';
 import { Product } from '../products/entity/products.entity';
 import { Op } from 'sequelize';
 import { deleteIfNoRelations } from '../utils/hooks';
+import { Categories } from 'src/categories/entity/categories.entity';
 
 @Injectable()
 export class CollectionsService {
@@ -147,6 +148,11 @@ export class CollectionsService {
         {
           model: Product,
           where: { status: 'publish' },
+          order: [['score', 'DESC']],
+          include: [{
+            model: Categories,
+            attributes: ['name'],
+          }],
           through: { attributes: [] },
         },
       ],

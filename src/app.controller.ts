@@ -98,18 +98,18 @@ export class AppController {
   async getNavbar(
   @Res() res: Response,
   ) {
-    const cacheKey = 'navbar';
-    const cachedData = await this.cacheManager.get(cacheKey);
+    // const cacheKey = 'navbar';
+    // const cachedData = await this.cacheManager.get(cacheKey);
 
-    if (cachedData) {
-      res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
-      return res.status(200).json(cachedData);
-    }
+    // if (cachedData) {
+    //   res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
+    //   return res.status(200).json(cachedData);
+    // }
 
     const data = await this.appService.getNavbar();
 
     // Almacena en caché el resultado por 5 minutos
-    await this.cacheManager.set(cacheKey, data);
+    // await this.cacheManager.set(cacheKey, data);
 
     res.setHeader('X-Cache-Status', 'MISS'); // Indica que no estaba en el caché
     return res.status(200).json(data);

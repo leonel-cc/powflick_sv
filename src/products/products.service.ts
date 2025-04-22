@@ -532,8 +532,6 @@ export class ProductsService {
       if (filters.color) query['colors'] = { [Op.contains]: [filters.color] };
       if (filters.color2)
         query['colors'] = { [Op.contains]: [filters.color, filters.color2] };
-      if (filters.category)
-        query['product_categories'] = { [Op.like]: `%${filters.category}%` };
       if (filters.minPrice && filters.maxPrice) {
         query['price'] = {
           [Op.gte]: parseFloat(filters.minPrice),
@@ -601,6 +599,11 @@ export class ProductsService {
         order,
         include: [
           {
+            model: Categories, // Modelo relacionado
+            attributes: ['name'], // Solo traer el título
+            where: filters.category ? { name: { [Op.iLike]: `%${filters.category}%` } } : undefined,
+          },
+          {
             model: Collection, // Modelo relacionado
             attributes: ['title'], // Solo traer el título
             where: filters.collection ? { title: { [Op.iLike]: `%${filters.collection}%` } } : undefined,
@@ -650,7 +653,7 @@ export class ProductsService {
       const categoryMap = new Map<string, { title: string; child: { title: string }[] }>();
 
       products.forEach((product) => {
-        const categories = product.product_categories?.split('|'); // Separar categorías
+        const categories = product.categories.map(c => c.name); // Separar categorías
         const collection = product.collections?.[0]?.title;
 
         if (categories) {
