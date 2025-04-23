@@ -22,6 +22,7 @@ import { CollectionProduct } from '../collections/entity/collectionProduct.entit
 import { Conversation } from '../messages/entity/conversationMessage';
 import { Tags } from '../tags/entity/tags.entity';
 import { ProductTags } from '../tags/entity/productTags.entity';
+import { FreeDesign } from 'src/free-design/entity/free-design.entity';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ProductTags } from '../tags/entity/productTags.entity';
         Conversation,
         Tags,
         ProductTags,
+        FreeDesign,
       ],
       ssl: true,
       dialectOptions: {

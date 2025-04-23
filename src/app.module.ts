@@ -36,6 +36,7 @@ import * as env from './config/enviroments';
 import { BrevoModule } from './brevo/brevo.module';
 import { BrevoService } from './brevo/brevo.service';
 import { LLPService } from './payments/LLP.service';
+import { FreeDesignModule } from './free-design/free-design.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { LLPService } from './payments/LLP.service';
       }),
     }),
     TagsModule,
+    FreeDesignModule,
   ],
   controllers: [
     AppController,
