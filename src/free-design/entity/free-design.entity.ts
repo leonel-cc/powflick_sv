@@ -60,6 +60,12 @@ export class FreeDesign extends Model<FreeDesign> {
     secondaryColors: string[];
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+    font: string;
+
+  @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: false,

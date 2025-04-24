@@ -24,6 +24,9 @@ export class CreateFreeDesignDto {
   @IsArray()
     secondaryColors: string[];
 
+  @IsString()
+    font: string;
+
   @IsBoolean()
     addNames: boolean;
 
