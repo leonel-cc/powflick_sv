@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { CreateFreeDesignDto } from './dto/create-free-design.dto';
 import { Op } from 'sequelize';
 import { FreeDesign } from './entity/free-design.entity';
@@ -70,5 +70,11 @@ export class FreeDesignService {
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async findOne(id: string) {
+    const design = await FreeDesign.findOne({ where: { id } });
+    if (!design) throw new NotFoundException(`Free design with id ${id} not found`);
+    return design;
   }
 }
