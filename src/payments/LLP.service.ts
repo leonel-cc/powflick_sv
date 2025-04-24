@@ -127,12 +127,12 @@ cbW0zY24fmpv/DKaNpuAfkg=
         sessionId: parsedBody.order.ll_transaction_id,
       };
     } catch (error) {
-      console.error('LianLianPay SDK Error:', error.message);
+      console.error('LianLianPay SDK Error:', error?.message || error);
 
       throw new HttpException(
         {
           message: 'Error creando checkout LianLianPay',
-          error: error?.message || 'Unknown error',
+          error: error?.message || error?.return_message || 'Unknown error',
           raw: JSON.stringify(error, null, 2),
         },
         400,
@@ -322,8 +322,7 @@ cbW0zY24fmpv/DKaNpuAfkg=
       throw new HttpException(
         {
           message: 'Error al consultar el estado de la orden',
-          error: error?.message || 'Unknown error',
-          stack: error?.stack,
+          error: error?.message || error?.return_message || 'Unknown error',
           raw: JSON.stringify(error, null, 2),
         },
         400,
@@ -392,13 +391,12 @@ cbW0zY24fmpv/DKaNpuAfkg=
         sessionId3DS: parsedBody.order.ll_transaction_id,
       };
     } catch (error) {
-      console.error('LianLianPay SDK Error:', error.message);
+      console.error('LianLianPay SDK Error:', error?.message || error);
 
       throw new HttpException(
         {
           message: 'Error creando checkout LianLianPay',
-          error: error?.message || 'Unknown error',
-          stack: error?.stack,
+          error: error?.message || error?.return_message || 'Unknown error',
           raw: JSON.stringify(error, null, 2),
         },
         400,

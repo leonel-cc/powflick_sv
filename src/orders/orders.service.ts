@@ -797,7 +797,7 @@ export class OrdersService {
             amount: product.amount,
             price: Number(
               this.currencyService.convertCurrency(
-                Number(product.subtotal),
+                Number(subtotal),
                 currency.value,
               ),
             ),
