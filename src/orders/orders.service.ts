@@ -705,6 +705,8 @@ export class OrdersService {
 
       const { products, total } = await this.filterPrices(cartProducts);
 
+      console.log('products', products, 'total', total);
+
       const thisDirection = await Direction.findByPk(directionId);
 
       if (cartProducts?.length === 0)
@@ -960,7 +962,7 @@ export class OrdersService {
       };
 
       const payload: any = {
-        order_amount: Number(total), // suma de todos los montos
+        order_amount: Number(Number(total).toFixed(2)), // suma de todos los montos, redondeado a 2 decimales
         order_currency_code: 'USD',
         order_description: 'Custom jerseys order',
         shipping,
