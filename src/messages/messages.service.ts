@@ -8,14 +8,15 @@ import { User } from '../users/entity/users.entity';
 import { Conversation } from './entity/conversationMessage';
 import { IGetUser } from '../auth/interfaces/getUser.interface';
 import { IContactFormUserContext } from 'src/mail/interfaces/contact-form-user-context.interface';
+import { ADMIN_EMAIL } from '../config/enviroments';
+import { IContactFormAdminContext } from '../mail/interfaces/contact-form-admin-context.interface';
 
 @Injectable()
 export class MessagesService {
-  constructor(private readonly mailService: MailService) { }
+  constructor(private readonly mailService: MailService) {}
 
   async create(messageData: Partial<Messages>) {
     try {
-      
       const message = await Messages.create(messageData);
 
       const messages = await Messages.findAll({
@@ -37,13 +38,31 @@ export class MessagesService {
         context: userContext,
       });
 
+      // Enviar correo electrónico al admin
+      const adminContext: IContactFormAdminContext = {
+        name: message.name,
+        phone: '',
+        message: message.message,
+        userEmail: message.email,
+        userId: '',
+      };
+
+      await this.mailService.sendMails({
+        EmailAddress: ADMIN_EMAIL,
+        subject: Cases.CONTACT_FORM_ADMIN,
+        context: adminContext,
+      });
+
       return {
         statusCode: HttpStatus.CREATED,
         message: 'The message has been sent successfully',
         messages,
       };
     } catch (error) {
-      throw new HttpException('There was an error sending the message' + error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'There was an error sending the message' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -54,7 +73,15 @@ export class MessagesService {
         attributes: [
           'category',
           [Sequelize.fn('COUNT', Sequelize.col('category')), 'count'],
-          [Sequelize.fn('SUM', Sequelize.literal('CASE WHEN "response" IS NULL THEN 1 ELSE 0 END')), 'nullResponses'],
+          [
+            Sequelize.fn(
+              'SUM',
+              Sequelize.literal(
+                'CASE WHEN "response" IS NULL THEN 1 ELSE 0 END',
+              ),
+            ),
+            'nullResponses',
+          ],
         ],
         group: ['category'],
       });
@@ -63,7 +90,8 @@ export class MessagesService {
 
       for (const categoryCount of categoryCounts) {
         const cat = categoryCount.category;
-        const nullResponses = parseInt(categoryCount.getDataValue('nullResponses'), 10) > 0;
+        const nullResponses =
+          parseInt(categoryCount.getDataValue('nullResponses'), 10) > 0;
 
         if (nullResponses) {
           const categoryMessages = await Messages.findAll({
@@ -74,7 +102,9 @@ export class MessagesService {
           const images: string[] = [];
 
           for (const message of categoryMessages) {
-            const user = await User.findOne({ where: { email: message.email } });
+            const user = await User.findOne({
+              where: { email: message.email },
+            });
             if (user) {
               images.push(user.image);
             }
@@ -92,17 +122,21 @@ export class MessagesService {
       }, {});
 
       // Actualiza el resultado con los datos obtenidos
-      categoryCounts.forEach(item => {
+      categoryCounts.forEach((item) => {
         const cat = item.category;
         const count = parseInt(item.getDataValue('count'), 10);
-        const hasNullResponses = parseInt(item.getDataValue('nullResponses'), 10) > 0;
+        const hasNullResponses =
+          parseInt(item.getDataValue('nullResponses'), 10) > 0;
         const images = categoryImages[cat] || [];
         result[cat] = [count, hasNullResponses, images];
       });
 
       return result;
     } catch (error) {
-      throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -187,7 +221,6 @@ export class MessagesService {
     }
   }
 
-
   async findOne(id: string) {
     try {
       return await Messages.findByPk(id, {
@@ -199,15 +232,23 @@ export class MessagesService {
         ],
       });
     } catch (error) {
-      throw new HttpException('There was an error searching for the message', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'There was an error searching for the message',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   async update(id: string, messageData: Partial<Messages>) {
     try {
-      const [rowsUpdated] = await Messages.update(messageData, { where: { id } });
+      const [rowsUpdated] = await Messages.update(messageData, {
+        where: { id },
+      });
       if (rowsUpdated === 0) {
-        throw new HttpException('The message could not be updated', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The message could not be updated',
+          HttpStatus.NOT_FOUND,
+        );
       }
       const updatedMessage = await Messages.findByPk(id);
 
@@ -217,7 +258,10 @@ export class MessagesService {
         updatedMessage,
       };
     } catch (error) {
-      throw new HttpException('There was an error updating the message', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'There was an error updating the message',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -225,7 +269,10 @@ export class MessagesService {
     try {
       const message = await Messages.findByPk(id);
       if (!message) {
-        throw new HttpException('The message could not be found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The message could not be found',
+          HttpStatus.NOT_FOUND,
+        );
       }
       await message.destroy();
       return {
@@ -233,7 +280,10 @@ export class MessagesService {
         message: 'The message has been successfully deleted',
       };
     } catch (error) {
-      throw new HttpException('There was an error deleting the message', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'There was an error deleting the message',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -271,28 +321,37 @@ export class MessagesService {
         await message.save();
       }
 
-      await Conversation.create({ ...data, messageId, name: u?.firstName + ' ' + u?.lastName, imgUrl: u?.image || '', from: data.from });
+      await Conversation.create({
+        ...data,
+        messageId,
+        name: u?.firstName + ' ' + u?.lastName,
+        imgUrl: u?.image || '',
+        from: data.from,
+      });
 
       const messages = admin
         ? await Messages.findByPk(messageId, {
-          include: {
-            model: Conversation,
-            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-          },
-        })
+            include: {
+              model: Conversation,
+              attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+            },
+          })
         : await Messages.findAll({
-          where: { email: message.email },
-          include: {
-            model: Conversation,
-            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-          },
-        });
+            where: { email: message.email },
+            include: {
+              model: Conversation,
+              attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+            },
+          });
       return {
         text: 'Your message has been sended succesfully',
         messages,
       };
     } catch (error) {
-      throw new HttpException('There was an error adding the message:' + error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'There was an error adding the message:' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }
