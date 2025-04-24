@@ -149,6 +149,27 @@ export class ProductsController {
     return this.productsService.update(productId, updateProductDto);
   }
 
+  @ApiOperation({ summary: 'Modificar un producto' })
+  @ApiBody({ type: UpdateProductDto })
+  @ApiResponse({
+    status: 200,
+    description: 'El producto ha sido modificado exitosamente',
+  })
+  @ApiResponse({ status: 400, description: 'Solicitud inválida' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
+  @Patch('/updateBooleans/:id')
+  async updateBooleans(
+    @Body() updateProductDto: UpdateProductDto,
+      @Param('id') productId: string,
+  ): Promise<any> {
+
+    await this.cacheManager.del(`product:${updateProductDto.slug}`);
+
+    return this.productsService.updateBooleans(productId, updateProductDto);
+  }
+
   @ApiOperation({
     summary: 'Insertar descuento en productos seleccionados.',
   })

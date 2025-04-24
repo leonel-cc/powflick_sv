@@ -170,27 +170,29 @@ export class AppService {
         // Filtrar las colecciones que tienen productos de esta categoría
         const filteredCollections = collections
           .filter(collection =>
-            collection.products.some(product =>
-              product.categories.some(c => c.name.toLowerCase() === category.title.toLowerCase()), // Verifica si el producto pertenece a la categoría
+            collection.products?.some(product =>
+              product.categories.some(c => c.name.toLowerCase() === category.toLowerCase()), // Verifica si el producto pertenece a la categoría
             ),
           )
           .map(collection => ({
             title: collection.title,
-            products: collection.products.filter(product =>
-              product.categories.some(c => c.name.toLowerCase() === category.title.toLocaleLowerCase()), // Solo productos de la categoría actual
+            products: collection.products?.filter(product =>
+              product.categories.some(c => c.name.toLowerCase() === category.toLocaleLowerCase()), // Solo productos de la categoría actual
             ).sort((a, b) => a.score - b.score) // Orden por score descendente
               .slice(0, 3),
           }));
 
         return {
-          title: category.title,
+          title: category,
           child: filteredCollections, // Añadir las colecciones filtradas como "child"
         };
       });
 
       return {
         navbar: {
-          categories: categoriesWithCollections,
+          categories: categoriesWithCollections.filter(
+            category => category.child.length > 0, // Filtrar categorías que tienen colecciones
+          ),
         },
       };
     } catch (error) {

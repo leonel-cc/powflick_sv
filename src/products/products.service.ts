@@ -129,10 +129,11 @@ export class ProductsService {
         throw new NotFoundException('Product not found');
       }
       // Convertir las colecciones y etiquetas en arrays de strings
+      const categories = product.categories.map((cat) => cat.name);
       const collections = product.collections.map((collection) => collection.title);
       const tags = product.tags.map((tag) => tag.name);
 
-      return { ...product.dataValues, collections, tags };
+      return { ...product.dataValues, collections, tags, categories };
     } catch ({ message, status }) {
       throw new HttpException(message, status);
     }
@@ -238,8 +239,8 @@ export class ProductsService {
         content: createProductDto.content,
         featured: createProductDto.featured,
         mostSold: createProductDto.mostSold,
-        product_categories: createProductDto.product_categories.join('|'),
         discount: createProductDto.discount,
+        score: createProductDto.score,
         date: new Date().toDateString(), // Fecha actual
         stock_status: 'instock',
         sports: createProductDto.sports,
@@ -297,6 +298,9 @@ export class ProductsService {
             },
             transaction,
           }); // Se pasa la transacción correctamente aquí
+
+          console.log(tag);
+
         }
       }
 
@@ -378,6 +382,11 @@ export class ProductsService {
       } else {
         // Si se proporciona el nombre de la nueva colección, actualizar la relación
         for (const name of updateProductDto.collections) {
+          await CollectionProduct.destroy({
+            where: { productId: id },
+            transaction,
+          }); // Eliminar la relación existente
+
           const collection = await Collection.findOne({
             where: { title: name }, // Busca por nombre de colección individual
             transaction, // Usar la transacción
@@ -409,6 +418,11 @@ export class ProductsService {
       } else {
         // Si se proporciona el nombre de la nueva colección, actualizar la relación
         for (const name of updateProductDto.tags) {
+          await ProductTags.destroy({
+            where: { productId: id },
+            transaction,
+          }); // Eliminar la relación existente
+
           const tag = await Tags.findOne({
             where: { name }, // Busca por nombre de colección individual
             transaction, // Usar la transacción
@@ -468,6 +482,10 @@ export class ProductsService {
           if (key === 'slug' && updateProductDto['product_categories']) {
             product['product_categories'] = updateProductDto.product_categories.join('|');
             for (const cat of updateProductDto.product_categories) {
+              await ProductCategories.destroy({
+                where: { productId: id },
+                transaction,
+              }); // Eliminar la relación existente
 
               const thisCategory = await Categories.findOne({
                 where: { name: cat }, // Busca por nombre de colección individual
@@ -549,6 +567,30 @@ export class ProductsService {
           'A server error occurred while trying to update the product' + error.message,
         );
       }
+    }
+  }
+
+  async updateBooleans(productId: string, updateProductDto: UpdateProductDto): Promise<any> {
+    try {
+      const product = await Product.findByPk(productId);
+
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
+
+      updateProductDto.featured = updateProductDto.featured ?? product.featured;
+      updateProductDto.mostSold = updateProductDto.mostSold ?? product.mostSold;
+      updateProductDto.status = updateProductDto.status ?? product.status;
+
+      await product.save();
+
+      return {
+        status: HttpStatus.OK,
+        message: 'The product has been updated successfully.',
+        updateProduct: product,
+      };
+    } catch (error) {
+
     }
   }
 
@@ -686,7 +728,7 @@ export class ProductsService {
       // Contar la cantidad de cada deporte
       const sportCount = this.countAtributes(products, 'sports');
       // Contar la cantidad de cada categoria
-      const categoryCount = this.countAtributes(products, 'product_categories');
+      const categoryCount = this.countAtributes(transformedProducts, 'categories');
       // Contar la cantidad de cada genero
       const genderCount = this.countAtributes(products, 'genders');
       // Contar la cantidad de cada colleccion
@@ -710,7 +752,7 @@ export class ProductsService {
 
       products.forEach((product) => {
         const categories = product.categories.map(c => c.name); // Separar categorías
-        const collection = product.collections?.[0]?.title;
+        const collections = product.collections || [];
 
         if (categories) {
           categories.forEach((category) => {
@@ -718,12 +760,12 @@ export class ProductsService {
               categoryMap.set(category, { title: category, child: [] });
             }
 
-            if (collection) {
-              const children = categoryMap.get(category).child;
-              if (!children.find((c) => c.title === collection)) {
-                children.push({ title: collection });
+            collections.forEach((collection) => {
+              const children = categoryMap.get(category)?.child;
+              if (!children.find((c) => c.title === collection.title)) {
+                children.push({ title: collection.title });
               }
-            }
+            });
           });
         }
       });
