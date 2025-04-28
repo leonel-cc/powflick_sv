@@ -581,9 +581,9 @@ export class ProductsService {
         throw new NotFoundException('Product not found');
       }
 
-      updateProductDto.featured = updateProductDto.featured ?? product.featured;
-      updateProductDto.mostSold = updateProductDto.mostSold ?? product.mostSold;
-      updateProductDto.status = updateProductDto.status ?? product.status;
+      product.featured = updateProductDto.featured ?? product.featured;
+      product.mostSold = updateProductDto.mostSold ?? product.mostSold;
+      product.status = updateProductDto.status ?? product.status;
 
       await product.save();
 
@@ -593,7 +593,9 @@ export class ProductsService {
         updateProduct: product,
       };
     } catch (error) {
-
+      throw new InternalServerErrorException(
+        'A server error occurred while trying to update the product' + error.message,
+      );
     }
   }
 
