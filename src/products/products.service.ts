@@ -381,11 +381,12 @@ export class ProductsService {
         });
       } else {
         // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        product['product_collections'] = updateProductDto.collections.join('|');
+        await CollectionProduct.destroy({
+          where: { productId: id },
+          transaction,
+        }); // Eliminar la relación existente
         for (const name of updateProductDto.collections) {
-          await CollectionProduct.destroy({
-            where: { productId: id },
-            transaction,
-          }); // Eliminar la relación existente
 
           const collection = await Collection.findOne({
             where: { title: name }, // Busca por nombre de colección individual
@@ -416,12 +417,13 @@ export class ProductsService {
           transaction, // Usar la transacción
         });
       } else {
+        product['product_tags'] = updateProductDto.tags.join('|');
         // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        await ProductTags.destroy({
+          where: { productId: id },
+          transaction,
+        }); // Eliminar la relación existente
         for (const name of updateProductDto.tags) {
-          await ProductTags.destroy({
-            where: { productId: id },
-            transaction,
-          }); // Eliminar la relación existente
 
           const tag = await Tags.findOne({
             where: { name }, // Busca por nombre de colección individual
@@ -481,11 +483,12 @@ export class ProductsService {
         if (updateProductDto.hasOwnProperty(key)) {
           if (key === 'slug' && updateProductDto['product_categories']) {
             product['product_categories'] = updateProductDto.product_categories.join('|');
+            await ProductCategories.destroy({
+              where: { productId: id },
+              transaction,
+            }); // Eliminar la relación existente
+
             for (const cat of updateProductDto.product_categories) {
-              await ProductCategories.destroy({
-                where: { productId: id },
-                transaction,
-              }); // Eliminar la relación existente
 
               const thisCategory = await Categories.findOne({
                 where: { name: cat }, // Busca por nombre de colección individual
