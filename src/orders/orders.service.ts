@@ -154,7 +154,13 @@ export class OrdersService {
 
         const coupon = await this.couponService.findOne(couponId);
         if (coupon) {
-          discountAmount = (Number(total) * coupon.discount) / 100;
+          // Cambia aquí: soporta amount y percent
+          if (coupon.type === 'amount') {
+            discountAmount = coupon.discount;
+          }
+          if (coupon.type === 'percent') {
+            discountAmount = (Number(total) * coupon.discount) / 100;
+          }
           appliedCoupon = coupon;
         }
       }
@@ -187,6 +193,7 @@ export class OrdersService {
           discount: appliedCoupon.dataValues.discount,
           title: appliedCoupon.dataValues.title,
           content: appliedCoupon.dataValues.content,
+          type: appliedCoupon.dataValues.type, // Añade el tipo al objeto cupón
         };
       }
 
@@ -386,11 +393,16 @@ export class OrdersService {
           let unitAmoutByCurrency = Number(currencyChanged) * 100;
 
           if (appliedCoupon?.discount) {
-            // Calcular el monto del descuento
-            discountAmount =
-              unitAmoutByCurrency * (appliedCoupon.discount / 100);
-
-            unitAmoutByCurrency -= discountAmount;
+            // Calcular el monto del descuento según el tipo
+            if (appliedCoupon.type === 'amount') {
+              discountAmount = appliedCoupon.discount;
+              unitAmoutByCurrency -= discountAmount;
+            }
+            if (appliedCoupon.type === 'percent') {
+              discountAmount =
+                unitAmoutByCurrency * (appliedCoupon.discount / 100);
+              unitAmoutByCurrency -= discountAmount;
+            }
           }
 
           lineitems.push({
@@ -740,7 +752,13 @@ export class OrdersService {
 
         const coupon = await this.couponService.findOne(couponId);
         if (coupon) {
-          discountAmount = (Number(total) * coupon.discount) / 100;
+          // Cambia aquí: soporta amount y percent
+          if (coupon.type === 'amount') {
+            discountAmount = coupon.discount;
+          }
+          if (coupon.type === 'percent') {
+            discountAmount = (Number(total) * coupon.discount) / 100;
+          }
           appliedCoupon = coupon;
         }
       }
@@ -773,6 +791,7 @@ export class OrdersService {
           discount: appliedCoupon.dataValues.discount,
           title: appliedCoupon.dataValues.title,
           content: appliedCoupon.dataValues.content,
+          type: appliedCoupon.dataValues.type, // Añade el tipo al objeto cupón
         };
       }
 
@@ -884,11 +903,16 @@ export class OrdersService {
           let unitAmoutByCurrency = Number(currencyChanged) * 100;
 
           if (appliedCoupon?.discount) {
-            // Calcular el monto del descuento
-            discountAmount =
-              unitAmoutByCurrency * (appliedCoupon.discount / 100);
-
-            unitAmoutByCurrency -= discountAmount;
+            // Calcular el monto del descuento según el tipo
+            if (appliedCoupon.type === 'amount') {
+              discountAmount = appliedCoupon.discount;
+              unitAmoutByCurrency -= discountAmount;
+            }
+            if (appliedCoupon.type === 'percent') {
+              discountAmount =
+                unitAmoutByCurrency * (appliedCoupon.discount / 100);
+              unitAmoutByCurrency -= discountAmount;
+            }
           }
 
           lineitems.push({

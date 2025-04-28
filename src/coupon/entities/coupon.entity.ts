@@ -15,29 +15,40 @@ export class Coupon extends Model<Coupon> {
     primaryKey: true,
     defaultValue: DataType.UUIDV4,
   })
-    id: string;
+  id: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    title: string;
+  title: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    content: string;
+  content: string;
 
   @ApiProperty()
   @Column({
     type: DataType.FLOAT,
     allowNull: false,
   })
-    discount: number;
+  discount: number;
 
-  @HasMany(() => CouponUser)
-    couponUsers: CouponUser[];
+  @ApiProperty()
+  @Column({
+    type: DataType.ENUM('percent', 'amount'),
+    allowNull: false,
+    defaultValue: 'percent',
+  })
+  type: 'percent' | 'amount';
+
+  @HasMany(() => CouponUser, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  couponUsers: CouponUser[];
 }

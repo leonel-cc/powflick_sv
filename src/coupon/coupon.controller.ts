@@ -62,14 +62,31 @@ export class CouponController {
   @Post('coupon-users')
   @UseGuards(JwtAuthGuard)
   createCouponUsers(
-  @GetUser() { userId }: IGetUser,
+    @GetUser() _user: IGetUser,
     @Body() createCouponUserDto: CreateCouponUserDto,
     @Query('title') titleQuery: string,
   ) {
+    console.log('createCouponUserDto', createCouponUserDto);
+
     return this.couponService.createCouponUsers(
       createCouponUserDto,
-      userId,
+      createCouponUserDto.userId,
       titleQuery,
     );
+  }
+
+  @Patch('coupon-users/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateCouponUser(
+    @Param('id') id: string,
+    @Body() updateCouponUserDto: CreateCouponUserDto,
+  ) {
+    return this.couponService.updateCouponUser(id, updateCouponUserDto);
+  }
+
+  @Delete('coupon-users/:id')
+  @UseGuards(JwtAuthGuard)
+  async removeCouponUser(@Param('id') id: string) {
+    return this.couponService.removeCouponUser(id);
   }
 }

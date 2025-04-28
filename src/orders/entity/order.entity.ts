@@ -48,19 +48,19 @@ export class Order extends Model {
     allowNull: false,
     autoIncrement: true,
   })
-    id: number;
+  id: number;
 
   @Column({
     type: DataType.DOUBLE,
     allowNull: false,
   })
-    total: number;
+  total: number;
 
   @Column({
     type: DataType.JSONB,
     allowNull: false,
   })
-    currency: {
+  currency: {
     name: string;
     value: number;
   };
@@ -70,10 +70,10 @@ export class Order extends Model {
     allowNull: false,
     defaultValue: OrderStateEnum.PENDIENTE,
   })
-    state: OrderStateEnum;
+  state: OrderStateEnum;
 
   @Column(DataType.JSONB)
-    customizations: {
+  customizations: {
     productId: string;
     customization: Customization;
   }[];
@@ -82,11 +82,12 @@ export class Order extends Model {
     type: DataType.JSONB,
     allowNull: true,
   })
-    coupon: {
+  coupon: {
     id: string;
     discount: number;
     title: string;
     content: string;
+    type: 'percent' | 'amount'; // <-- agregar esto
   };
 
   //necesario para manipular la session de stripe
@@ -94,53 +95,53 @@ export class Order extends Model {
     type: DataType.STRING,
     allowNull: true,
   })
-    sessionId: string;
+  sessionId: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-    note: string;
+  note: string;
 
   @Column({
     type: DataType.JSONB,
     allowNull: true,
   })
-    paymentData: object;
+  paymentData: object;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-    trackingCode: string;
+  trackingCode: string;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
     allowNull: false,
   })
-    userId: string;
+  userId: string;
 
   @BelongsToMany(() => Product, () => OrderProduct)
-    products: Product[];
+  products: Product[];
 
   @BelongsTo(() => User)
-    user: User;
+  user: User;
 
   @ForeignKey(() => Direction)
   @Column({
     type: DataType.UUID,
     allowNull: false,
   })
-    directionId: string;
+  directionId: string;
 
   @BelongsTo(() => Direction)
-    direction: Direction;
+  direction: Direction;
 
   @ForeignKey(() => Review)
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-    reviewId: string;
+  reviewId: string;
 }
