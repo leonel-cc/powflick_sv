@@ -15,12 +15,13 @@ import * as xlsx from 'xlsx';
 import { VercelBlobService } from '../files/vercel-storage.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { CollectionsService } from 'src/collections/collections.service';
-import { TagsService } from 'src/tags/tags.service';
-import { CollectionProduct } from 'src/collections/entity/collectionProduct.entity';
-import { ProductTags } from 'src/tags/entity/productTags.entity';
-import { Collection } from 'src/collections/entity/collections.entity';
-import { Tags } from 'src/tags/entity/tags.entity';
+import { CollectionsService } from '../collections/collections.service';
+import { TagsService } from '../tags/tags.service';
+import { CollectionProduct } from '../collections/entity/collectionProduct.entity';
+import { ProductTags } from '../tags/entity/productTags.entity';
+import { Collection } from '../collections/entity/collections.entity';
+import { Tags } from '../tags/entity/tags.entity';
+import { Categories } from '../categories/entity/categories.entity';
 @Injectable()
 export class ExcelProductsService {
   constructor(
@@ -449,6 +450,10 @@ export class ExcelProductsService {
     const products = await Product.findAll({
       include: [
         {
+          model: Categories, // Modelo relacionado
+          attributes: ['name'], // Solo traer el título
+        },
+        {
           model: Collection, // Modelo relacionado
           attributes: ['title'], // Solo traer el título
         },
@@ -484,9 +489,9 @@ export class ExcelProductsService {
         product.URL,
         product.genders || 'Men|Women|Kids',
         product.sports,
-        product.product_categories,
-        product.product_collections,
-        product.product_tags,
+        product.categories.map(category => category.name).join('|'),
+        product.collections.map(collection => collection.title).join('|'),
+        product.tags.map(tag => tag.name).join('|'),
         product.score,
         product.slug,
         product.colors ? product.colors.join('|') : null,

@@ -23,7 +23,7 @@ export class CategoriesService {
     try {
       const allCategories = await Categories.findAll();
 
-      return allCategories.map((c) => { return { title: c.name }; });
+      return allCategories.map((c) => c.name );
     } catch (error) {
       throw new HttpException('Error to get categories', 500);
     }

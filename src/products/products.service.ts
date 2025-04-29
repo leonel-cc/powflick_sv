@@ -31,6 +31,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Tags } from '../tags/entity/tags.entity';
 import { ProductTags } from '../tags/entity/productTags.entity';
+import { ProductCategories } from '../categories/entity/productcategories.entity';
 
 @Injectable()
 export class ProductsService {
@@ -108,6 +109,10 @@ export class ProductsService {
         },
         include: [
           {
+            model: Categories, // Especifica el modelo relacionado
+            attributes: ['name'],
+          },
+          {
             model: Collection, // Especifica el modelo relacionado
             as: 'collections', // Asegúrate de usar el alias correcto si está definido
             attributes: ['title'],
@@ -124,10 +129,11 @@ export class ProductsService {
         throw new NotFoundException('Product not found');
       }
       // Convertir las colecciones y etiquetas en arrays de strings
+      const categories = product.categories.map((cat) => cat.name);
       const collections = product.collections.map((collection) => collection.title);
       const tags = product.tags.map((tag) => tag.name);
 
-      return { ...product.dataValues, collections, tags };
+      return { ...product.dataValues, collections, tags, categories };
     } catch ({ message, status }) {
       throw new HttpException(message, status);
     }
@@ -143,6 +149,10 @@ export class ProductsService {
           ],
         },
         include: [
+          {
+            model: Categories, // Especifica el modelo relacionado
+            attributes: ['name'],
+          },
           {
             model: Collection, // Especifica el modelo relacionado
             attributes: ['title'],
@@ -229,8 +239,8 @@ export class ProductsService {
         content: createProductDto.content,
         featured: createProductDto.featured,
         mostSold: createProductDto.mostSold,
-        product_categories: createProductDto.product_categories.join('|'),
         discount: createProductDto.discount,
+        score: createProductDto.score,
         date: new Date().toDateString(), // Fecha actual
         stock_status: 'instock',
         sports: createProductDto.sports,
@@ -287,10 +297,36 @@ export class ProductsService {
               tagId: tag.id,
             },
             transaction,
-          },
-          ); // Se pasa la transacción correctamente aquí
+          }); // Se pasa la transacción correctamente aquí
+
+          
+
         }
       }
+
+      if (createProductDto.product_categories && createProductDto.product_categories.length > 0) {
+        for (const name of createProductDto.product_categories) {
+          const cat = await Categories.findOne({
+            where: { name }, // Busca por nombre de colección individual
+            transaction, // Usar la transacción
+          });
+
+          if (!cat) {
+            throw new NotFoundException(`Category with name '${name}' not found`);
+          }
+
+          // Crear la relación en la tabla intermedia ProductTags
+          await ProductCategories.findOrCreate({
+            where: {
+              productId: product.id,
+              categoryId: cat.id,
+            },
+            transaction,
+          }); // Se pasa la transacción correctamente aquí
+        }
+      }
+
+      await product.save({ transaction });
       // Confirmar la transacción
       await transaction.commit();
 
@@ -345,7 +381,13 @@ export class ProductsService {
         });
       } else {
         // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        product['product_collections'] = updateProductDto.collections.join('|');
+        await CollectionProduct.destroy({
+          where: { productId: id },
+          transaction,
+        }); // Eliminar la relación existente
         for (const name of updateProductDto.collections) {
+
           const collection = await Collection.findOne({
             where: { title: name }, // Busca por nombre de colección individual
             transaction, // Usar la transacción
@@ -375,8 +417,14 @@ export class ProductsService {
           transaction, // Usar la transacción
         });
       } else {
+        product['product_tags'] = updateProductDto.tags.join('|');
         // Si se proporciona el nombre de la nueva colección, actualizar la relación
+        await ProductTags.destroy({
+          where: { productId: id },
+          transaction,
+        }); // Eliminar la relación existente
         for (const name of updateProductDto.tags) {
+
           const tag = await Tags.findOne({
             where: { name }, // Busca por nombre de colección individual
             transaction, // Usar la transacción
@@ -435,6 +483,32 @@ export class ProductsService {
         if (updateProductDto.hasOwnProperty(key)) {
           if (key === 'slug' && updateProductDto['product_categories']) {
             product['product_categories'] = updateProductDto.product_categories.join('|');
+            await ProductCategories.destroy({
+              where: { productId: id },
+              transaction,
+            }); // Eliminar la relación existente
+
+            for (const cat of updateProductDto.product_categories) {
+
+              const thisCategory = await Categories.findOne({
+                where: { name: cat }, // Busca por nombre de colección individual
+                transaction, // Usar la transacción
+              });
+
+              if (!thisCategory) {
+                throw new NotFoundException(`Category with name '${name}' not found`);
+              }
+
+              // Crear la relación en la tabla intermedia CollectionProduct
+              await ProductCategories.findOrCreate({
+                where: {
+                  productId: id,
+                  categoryId: thisCategory.id,
+                },
+                transaction,
+              }); // Se pasa la transacción correctamente aquí
+
+            }
           } else if (key === 'slug' && updateProductDto['slug']) {
             const allProducts = await Product.findAll({ where: { slug: updateProductDto['slug'] } });
 
@@ -475,6 +549,8 @@ export class ProductsService {
       // Guardar el producto actualizado
       await product.save({ transaction });
 
+      // Removed unnecessary console.log statement for production.
+
       // Confirmar la transacción
       await transaction.commit();
 
@@ -494,6 +570,32 @@ export class ProductsService {
           'A server error occurred while trying to update the product' + error.message,
         );
       }
+    }
+  }
+
+  async updateBooleans(productId: string, updateProductDto: UpdateProductDto): Promise<any> {
+    try {
+      const product = await Product.findByPk(productId);
+
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
+
+      product.featured = updateProductDto.featured ?? product.featured;
+      product.mostSold = updateProductDto.mostSold ?? product.mostSold;
+      product.status = updateProductDto.status ?? product.status;
+
+      await product.save();
+
+      return {
+        status: HttpStatus.OK,
+        message: 'The product has been updated successfully.',
+        updateProduct: product,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'A server error occurred while trying to update the product' + error.message,
+      );
     }
   }
 
@@ -532,8 +634,6 @@ export class ProductsService {
       if (filters.color) query['colors'] = { [Op.contains]: [filters.color] };
       if (filters.color2)
         query['colors'] = { [Op.contains]: [filters.color, filters.color2] };
-      if (filters.category)
-        query['product_categories'] = { [Op.like]: `%${filters.category}%` };
       if (filters.minPrice && filters.maxPrice) {
         query['price'] = {
           [Op.gte]: parseFloat(filters.minPrice),
@@ -591,7 +691,6 @@ export class ProductsService {
           // Ordenar por fecha de creación si el filtro es "date"
           order = [['createdAt', filters.date || 'ASC']];
         } else if (filters.order === 'score') {
-          // Ordenar por fecha de creación si el filtro es "date"
           order = [['score', filters.score || 'ASC']];
         }
       }
@@ -600,6 +699,11 @@ export class ProductsService {
         where: query,
         order,
         include: [
+          {
+            model: Categories, // Modelo relacionado
+            attributes: ['name'], // Solo traer el título
+            where: filters.category ? { name: { [Op.iLike]: `%${filters.category}%` } } : undefined,
+          },
           {
             model: Collection, // Modelo relacionado
             attributes: ['title'], // Solo traer el título
@@ -612,6 +716,8 @@ export class ProductsService {
           },
         ],
       });
+
+      console.log(products.find(p => p.title === 'producto nuevo'));
 
       const transformedProducts = products.map((product) => ({
         ...product,
@@ -627,7 +733,7 @@ export class ProductsService {
       // Contar la cantidad de cada deporte
       const sportCount = this.countAtributes(products, 'sports');
       // Contar la cantidad de cada categoria
-      const categoryCount = this.countAtributes(products, 'product_categories');
+      const categoryCount = this.countAtributes(transformedProducts, 'categories');
       // Contar la cantidad de cada genero
       const genderCount = this.countAtributes(products, 'genders');
       // Contar la cantidad de cada colleccion
@@ -650,8 +756,8 @@ export class ProductsService {
       const categoryMap = new Map<string, { title: string; child: { title: string }[] }>();
 
       products.forEach((product) => {
-        const categories = product.product_categories?.split('|'); // Separar categorías
-        const collection = product.collections?.[0]?.title;
+        const categories = product.categories.map(c => c.name); // Separar categorías
+        const collections = product.collections || [];
 
         if (categories) {
           categories.forEach((category) => {
@@ -659,12 +765,12 @@ export class ProductsService {
               categoryMap.set(category, { title: category, child: [] });
             }
 
-            if (collection) {
-              const children = categoryMap.get(category).child;
-              if (!children.find((c) => c.title === collection)) {
-                children.push({ title: collection });
+            collections.forEach((collection) => {
+              const children = categoryMap.get(category)?.child;
+              if (!children.find((c) => c.title === collection.title)) {
+                children.push({ title: collection.title });
               }
-            }
+            });
           });
         }
       });
