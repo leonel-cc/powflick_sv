@@ -299,7 +299,7 @@ export class ProductsService {
             transaction,
           }); // Se pasa la transacción correctamente aquí
 
-          console.log(tag);
+          
 
         }
       }
