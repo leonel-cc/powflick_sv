@@ -39,7 +39,7 @@ export class SheetsProductsDto {
   @Transform(({ value }) => parseInt(value, 10)) // Aquí se transforma el valor
     Stock: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
     'Product Categories': string;
 

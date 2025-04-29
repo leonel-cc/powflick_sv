@@ -25,7 +25,7 @@ export class PaymentsController {
   constructor(
     private readonly stripeService: StripeService,
     private readonly llpService: LLPService,
-  ) { }
+  ) {}
 
   @Post('create-checkout-session')
   async createCheckoutSession(@Body() body: { lineItems: any[] }) {
