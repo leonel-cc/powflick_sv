@@ -549,7 +549,7 @@ export class ProductsService {
       // Guardar el producto actualizado
       await product.save({ transaction });
 
-      console.log(product.categories);
+      // Removed unnecessary console.log statement for production.
 
       // Confirmar la transacción
       await transaction.commit();
