@@ -43,4 +43,14 @@ export class FilesController {
     return urls.map(url => ({ secure_url: url }));
   }
 
+  @Post('uploadFolderPath')
+  @UseInterceptors(FilesInterceptor('files'))
+  async uploadFolderPath(
+  @UploadedFiles() files: Express.Multer.File[],
+    @Query('folderName') folderName: string,
+  ) {
+    const urls = await this.vercelBlobService.uploadFolderPath(files, folderName);
+    return urls;
+  }
+
 }
