@@ -69,7 +69,19 @@ export class CouponService {
   }
 
   async findOne(id: string) {
-    return this.couponModel.findByPk(id);
+    return this.couponModel.findByPk(id, {
+      include: [
+        {
+          model: CouponUser,
+          include: [
+            {
+              model: this.userModel,
+              attributes: ['id', 'firstName', 'lastName', 'email'],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   async update(id: string, updateCouponDto: UpdateCouponDto) {
@@ -111,24 +123,20 @@ export class CouponService {
         return { message: 'User not found.' };
       }
 
-      // Verificar si el usuario ya tiene el cupón vinculado por nombre
-      const existingCouponUser = await this.couponUserModel.findOne({
-        include: [
-          {
-            model: this.couponModel,
-            where: { title: titleQuery },
-            required: true,
-          },
-        ],
-        where: { userId: userId },
-      });
+      // Verificar si el usuario ya tiene el cupón vinculado por userId y couponId (NO por título)
 
-      console.log(!!existingCouponUser);
+      const existingCouponUser = await this.couponUserModel.findOne({
+        where: {
+          userId: userId,
+          couponId: coupon.id,
+          deletedAt: null,
+        },
+      });
 
       if (!!existingCouponUser) {
         throw new HttpException(
-          'User already has this coupon.',
-          HttpStatus.NOT_MODIFIED,
+          'El usuario ya tiene este cupón asignado.',
+          HttpStatus.CONFLICT, // 409
         );
       }
 
@@ -146,8 +154,9 @@ export class CouponService {
         couponUser,
       };
     } catch (error) {
+      // Mejorar el mensaje de error para el frontend
       throw new HttpException(
-        error.message,
+        error.message || 'No se pudo vincular el usuario al cupón',
         error.status ?? HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
