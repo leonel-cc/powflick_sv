@@ -31,6 +31,26 @@ export class VercelBlobService {
     }
   }
 
+  async uploadFolderPath(files: Express.Multer.File[], pat: string): Promise<string[]> {
+    try {
+      const urls: string[] = [];
+
+      for (const file of files) {
+        const filePath = `${pat}/${file.originalname}`;
+        const { url } = await put(filePath, file.buffer, {
+          access: 'public',
+          token: this.token,
+        });
+        urls.push(url);
+      }
+
+      return urls;
+    } catch (error) {
+      throw new Error(`Error uploading folder: ${error.message}`);
+    }
+  }
+
+
   async deleteImage(imageUrl: string): Promise<any> {
     try {
       console.log(imageUrl);
