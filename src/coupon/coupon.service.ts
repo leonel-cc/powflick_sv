@@ -84,6 +84,43 @@ export class CouponService {
     });
   }
 
+  async findByCodeAndUser(code: string, userId: string) {
+    // Busca el cupón por título
+    const coupon = await this.couponModel.findOne({ where: { title: code } });
+    if (!coupon) throw new HttpException('Coupon not found', 404);
+
+    // Busca si el usuario ya tiene el cupón (activo o no)
+    let couponUser = await this.couponUserModel.findOne({
+      where: { couponId: coupon.id, userId },
+    });
+
+    if (couponUser) {
+      if (couponUser.active) {
+        // Ya tiene el cupón activo, lo puede usar
+        return { ...coupon.toJSON(), active: couponUser.active };
+      } else {
+        // Ya lo usó antes, no puede volver a usarlo
+        throw new HttpException(
+          {
+            message: 'User has already used this coupon',
+            code: 'COUPON_ALREADY_USED',
+            status: 400,
+          },
+          400,
+        );
+      }
+    }
+
+    // Si no existe, lo crea automáticamente (primer uso)
+    couponUser = await this.couponUserModel.create({
+      couponId: coupon.id,
+      userId,
+      active: true,
+    });
+
+    return { ...coupon.toJSON(), active: couponUser.active };
+  }
+
   async update(id: string, updateCouponDto: UpdateCouponDto) {
     const coupon = await this.findOne(id);
     if (coupon) {

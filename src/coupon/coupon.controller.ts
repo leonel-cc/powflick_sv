@@ -57,6 +57,12 @@ export class CouponController {
     return this.couponService.remove(id);
   }
 
+  @Get('code/:code')
+  @UseGuards(JwtAuthGuard)
+  async findByCode(@Param('code') code: string, @GetUser() user: IGetUser) {
+    return this.couponService.findByCodeAndUser(code, user.userId);
+  }
+
   //coupon-users
 
   @Post('coupon-users')
