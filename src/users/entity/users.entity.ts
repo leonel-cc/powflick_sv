@@ -13,7 +13,6 @@ import {
 import { Direction } from '../../directions/entity/directions.entity';
 import { Customization } from '../../products/entity/customization.entity';
 import { Product } from '../../products/entity/products.entity';
-import { ShoppingCart } from '../../shopping-cart/entity/shopping-cart.entity';
 import { UserProductFav } from './userproductfav.entity';
 import { Review } from '../../reviews/entity/reviews.entity';
 import { Order } from '../../orders/entity/order.entity';
@@ -38,20 +37,6 @@ export enum UserProviders {
   paranoid: true,
 })
 export class User extends Model {
-  @BeforeDestroy
-  static async destroyCart(instance: User) {
-    await ShoppingCart.destroy({
-      where: { userId: instance.id },
-      force: true,
-    });
-    await Direction.destroy({ where: { userId: instance.id }, force: true });
-  }
-
-  @AfterCreate
-  static async setShoppingCart(instance: User) {
-    await ShoppingCart.create({ userId: instance.id });
-  }
-
   @BeforeCreate
   static async setActive(instance: User) {
     instance.isActive = true;
@@ -63,78 +48,75 @@ export class User extends Model {
     primaryKey: true,
     allowNull: false,
   })
-    id: string;
+  id: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    firstName: string;
+  firstName: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    lastName: string;
+  lastName: string;
 
   @Column({
     type: DataType.STRING,
     unique: true,
     allowNull: false,
   })
-    email: string;
+  email: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    password: string;
+  password: string;
 
   @Column({
     type: DataType.STRING,
   })
-    phone: string | null;
+  phone: string | null;
 
   @Column({
     type: DataType.STRING,
   })
-    image: string;
+  image: string;
 
   @Column({
     type: DataType.STRING,
     defaultValue: UserProviders.none,
     allowNull: false,
   })
-    provider: UserProviders;
+  provider: UserProviders;
 
   @Column({
     type: DataType.STRING,
     defaultValue: Rol.user,
     allowNull: false,
   })
-    rol: Rol;
+  rol: Rol;
 
   @Column(DataType.BOOLEAN)
-    isActive: boolean;
-
-  @HasOne(() => ShoppingCart)
-    cart: ShoppingCart;
+  isActive: boolean;
 
   @HasMany(() => Direction, { onDelete: 'CASCADE', hooks: true })
-    directions: Direction[];
+  directions: Direction[];
 
   @HasMany(() => Order)
-    orders: Order[];
+  orders: Order[];
 
   @BelongsToMany(() => Product, () => UserProductFav)
-    favorites: Product[];
+  favorites: Product[];
 
   @HasMany(() => Customization)
-    customizations: Customization;
+  customizations: Customization;
 
   @HasMany(() => Review)
-    reviews: Review[];
+  reviews: Review[];
 
   @HasMany(() => CouponUser)
-    couponUsers: CouponUser[];
+  couponUsers: CouponUser[];
 }

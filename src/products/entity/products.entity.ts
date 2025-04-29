@@ -1,11 +1,20 @@
-import { BeforeCreate, BeforeUpdate, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  BeforeCreate,
+  BeforeUpdate,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { Categories } from '../../categories/entity/categories.entity';
 import { ProductCategories } from '../../categories/entity/productcategories.entity';
 import { Sport } from '../../sport/entity/sport.entity';
 import { calculateDiscount } from '../../utils/tools';
 import { Customization } from './customization.entity';
-import { ShoppingCart } from '../../shopping-cart/entity/shopping-cart.entity';
-import { CartProduct } from '../../shopping-cart/entity/cart-product.entity';
 import { UserProductFav } from '../../users/entity/userproductfav.entity';
 import { User } from '../../users/entity/users.entity';
 import { Order } from '../../orders/entity/order.entity';
@@ -27,7 +36,10 @@ export class Product extends Model {
   @BeforeCreate
   @BeforeUpdate
   static async setPriceAndUrl(instance: Product) {
-    instance.price = calculateDiscount(instance.regular_price, instance.discount);
+    instance.price = calculateDiscount(
+      instance.regular_price,
+      instance.discount,
+    );
     if (instance.images && instance.images.length > 0) {
       instance.URL = instance.images[0];
     }
@@ -47,178 +59,175 @@ export class Product extends Model {
     primaryKey: true,
     unique: true,
   })
-    id: string;
+  id: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,
   })
-    title: string;
+  title: string;
 
   @Column({
     type: DataType.STRING,
   })
-    content: string;
+  content: string;
 
   @Column({
     type: DataType.STRING,
   })
-    short_description: string;
+  short_description: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    date: string;
+  date: string;
 
   @Column({
     type: DataType.DOUBLE,
   })
-    price: number;
+  price: number;
 
   @Column({
     type: DataType.DOUBLE,
     allowNull: false,
   })
-    regular_price: number;
+  regular_price: number;
 
   @Column({
     type: DataType.INTEGER,
     defaultValue: 0,
     allowNull: true,
   })
-    discount: number;
+  discount: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-    stock_status: string;
+  stock_status: string;
 
   @Column({
     type: DataType.INTEGER,
     defaultValue: 0,
     allowNull: false,
   })
-    stock: number;
+  stock: number;
 
   @Column({
     type: DataType.INTEGER,
   })
-    selled: number;
+  selled: number;
 
   @Column({
     type: DataType.STRING,
   })
-    product_categories: string;
+  product_categories: string;
 
   @Column({
     type: DataType.STRING,
   })
-    product_collections: string;
+  product_collections: string;
 
   @Column({
     type: DataType.STRING,
   })
-    product_tags: string;
+  product_tags: string;
 
   @Column({
     type: DataType.INTEGER,
     defaultValue: 0,
   })
-    score: number;
+  score: number;
 
   @Column({
     type: DataType.STRING,
   })
-    genders: string;
+  genders: string;
 
   @Column({
     type: DataType.STRING,
   })
-    sports: string;
+  sports: string;
 
   @Column({
     type: DataType.ARRAY(DataType.STRING),
   })
-    colors: string[];
+  colors: string[];
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-    status: StateProduct;
+  status: StateProduct;
 
   @Column({
     type: DataType.STRING,
   })
-    URL: string;
+  URL: string;
 
   @Column({
     type: DataType.ARRAY(DataType.STRING),
   })
-    images: string[];
+  images: string[];
 
   @Column({
     type: DataType.STRING,
   })
-    slug: string;
+  slug: string;
 
   @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
     allowNull: false,
   })
-    featured: boolean;
+  featured: boolean;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-    font: string;
+  font: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-    font_color: string;
+  font_color: string;
 
   @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
     allowNull: false,
   })
-    mostSold: boolean;
+  mostSold: boolean;
 
   @ForeignKey(() => Sport)
   @Column({
     type: DataType.UUID,
     allowNull: false,
   })
-    sportId: string;
-
-  @BelongsToMany(() => ShoppingCart, () => CartProduct)
-    products: ShoppingCart[];
+  sportId: string;
 
   @BelongsTo(() => Sport)
-    sport: Sport;
+  sport: Sport;
 
   @BelongsToMany(() => Categories, () => ProductCategories)
-    categories: Categories[];
+  categories: Categories[];
 
   @BelongsToMany(() => Collection, () => CollectionProduct)
-    collections: Collection[];
+  collections: Collection[];
 
   @BelongsToMany(() => Tags, () => ProductTags)
-    tags: Tags[];
+  tags: Tags[];
 
   @BelongsToMany(() => User, () => UserProductFav)
-    favoritedBy: User[];
+  favoritedBy: User[];
 
   @BelongsToMany(() => Order, () => OrderProduct)
-    order: Order[];
+  order: Order[];
 
   @HasMany(() => Customization)
-    customizations: Customization;
+  customizations: Customization;
 }

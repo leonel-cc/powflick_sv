@@ -4,8 +4,6 @@ import { Categories } from '../categories/entity/categories.entity';
 import { ProductCategories } from '../categories/entity/productcategories.entity';
 import { Customization } from '../products/entity/customization.entity';
 import { Product } from '../products/entity/products.entity';
-import { CartProduct } from '../shopping-cart/entity/cart-product.entity';
-import { ShoppingCart } from '../shopping-cart/entity/shopping-cart.entity';
 import { Sport } from '../sport/entity/sport.entity';
 import { User } from '../users/entity/users.entity';
 import * as env from '../config/enviroments';
@@ -40,8 +38,6 @@ import { ProductTags } from '../tags/entity/productTags.entity';
         ProductCategories,
         Sport,
         Customization,
-        ShoppingCart,
-        CartProduct,
         Direction,
         UserProductFav,
         Order,
@@ -70,4 +66,4 @@ import { ProductTags } from '../tags/entity/productTags.entity';
   ],
   exports: [SequelizeModule],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
