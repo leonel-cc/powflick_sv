@@ -161,12 +161,23 @@ export class OrdersService {
           if (coupon.type === 'percent') {
             discountAmount = (Number(total) * coupon.discount) / 100;
           }
+          // Limitar el descuento máximo al total
+          if (discountAmount > Number(total)) {
+            discountAmount = Number(total);
+          }
           appliedCoupon = coupon;
         }
       }
 
       // Aplicamos el descuento al total
-      const totalWithDiscount = Number(total) - discountAmount;
+      let totalWithDiscount = Number(total) - discountAmount;
+      // Si hay productos, el mínimo permitido por LianLianPay es 0.01
+      if (Number(total) > 0 && totalWithDiscount < 0.01) {
+        totalWithDiscount = 0.01;
+      }
+      if (totalWithDiscount < 0) {
+        totalWithDiscount = 0;
+      }
 
       const orderData: {
         total: string;
@@ -408,23 +419,40 @@ export class OrdersService {
           lineitems.push({
             product_id: product.id,
             name: product.title,
-            description: description,
+            // Cambia aquí: suma el precio base + customización
             price: Number(
               this.currencyService.convertCurrency(
-                Number(product.subtotal),
+                Number(product.price) + Number(customization.price),
                 currency.value,
               ),
             ),
+            description: description
+              .replace(/[^a-zA-Z0-9\s,:]/g, '') // Elimina caracteres especiales
+              .slice(0, 128), // Limita la longitud a 128 caracteres
+            category: 'custom jersey',
+            sku: product.id,
+            url:
+              product.images[0] ||
+              'https://www.powflick.com/products/' + product.id, // Actualización aquí
             quantity: 1,
-            category: 'Custom Jerseys',
-            sku: product.slug,
-            url: product.images[0] || '',
             shipping_provider: 'other',
           });
 
+          const customWithDesignName = {
+            ...customization,
+            designName:
+              (
+                thisUser.firstName.slice(0, 4) +
+                Math.floor(Math.random() * (99 - 10 + 1)) +
+                10 +
+                '-' +
+                product.slug
+              ).toUpperCase() + '.pdf',
+          };
+
           customizations.push({
             productId: product.id,
-            customization: customization,
+            customization: customWithDesignName,
           });
         }
       }
@@ -716,8 +744,7 @@ export class OrdersService {
       });
 
       const { products, total } = await this.filterPrices(cartProducts);
-
-      console.log('products', products, 'total', total);
+      console.log('total', total);
 
       const thisDirection = await Direction.findByPk(directionId);
 
@@ -764,7 +791,10 @@ export class OrdersService {
       }
 
       // Aplicamos el descuento al total
-      const totalWithDiscount = Number(total) - discountAmount;
+      let totalWithDiscount = Number(total) - discountAmount;
+      totalWithDiscount = Math.max(0.1, totalWithDiscount); // Nunca menor a 0
+
+      console.log('totalWithDiscount', totalWithDiscount);
 
       const orderData: {
         total: string;
@@ -918,9 +948,10 @@ export class OrdersService {
           lineitems.push({
             product_id: product.id,
             name: product.title,
+            // Cambia aquí: suma el precio base + customización
             price: Number(
               this.currencyService.convertCurrency(
-                Number(product.price),
+                Number(product.price) + Number(customization.price),
                 currency.value,
               ),
             ),
@@ -985,8 +1016,9 @@ export class OrdersService {
         // address,
       };
 
+      // --- Al construir el payload para LianLianPay, usar el total con descuento ---
       const payload: any = {
-        order_amount: Number(Number(total).toFixed(2)), // suma de todos los montos, redondeado a 2 decimales
+        order_amount: Number(totalWithDiscount.toFixed(2)), // nunca menor a 0.01 si hay productos
         order_currency_code: 'USD',
         order_description: 'Custom jerseys order',
         shipping,
