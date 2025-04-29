@@ -496,7 +496,7 @@ export class ProductsService {
               });
 
               if (!thisCategory) {
-                throw new NotFoundException(`Collection with name '${name}' not found`);
+                throw new NotFoundException(`Category with name '${name}' not found`);
               }
 
               // Crear la relación en la tabla intermedia CollectionProduct
