@@ -44,6 +44,14 @@ export class MessagesController {
     return this.messagesService.getCategoryTotals();
   }
 
+
+  @Get('/by/user')
+  @UseGuards(JwtAuthGuard)
+  async getAllByUser(@GetUser() { userEmail }: IGetUser,
+  ) {
+    return this.messagesService.getAllByUser(userEmail);
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Rol.admin)

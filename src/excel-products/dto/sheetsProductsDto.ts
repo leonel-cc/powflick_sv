@@ -53,8 +53,9 @@ export class SheetsProductsDto {
   @Transform(({ value }) => value === null ? '' : value) // Transformamos null a cadena vacía
     Tags: string | null;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
+  @Transform(({ value }) => value === undefined || value === null || value === '' ? '1000' : value)
     Score: string;
 
   @IsNotEmpty()
@@ -82,12 +83,14 @@ export class SheetsProductsDto {
   @Transform(({ value }) => value === 'yes')  // Convierte 'yes' en true y cualquier otra cosa en false
     Featured: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
+  @Transform(({ value }) => value === undefined || value === null || value === '' ? 'Arial' : value)
     Font: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
+  @Transform(({ value }) => value === undefined || value === null || value === '' ? '%ffffff' : value)
     'Font Color': string;
 
   @IsOptional()
