@@ -6,7 +6,7 @@ import { Product } from '../products/entity/products.entity';
 import { ProductsService } from '../products/products.service';
 import { ProductCategories } from '../categories/entity/productcategories.entity';
 import { CategoriesService } from '../categories/categories.service';
-import { arraysAreEqualUnordered, stringArraying } from '../utils/tools';
+import { arraysAreEqualUnordered, capitalizeTitle } from '../utils/tools';
 import { SportService } from '../sport/sport.service';
 import * as xlsx from 'xlsx';
 // import { crearCarpeta, downloadImage, readFilesInFolder, uploadImageToVercel, uploadLocalImageToVercel } from '../utils/downloadImages';
@@ -108,12 +108,7 @@ export class ExcelProductsService {
       for (const [index, value] of allProducts.entries()) {
         const thisProduct = Products.find(({ id }) => id === value.ID);
 
-        value.Title = value.Title.split(' ')
-          .map(
-            (word) =>
-              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-          )
-          .join(' ');
+        value.Title = capitalizeTitle(value.Title.trim());
 
         /////////////////////////////////////////////////// Guardar imagenes de productos en una carpeta local
         // // Crear carpeta para el producto
@@ -313,22 +308,20 @@ export class ExcelProductsService {
         const names = categoryString.split('|');
 
         for (const name of names) {
-          const formattedName =
-            name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+          const capitalizedName = capitalizeTitle(name);
 
           const categoryId: string = await this.categoryService.getOrCreateCategory(
-            formattedName,
+            capitalizedName,
             index,
           );
 
           await this.createCategoryProductRelation(productId, categoryId);
         }
       } else {
-        const formattedName =
-          categoryString.charAt(0).toUpperCase() + categoryString.slice(1).toLowerCase();
+        const capitalizedName = capitalizeTitle(categoryString);
 
         const categoryId: string = await this.categoryService.getOrCreateCategory(
-          formattedName,
+          capitalizedName,
           index,
         );
         this.createCategoryProductRelation(productId, categoryId);
@@ -361,22 +354,20 @@ export class ExcelProductsService {
         const titles = collectionString.split('|');
 
         for (const title of titles) {
-          const formattedName =
-            title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
+          const capitalizedName = capitalizeTitle(title);
 
           const collectionId: string = await this.collectionsService.getOrCreateCollections(
-            formattedName,
+            capitalizedName,
             index,
           );
 
           await this.createCollectionsProductRelation(productId, collectionId);
         }
       } else {
-        const formattedName =
-          collectionString.charAt(0).toUpperCase() + collectionString.slice(1).toLowerCase();
+        const capitalizedName = capitalizeTitle(collectionString);
 
         const collectionId: string = await this.collectionsService.getOrCreateCollections(
-          formattedName,
+          capitalizedName,
           index,
         );
         this.createCollectionsProductRelation(productId, collectionId);
@@ -409,22 +400,20 @@ export class ExcelProductsService {
         const names = tagsString.split('|');
 
         for (const name of names) {
-          const formattedName =
-            name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+          const capitalizedName = capitalizeTitle(name);
 
           const tagId: string = await this.tagsService.getOrCreateTags(
-            formattedName,
+            capitalizedName,
             index,
           );
 
           await this.createTagsProductRelation(productId, tagId);
         }
       } else {
-        const formattedName =
-          tagsString.charAt(0).toUpperCase() + tagsString.slice(1).toLowerCase();
+        const capitalizedName = capitalizeTitle(tagsString);
 
         const tagId: string = await this.tagsService.getOrCreateTags(
-          formattedName,
+          capitalizedName,
           index,
         );
         this.createTagsProductRelation(productId, tagId);

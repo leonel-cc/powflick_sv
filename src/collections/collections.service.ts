@@ -7,6 +7,7 @@ import { Product } from '../products/entity/products.entity';
 import { Op } from 'sequelize';
 import { deleteIfNoRelations } from '../utils/hooks';
 import { Categories } from 'src/categories/entity/categories.entity';
+import { capitalizeTitle } from 'src/utils/tools';
 
 @Injectable()
 export class CollectionsService {
@@ -169,11 +170,9 @@ export class CollectionsService {
   ) {
     try {
       const { products, ...coll } = collectionDto;
-      const formattedName =
-        coll.title.charAt(0).toUpperCase() + coll.title.slice(1).toLowerCase();
-
+      const capitalizedName = capitalizeTitle(coll.title);
       // 1. Crear la categoría
-      const [collection] = await Collection.findOrCreate({ where: { title: formattedName }, defaults: { ...coll } });
+      const [collection] = await Collection.findOrCreate({ where: { title: capitalizedName }, defaults: { ...coll } });
 
       // 2. Buscar los productos por título y obtener sus IDs
       if (products.length > 0) {

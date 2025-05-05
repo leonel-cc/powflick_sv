@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import { Product } from '../products/entity/products.entity';
 import { ProductCategories } from './entity/productcategories.entity';
 import { deleteIfNoRelations } from '../utils/hooks';
+import { capitalizeTitle } from 'src/utils/tools';
 
 @Injectable()
 export class CategoriesService {
@@ -95,11 +96,10 @@ export class CategoriesService {
     productTitle: string[],
   ) {
     try {
-      const formattedName =
-      categoryName.charAt(0).toUpperCase() + categoryName.slice(1).toLowerCase();
+      const capitalizedName = capitalizeTitle(categoryName);
 
       // 1. Crear la categoría
-      const category = await Categories.create({ name: formattedName });
+      const category = await Categories.create({ name: capitalizedName });
       // 2. Buscar los productos por título y obtener sus IDs
       if (productTitle.length > 0) {
         const ids = await Promise.all(
