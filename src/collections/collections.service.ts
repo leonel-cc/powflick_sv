@@ -8,6 +8,7 @@ import { Op } from 'sequelize';
 import { deleteIfNoRelations } from '../utils/hooks';
 import { Categories } from 'src/categories/entity/categories.entity';
 import { capitalizeTitle } from 'src/utils/tools';
+import { Tags } from 'src/tags/entity/tags.entity';
 
 @Injectable()
 export class CollectionsService {
@@ -150,10 +151,20 @@ export class CollectionsService {
           model: Product,
           where: { status: 'publish' },
           order: [['score', 'DESC']],
-          include: [{
-            model: Categories,
-            attributes: ['name'],
-          }],
+          include: [
+            {
+              model: Categories, // Especifica el modelo relacionado
+              attributes: ['name'],
+            },
+            {
+              model: Collection, // Especifica el modelo relacionado
+              attributes: ['title'],
+            },
+            {
+              model: Tags, // Especifica el modelo relacionado
+              attributes: ['name'],
+            },
+          ],
           through: { attributes: [] },
         },
       ],
