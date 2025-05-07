@@ -1,5 +1,5 @@
 // pdf.service.ts
-import PDFDocument from 'pdfkit';
+import * as PDFDocument from 'pdfkit';
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import {

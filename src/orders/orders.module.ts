@@ -14,6 +14,7 @@ import { CouponService } from '../coupon/coupon.service';
 import { CouponModule } from '../coupon/coupon.module';
 import { BrevoService } from 'src/brevo/brevo.service';
 import { LLPService } from 'src/payments/LLP.service';
+import { PaypalService } from '../payments/paypal.service';
 
 @Module({
   imports: [CouponModule],
@@ -31,6 +32,7 @@ import { LLPService } from 'src/payments/LLP.service';
     CurrencyService,
     CouponService,
     LLPService,
+    PaypalService,
   ],
   controllers: [OrdersController],
 })

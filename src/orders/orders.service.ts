@@ -40,6 +40,7 @@ import {
 } from 'src/payments/dto/create-llp-payment.dto';
 import { LLPService } from 'src/payments/LLP.service';
 import { FrontCartStore } from '../shopping-cart/dto/add.bulkCustomizations.dto';
+import { PaypalService } from '../payments/paypal.service';
 @Injectable()
 export class OrdersService {
   constructor(
@@ -49,6 +50,7 @@ export class OrdersService {
     private currencyService: CurrencyService,
     private sequelize: Sequelize,
     private couponService: CouponService,
+    private paypalService: PaypalService, // <--- Agrega PaypalService
   ) {}
 
   async findOneOrder(id: string, user: IGetUser) {
@@ -479,6 +481,106 @@ export class OrdersService {
       transaction.rollback();
       throw new InternalServerErrorException(
         `An error occurred while creating your order. \n ${error.message}`,
+      );
+    }
+  }
+
+  // Crear Orden con PayPal
+  async createOrderPaypal(
+    data: CreateOrderDto,
+    currency: { name: string; value: number },
+  ): Promise<object> {
+    const transaction: Transaction = await this.sequelize.transaction();
+
+    try {
+      const { userId, directionId, couponId, note, cartProducts } = data;
+      const thisUser = await this.userService.findByPkGenericUser(userId, {
+        transaction,
+      });
+      const { products, total } = await this.filterPrices(cartProducts);
+
+      if (cartProducts?.length === 0)
+        throw new HttpException('The cart is empty', 400);
+
+      // Lógica de cupón igual que en create()
+      let discountAmount = 0;
+      let appliedCoupon = null;
+      if (couponId) {
+        const couponUser =
+          await this.couponService.findOneCouponUserByCouponIdandUserId(
+            userId,
+            couponId,
+          );
+        if (!couponUser || !couponUser.dataValues.active) {
+          throw new HttpException('Coupon not valid or inactive', 400);
+        }
+        const usedCoupon = await Order.findOne({
+          where: {
+            userId,
+            'coupon.id': couponId,
+            state: OrderStateEnum.APROBADO,
+          },
+        });
+        if (usedCoupon)
+          throw new HttpException('User has already used this coupon', 400);
+        const coupon = await this.couponService.findOne(couponId);
+        if (coupon) {
+          if (coupon.type === 'amount') discountAmount = coupon.discount;
+          if (coupon.type === 'percent')
+            discountAmount = (Number(total) * coupon.discount) / 100;
+          if (discountAmount > Number(total)) discountAmount = Number(total);
+          appliedCoupon = coupon;
+        }
+      }
+
+      let totalWithDiscount = Number(total) - discountAmount;
+      if (Number(total) > 0 && totalWithDiscount < 0.01)
+        totalWithDiscount = 0.01;
+      if (totalWithDiscount < 0) totalWithDiscount = 0;
+
+      const orderData: any = {
+        total: this.currencyService.convertCurrency(
+          Number(totalWithDiscount),
+          currency.value,
+        ),
+        currency: { name: currency.name, value: currency.value },
+        userId,
+        directionId,
+        note,
+      };
+      if (appliedCoupon) {
+        orderData.coupon = {
+          id: appliedCoupon.dataValues.id,
+          discount: appliedCoupon.dataValues.discount,
+          title: appliedCoupon.dataValues.title,
+          content: appliedCoupon.dataValues.content,
+          type: appliedCoupon.dataValues.type,
+        };
+      }
+
+      const newOrder = await Order.create(orderData, { transaction });
+
+      // No necesitas crear lineitems para PayPal, solo el total
+      // Crea la orden en PayPal
+      const paypalOrder = await this.paypalService.createOrder(
+        newOrder.total.toFixed(2),
+        String(newOrder.id),
+        currency.name,
+      );
+      newOrder.sessionId = paypalOrder?.id || null;
+      await newOrder.save({ transaction });
+
+      await transaction.commit();
+      return {
+        statusCode: 201,
+        data: `New order created successfully. _id: ${newOrder.id}`,
+        orderId: newOrder.id,
+        approveUrl: paypalOrder.approveUrl,
+      };
+    } catch (error) {
+      await transaction.rollback();
+      throw new InternalServerErrorException(
+        `An error occurred while creating your PayPal order. \n ${error.message}`,
       );
     }
   }

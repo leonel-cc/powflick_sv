@@ -77,7 +77,7 @@ export class OrdersController {
     @Headers('Currency') currency: string,
     @Headers('CurrencyValue') currencyValue: string,
   ) {
-    const response = await this.ordersService.createOrderLLP(
+    const response = await this.ordersService.createOrderPaypal(
       {
         couponId,
         userId,
