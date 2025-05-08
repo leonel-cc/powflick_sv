@@ -494,51 +494,72 @@ export class OrdersService {
 
     try {
       const { userId, directionId, couponId, note, cartProducts } = data;
+      //Obtenemos el id del carrito del usuario que realiza la peticion
       const thisUser = await this.userService.findByPkGenericUser(userId, {
         transaction,
       });
+
       const { products, total } = await this.filterPrices(cartProducts);
+      console.log('total', total);
+
+      const thisDirection = await Direction.findByPk(directionId);
 
       if (cartProducts?.length === 0)
         throw new HttpException('The cart is empty', 400);
 
-      // Lógica de cupón igual que en create()
+      // Obtenemos el descuento del cupón si existe
       let discountAmount = 0;
       let appliedCoupon = null;
+
       if (couponId) {
         const couponUser =
           await this.couponService.findOneCouponUserByCouponIdandUserId(
             userId,
             couponId,
           );
+
         if (!couponUser || !couponUser.dataValues.active) {
           throw new HttpException('Coupon not valid or inactive', 400);
         }
+
         const usedCoupon = await Order.findOne({
           where: {
             userId,
             'coupon.id': couponId,
-            state: OrderStateEnum.APROBADO,
+            state: OrderStateEnum.APROBADO, // Verifica que el estado sea APROBADO
           },
         });
-        if (usedCoupon)
+        if (usedCoupon) {
           throw new HttpException('User has already used this coupon', 400);
+        }
+
         const coupon = await this.couponService.findOne(couponId);
         if (coupon) {
-          if (coupon.type === 'amount') discountAmount = coupon.discount;
-          if (coupon.type === 'percent')
+          // Cambia aquí: soporta amount y percent
+          if (coupon.type === 'amount') {
+            discountAmount = coupon.discount;
+          }
+          if (coupon.type === 'percent') {
             discountAmount = (Number(total) * coupon.discount) / 100;
-          if (discountAmount > Number(total)) discountAmount = Number(total);
+          }
           appliedCoupon = coupon;
         }
       }
 
+      // Aplicamos el descuento al total
       let totalWithDiscount = Number(total) - discountAmount;
-      if (Number(total) > 0 && totalWithDiscount < 0.01)
-        totalWithDiscount = 0.01;
-      if (totalWithDiscount < 0) totalWithDiscount = 0;
+      totalWithDiscount = Math.max(0.1, totalWithDiscount); // Nunca menor a 0
 
-      const orderData: any = {
+      console.log('totalWithDiscount', totalWithDiscount);
+
+      const orderData: {
+        total: string;
+        currency: { name: string; value: number };
+        userId: string;
+        directionId: string;
+        coupon?: any;
+        note?: string;
+      } = {
         total: this.currencyService.convertCurrency(
           Number(totalWithDiscount),
           currency.value,
@@ -548,26 +569,230 @@ export class OrdersService {
         directionId,
         note,
       };
+
+      // Incluimos el cupón en el objeto si existe
       if (appliedCoupon) {
         orderData.coupon = {
           id: appliedCoupon.dataValues.id,
           discount: appliedCoupon.dataValues.discount,
           title: appliedCoupon.dataValues.title,
           content: appliedCoupon.dataValues.content,
-          type: appliedCoupon.dataValues.type,
+          type: appliedCoupon.dataValues.type, // Añade el tipo al objeto cupón
         };
       }
 
       const newOrder = await Order.create(orderData, { transaction });
 
-      // No necesitas crear lineitems para PayPal, solo el total
-      // Crea la orden en PayPal
+      const lineitems: any[] = [];
+      const customizationsOrder: {
+        productId: string;
+        customization: any;
+      }[] = [];
+
+      for (const {
+        product,
+        customizations,
+        totalCustomization,
+        totalProduct,
+      } of products) {
+        const subtotal = totalProduct + totalCustomization;
+
+        await OrderProduct.create(
+          {
+            amount: product.amount,
+            price: Number(
+              this.currencyService.convertCurrency(
+                Number(subtotal),
+                currency.value,
+              ),
+            ),
+            orderId: newOrder.id,
+            productId: product.id,
+          },
+          { transaction },
+        );
+
+        for (const customization of customizations) {
+          let description = '';
+
+          // Función auxiliar para procesar personalizaciones comunes
+          const processCustomization = (type: string, value: string) => {
+            if (value) {
+              const [name, price] = value.split(' ');
+              const formattedPrice = price
+                ? ` (${currencySymbol(
+                    currency.name,
+                  )}${this.currencyService.convertCurrency(
+                    Number(eliminarCaracteresNoNumericos(price)),
+                    currency.value,
+                  )})`
+                : '';
+              description += `${type}: ${name}${formattedPrice}, `;
+            }
+          };
+
+          // Procesar personalizaciones comunes
+          processCustomization('Size', customization.size);
+          processCustomization('Neck', customization.neck);
+          processCustomization('Socks', customization.socks);
+          processCustomization('Pants', customization.pants);
+          processCustomization('Shorts', customization.shorts);
+          processCustomization('Materials', customization.materials);
+
+          // Procesar textos y números del lado frontal
+          const processSide = (side: string, texts: any[], numbers: any[]) => {
+            if (texts.some((e) => e.text) || numbers.some((e) => e.number)) {
+              description += ` | ${side}: `;
+              texts
+                .filter((e) => e.text)
+                .forEach(
+                  (e, i) =>
+                    (description += `Text ${i}: ${e.text} (+ ${currencySymbol(
+                      currency.name,
+                    )}${this.currencyService.convertCurrency(
+                      3.99,
+                      currency.value,
+                    )}), `),
+                );
+              numbers
+                .filter((e) => e.number)
+                .forEach(
+                  (e, i) =>
+                    (description += `Number ${i + 1}: ${
+                      e.number
+                    } (+ ${currencySymbol(
+                      currency.name,
+                    )}${this.currencyService.convertCurrency(
+                      3.99,
+                      currency.value,
+                    )}), `),
+                );
+            }
+          };
+
+          // Procesar lados frontal y trasero
+          processSide(
+            'Front side',
+            customization.frontSide.texts,
+            customization.frontSide.numbers,
+          );
+          processSide(
+            'Back side',
+            customization.backSide.texts,
+            customization.backSide.numbers,
+          );
+
+          const currencyChanged = this.currencyService.convertCurrency(
+            product.price + customization.price,
+            currency.value,
+          );
+          let unitAmoutByCurrency = Number(currencyChanged) * 100;
+
+          if (appliedCoupon?.discount) {
+            // Calcular el monto del descuento según el tipo
+            if (appliedCoupon.type === 'amount') {
+              discountAmount = appliedCoupon.discount;
+              unitAmoutByCurrency -= discountAmount;
+            }
+            if (appliedCoupon.type === 'percent') {
+              discountAmount =
+                unitAmoutByCurrency * (appliedCoupon.discount / 100);
+              unitAmoutByCurrency -= discountAmount;
+            }
+          }
+
+          lineitems.push({
+            product_id: product.id,
+            name: product.title,
+            // Cambia aquí: suma el precio base + customización
+            price: Number(
+              this.currencyService.convertCurrency(
+                Number(product.price) + Number(customization.price),
+                currency.value,
+              ),
+            ),
+            description: description
+              .replace(/[^a-zA-Z0-9\s,:]/g, '') // Elimina caracteres especiales
+              .slice(0, 128), // Limita la longitud a 128 caracteres
+            category: 'custom jersey',
+            sku: product.id,
+            url:
+              product.images[0] ||
+              'https://www.powflick.com/products/' + product.id, // Actualización aquí
+            quantity: 1,
+            shipping_provider: 'other',
+          });
+
+          const customWithDesignName = {
+            ...customization,
+            designName:
+              (
+                thisUser.firstName.slice(0, 4) +
+                Math.floor(Math.random() * (99 - 10 + 1)) +
+                10 +
+                '-' +
+                product.slug
+              ).toUpperCase() + '.pdf',
+          };
+
+          customizationsOrder.push({
+            productId: product.id,
+            customization: customWithDesignName,
+          });
+        }
+      }
+
+      const address = {
+        line1: 'Calle Principal 123', //address
+        line2: 'Apto 4B', //apartment
+        country: 'US', // country
+        city: 'New York', // city
+        state: 'NY', // state
+        postal_code: '10001', // postal code
+        district: 'Manhattan', // locacion -> district
+      };
+
+      const shipping = {
+        first_name: thisUser.firstName,
+        last_name: thisUser.lastName,
+        name: thisUser.firstName + thisUser.lastName,
+        phone: thisDirection.phone,
+        cycle: '24h',
+        address,
+      };
+
+      const customer = {
+        customer_type: 'I', // I = Individual
+        first_name: thisUser.firstName,
+        last_name: thisUser.lastName,
+        full_name: thisUser.firstName + thisUser.lastName,
+        gender: 'male',
+        email: thisUser.email,
+        phone: thisUser.phone,
+        // address,
+      };
+
+      // --- Al construir el payload para LianLianPay, usar el total con descuento ---
+      const payload: any = {
+        order_amount: Number(totalWithDiscount.toFixed(2)), // nunca menor a 0.01 si hay productos
+        order_currency_code: 'USD',
+        order_description: 'Custom jerseys order',
+        shipping,
+        customer,
+        products: lineitems,
+      };
+
+      console.log('payload', payload);
+
+      // Url para generar el pago
       const paypalOrder = await this.paypalService.createOrder(
         newOrder.total.toFixed(2),
         String(newOrder.id),
         currency.name,
       );
+
       newOrder.sessionId = paypalOrder?.id || null;
+      newOrder.customizations = customizationsOrder;
       await newOrder.save({ transaction });
 
       await transaction.commit();
@@ -575,12 +800,13 @@ export class OrdersService {
         statusCode: 201,
         data: `New order created successfully. _id: ${newOrder.id}`,
         orderId: newOrder.id,
-        approveUrl: paypalOrder.approveUrl,
+        urlBuy: paypalOrder.approveUrl,
       };
     } catch (error) {
-      await transaction.rollback();
+      transaction.rollback();
+      console.log(error.message);
       throw new InternalServerErrorException(
-        `An error occurred while creating your PayPal order. \n ${error.message}`,
+        `An error occurred while creating your order. \n ${error.message}`,
       );
     }
   }
@@ -965,11 +1191,11 @@ export class OrdersService {
               const [name, price] = value.split(' ');
               const formattedPrice = price
                 ? ` (${currencySymbol(
-                  currency.name,
-                )}${this.currencyService.convertCurrency(
-                  Number(eliminarCaracteresNoNumericos(price)),
-                  currency.value,
-                )})`
+                    currency.name,
+                  )}${this.currencyService.convertCurrency(
+                    Number(eliminarCaracteresNoNumericos(price)),
+                    currency.value,
+                  )})`
                 : '';
               description += `${type}: ${name}${formattedPrice}, `;
             }
