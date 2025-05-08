@@ -409,8 +409,10 @@ export const SizeGuide = {
   },
   Soccer: {
     image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
-    // image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new-o3cXUQE9nYWS0sOOGBufyepIVbUvCe.jpg',
+    // 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
+    image2:
+      ' https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new2-wYXth7miZkonIRtEUepJjtsZA495rd.jpg',
     //   'https://app.ideasjersey.com/wp-content/uploads/2023/12/Y0mQi1nnIGwqOLu8SKrGBaRafpjlO7FQJ8mgcdsPZek.png',
   },
 };
@@ -433,18 +435,17 @@ export const SizeType = [
   '4XL-MEN',
   '5XL-MEN',
 
-  '4-KIDS',
-  '6-KIDS',
-  '8-KIDS',
-  '10-KIDS',
-  '12-KIDS',
-  '14-KIDS',
-  '16-KIDS',
-  'L6-WOMEN',
-  'L8-WOMEN',
-  'L10-WOMEN',
-  'L12-WOMEN',
-  'L14-WOMEN',
-  'L16-WOMEN',
-  'L18-WOMEN',
+  'XSJ(5-6Y)-KIDS',
+  'SJ(7-8Y)-KIDS',
+  'MJ(9-10Y)-KIDS',
+  'LJ(11-12Y)-KIDS',
+  'XLJ(13-14Y)-KIDS',
+
+  'XS-WOMEN',
+  'S-WOMEN',
+  'M-WOMEN',
+  'L-WOMEN',
+  'XL-WOMEN',
+  '2XL-WOMEN',
+  '3XL-WOMEN',
 ];
