@@ -90,7 +90,7 @@ export class SheetsProductsDto {
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => value === undefined || value === null || value === '' ? '%ffffff' : value)
+  @Transform(({ value }) => value === undefined || value === null || value === '' ? '#ffffff' : value)
     'Font Color': string;
 
   @IsOptional()
