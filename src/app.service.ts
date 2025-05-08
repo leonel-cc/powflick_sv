@@ -19,6 +19,9 @@ import { User } from './users/entity/users.entity';
 import { Op, Sequelize } from 'sequelize';
 import { CategoriesService } from './categories/categories.service';
 import { CollectionsService } from './collections/collections.service';
+import { Categories } from './categories/entity/categories.entity';
+import { Collection } from './collections/entity/collections.entity';
+import { Tags } from './tags/entity/tags.entity';
 
 @Injectable()
 export class AppService {
@@ -224,6 +227,20 @@ export class AppService {
   private async getProductsByCondition(condition: any) {
     return Product.findAll({
       where: condition,
+      include: [
+        {
+          model: Categories, // Especifica el modelo relacionado
+          attributes: ['name'],
+        },
+        {
+          model: Collection, // Especifica el modelo relacionado
+          attributes: ['title'],
+        },
+        {
+          model: Tags, // Especifica el modelo relacionado
+          attributes: ['name'],
+        },
+      ],
       // attributes: [
       //   'id',
       //   'title',

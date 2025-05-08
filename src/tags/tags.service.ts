@@ -4,6 +4,7 @@ import { Product } from 'src/products/entity/products.entity';
 import { Op } from 'sequelize';
 import { ProductTags } from './entity/productTags.entity';
 import { deleteIfNoRelations } from '../utils/hooks';
+import { capitalizeTitle } from 'src/utils/tools';
 
 @Injectable()
 export class TagsService {
@@ -94,11 +95,10 @@ export class TagsService {
     try {
       const { products, ...t } = tagDto;
 
-      const formattedName =
-        t.name.charAt(0).toUpperCase() + t.name.slice(1).toLowerCase();
+      const capitalizedName = capitalizeTitle(t.name); // Formatear el nombre del tag
 
       // 1. Crear o encontrar la etiqueta
-      const [tag] = await Tags.findOrCreate({ where: { name: formattedName } });
+      const [tag] = await Tags.findOrCreate({ where: { name: capitalizedName } });
 
       // 2. Buscar los productos por título y obtener sus IDs
       if (products.length > 0) {

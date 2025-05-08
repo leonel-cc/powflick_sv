@@ -683,9 +683,7 @@ export class OrdersService {
       const orders = await Order.findAll({
         where: {
           userId,
-          state: { [Op.not]: 'PENDING' },
         },
-        attributes: ['id', 'total', 'state'],
         include: [
           {
             model: Product,
@@ -865,11 +863,11 @@ export class OrdersService {
               const [name, price] = value.split(' ');
               const formattedPrice = price
                 ? ` (${currencySymbol(
-                    currency.name,
-                  )}${this.currencyService.convertCurrency(
-                    Number(eliminarCaracteresNoNumericos(price)),
-                    currency.value,
-                  )})`
+                  currency.name,
+                )}${this.currencyService.convertCurrency(
+                  Number(eliminarCaracteresNoNumericos(price)),
+                  currency.value,
+                )})`
                 : '';
               description += `${type}: ${name}${formattedPrice}, `;
             }
