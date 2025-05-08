@@ -223,7 +223,7 @@ export class VercelBlobService {
         const score = (url) => {
           const containsCustomization = url.includes('_customization');
           const contains1 = url.includes('_1');
-          const containsPerson = url.includes('person') || url.includes('G-ADDITIONAL');
+          const containsPerson = url.toLowerCase().includes('person') || url.toLowerCase().includes('g-additional');
 
           if (containsPerson) return 99; // Siempre al final
 

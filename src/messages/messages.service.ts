@@ -331,18 +331,18 @@ export class MessagesService {
 
       const messages = admin
         ? await Messages.findByPk(messageId, {
-            include: {
-              model: Conversation,
-              attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-            },
-          })
+          include: {
+            model: Conversation,
+            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+          },
+        })
         : await Messages.findAll({
-            where: { email: message.email },
-            include: {
-              model: Conversation,
-              attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-            },
-          });
+          where: { email: message.email },
+          include: {
+            model: Conversation,
+            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+          },
+        });
       return {
         text: 'Your message has been sended succesfully',
         messages,
@@ -350,6 +350,23 @@ export class MessagesService {
     } catch (error) {
       throw new HttpException(
         'There was an error adding the message:' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async getAllByUser(email: string) {
+    try {
+      const messages = await Messages.findAll({
+        where: { email },
+        include: {
+          model: Conversation,
+        },
+      });
+      return messages;
+    } catch (error) {
+      throw new HttpException(
+        'There was an error getting the messages',
         HttpStatus.BAD_REQUEST,
       );
     }

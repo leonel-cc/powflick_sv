@@ -39,41 +39,37 @@ export class PdfService {
         const doc = new PDFDocument({ size: [1820, 1200] });
         const buffers: Buffer[] = [];
 
-        // Definir rutas de las fuentes usando path.join
-        const antonPath = path.join(__dirname, 'fonts/Anton/Anton-Regular.ttf');
-        const rasiolinePath = path.join(
-          __dirname,
-          'fonts/Rasioline/DD rasioline.otf',
-        );
-        const spotlightPath = path.join(
-          __dirname,
-          'fonts/Spot Light/Spot Light.otf',
-        );
-        const uninorthPath = path.join(
-          __dirname,
-          'fonts/Uni North/UNINorth-College.otf',
-        );
-        const timesromanPath = path.join(
-          __dirname,
-          'fonts/Times New Roman/TNR.ttf',
-        );
-        const arialPath = path.join(__dirname, 'fonts/Arial/ARIAL.ttf');
-        const courierPath = path.join(__dirname, 'fonts/Courier New/cour.ttf');
-        const verdanaPath = path.join(__dirname, 'fonts/Verdana/Verdana.ttf');
-        const georgiaPath = path.join(__dirname, 'fonts/Georgia/georgia.ttf');
-        const tahomaPath = path.join(__dirname, 'fonts/Tahoma/tahoma.ttf');
+        const fonts = [
+          { name: 'Anton', path: 'fonts/Anton/Anton-Regular.ttf' },
+          { name: 'Rasioline', path: 'fonts/Rasioline/DD rasioline.otf' },
+          { name: 'Spot Light', path: 'fonts/Spot Light/Spot Light.otf' },
+          { name: 'Uni North', path: 'fonts/Uni North/UNINorth-College.otf' },
+          { name: 'Times New Roman', path: 'fonts/Times New Roman/TNR.ttf' },
+          { name: 'Arial', path: 'fonts/Arial/ARIAL.ttf' },
+          { name: 'Courier New', path: 'fonts/Courier New/cour.ttf' },
+          { name: 'Verdana', path: 'fonts/Verdana/Verdana.ttf' },
+          { name: 'Georgia', path: 'fonts/Georgia/georgia.ttf' },
+          { name: 'Tahoma', path: 'fonts/Tahoma/tahoma.ttf' },
+          { name: 'Fest', path: 'fonts/FEST/Fest235 fs.otf' },
+          { name: 'Black Bass Demo', path: 'fonts/BLACK BASS DEMO/Black Bass Demo.otf' },
+          { name: 'Dirga Hayu', path: 'fonts/DIRGA HAYU/dDirgahayu.ttf' },
+          { name: 'Restaurant Menu Book', path: 'fonts/RESTAURANT MENU BOOK/RestaurantMenuBook.ttf' },
+          { name: 'Hatten', path: 'fonts/HATTEN/HATTEN.ttf' },
+          { name: 'NCAA Oregon Ducks Autzen', path: 'fonts/NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf' },
+          { name: 'Qatar Personal Use', path: 'fonts/QATAR PERSONAL USE/QatarPersonalUse.ttf' },
+          { name: 'Real Madrid', path: 'fonts/REAL MADRID/RealMadrid.ttf' },
+          { name: 'Quantum Rangers Personal', path: 'fonts/QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf' },
+          { name: 'Boston Caps', path: 'fonts/BOSTON CAPS/BOSTON CAPS.ttf' },
+          { name: 'Chinese Rocks', path: 'fonts/CHINESE ROCKS/chinese rocks.ttf' },
+          { name: 'Madura United FC', path: 'fonts/MADURA UNITED FC/Madura United FC.otf' },
+          { name: 'Overgrid', path: 'fonts/OVERGRID/OVERGRID.ttf' },
+          { name: 'Slovakia', path: 'fonts/SLOVAKIA/Slovakia.ttf' },
+        ];
 
-        // Registrar las fuentes
-        doc.registerFont('Anton', antonPath);
-        doc.registerFont('Rasioline', rasiolinePath);
-        doc.registerFont('Spot Light', spotlightPath);
-        doc.registerFont('Uni North', uninorthPath);
-        doc.registerFont('Times New Roman', timesromanPath);
-        doc.registerFont('Arial', arialPath);
-        doc.registerFont('Courier New', courierPath);
-        doc.registerFont('Verdana', verdanaPath);
-        doc.registerFont('Georgia', georgiaPath);
-        doc.registerFont('Tahoma', tahomaPath);
+        fonts.forEach(font => {
+          const fontPath = path.join(__dirname, font.path);
+          doc.registerFont(font.name, fontPath);
+        });
 
         // Manejadores de eventos para completar y manejar errores
         doc.on('data', buffers.push.bind(buffers));
