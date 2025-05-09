@@ -41,6 +41,7 @@ export class SheetsProductsDto {
 
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value === null ? '' : value) // Transformamos null a cadena vacía
     'Product Categories': string;
 
   @IsOptional()
