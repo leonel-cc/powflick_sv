@@ -76,8 +76,25 @@ export class OrdersController {
     { couponId, directionId, note, cartProducts }: CreateOrderDto,
     @Headers('Currency') currency: string,
     @Headers('CurrencyValue') currencyValue: string,
+    @Query('gateway') gateway: string,
   ) {
-    const response = await this.ordersService.createOrderPaypal(
+    const gateways = {
+      LLP: this.ordersService.createOrderLLP.bind(this.ordersService),
+      STRIPE: this.ordersService.create.bind(this.ordersService),
+      PAYPAL: this.ordersService.createOrderPaypal.bind(this.ordersService),
+    };
+
+    const gatewayKey = (gateway || '').toUpperCase();
+    const handler = gateways[gatewayKey];
+
+    if (!handler) {
+      throw new HttpException(
+        'Debe especificar una pasarela de pago válida: LLP, STRIPE o PAYPAL',
+        400,
+      );
+    }
+
+    return handler(
       {
         couponId,
         userId,
@@ -87,7 +104,6 @@ export class OrdersController {
       },
       { name: currency, value: +currencyValue },
     );
-    return response;
   }
 
   /* Ajustar despues para que solo los usuarios de Rol x puedan acceder a la misma */
