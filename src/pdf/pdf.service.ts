@@ -87,8 +87,8 @@ export class PdfService {
           { name: 'Slovakia', path: 'fonts/SLOVAKIA/Slovakia.ttf' },
         ];
 
-        fonts.forEach((font) => {
-          const fontPath = path.join(__dirname, font.path);
+        fonts.forEach(font => {
+          const fontPath = path.resolve(__dirname, font.path);
           doc.registerFont(font.name, fontPath);
         });
 
