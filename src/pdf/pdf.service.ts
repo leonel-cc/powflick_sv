@@ -39,58 +39,77 @@ export class PdfService {
         const doc = new PDFDocument({ size: [1820, 1200] });
         const buffers: Buffer[] = [];
 
-        const fonts = [
-          { name: 'Anton', path: 'fonts/Anton/Anton-Regular.ttf' },
-          { name: 'Rasioline', path: 'fonts/Rasioline/DD rasioline.otf' },
-          { name: 'Spot Light', path: 'fonts/Spot Light/Spot Light.otf' },
-          { name: 'Uni North', path: 'fonts/Uni North/UNINorth-College.otf' },
-          { name: 'Times New Roman', path: 'fonts/Times New Roman/TNR.ttf' },
-          { name: 'Arial', path: 'fonts/Arial/ARIAL.ttf' },
-          { name: 'Courier New', path: 'fonts/Courier New/cour.ttf' },
-          { name: 'Verdana', path: 'fonts/Verdana/Verdana.ttf' },
-          { name: 'Georgia', path: 'fonts/Georgia/georgia.ttf' },
-          { name: 'Tahoma', path: 'fonts/Tahoma/tahoma.ttf' },
-          { name: 'Fest', path: 'fonts/FEST/Fest235 fs.otf' },
-          {
-            name: 'Black Bass Demo',
-            path: 'fonts/BLACK BASS DEMO/Black Bass Demo.otf',
-          },
-          { name: 'Dirga Hayu', path: 'fonts/DIRGA HAYU/dDirgahayu.ttf' },
-          {
-            name: 'Restaurant Menu Book',
-            path: 'fonts/RESTAURANT MENU BOOK/RestaurantMenuBook.ttf',
-          },
-          { name: 'Hatten', path: 'fonts/HATTEN/HATTEN.ttf' },
-          {
-            name: 'NCAA Oregon Ducks Autzen',
-            path: 'fonts/NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf',
-          },
-          {
-            name: 'Qatar Personal Use',
-            path: 'fonts/QATAR PERSONAL USE/QatarPersonalUse.ttf',
-          },
-          { name: 'Real Madrid', path: 'fonts/REAL MADRID/RealMadrid.ttf' },
-          {
-            name: 'Quantum Rangers Personal',
-            path: 'fonts/QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf',
-          },
-          { name: 'Boston Caps', path: 'fonts/BOSTON CAPS/BOSTON CAPS.ttf' },
-          {
-            name: 'Chinese Rocks',
-            path: 'fonts/CHINESE ROCKS/chinese rocks.ttf',
-          },
-          {
-            name: 'Madura United FC',
-            path: 'fonts/MADURA UNITED FC/Madura United FC.otf',
-          },
-          { name: 'Overgrid', path: 'fonts/OVERGRID/OVERGRID.ttf' },
-          { name: 'Slovakia', path: 'fonts/SLOVAKIA/Slovakia.ttf' },
-        ];
+        const antonPath = path.join(__dirname, 'fonts/Anton/Anton-Regular.ttf');
+        doc.registerFont('Anton', antonPath);
 
-        fonts.forEach(font => {
-          const fontPath = path.resolve(__dirname, font.path);
-          doc.registerFont(font.name, fontPath);
-        });
+        const rasiolinePath = path.join(__dirname, 'fonts/Rasioline/DD rasioline.otf');
+        doc.registerFont('Rasioline', rasiolinePath);
+
+        const spotlightPath = path.join(__dirname, 'fonts/Spot Light/Spot Light.otf');
+        doc.registerFont('Spot Light', spotlightPath);
+
+        const uniNorthPath = path.join(__dirname, 'fonts/Uni North/UNINorth-College.otf');
+        doc.registerFont('Uni North', uniNorthPath);
+
+        const tnrPath = path.join(__dirname, 'fonts/Times New Roman/TNR.ttf');
+        doc.registerFont('Times New Roman', tnrPath);
+
+        const arialPath = path.join(__dirname, 'fonts/Arial/ARIAL.ttf');
+        doc.registerFont('Arial', arialPath);
+
+        const courierNewPath = path.join(__dirname, 'fonts/Courier New/cour.ttf');
+        doc.registerFont('Courier New', courierNewPath);
+
+        const verdanaPath = path.join(__dirname, 'fonts/Verdana/Verdana.ttf');
+        doc.registerFont('Verdana', verdanaPath);
+
+        const georgiaPath = path.join(__dirname, 'fonts/Georgia/georgia.ttf');
+        doc.registerFont('Georgia', georgiaPath);
+
+        const tahomaPath = path.join(__dirname, 'fonts/Tahoma/tahoma.ttf');
+        doc.registerFont('Tahoma', tahomaPath);
+
+        const festPath = path.join(__dirname, 'fonts/FEST/Fest235 fs.otf');
+        doc.registerFont('Fest', festPath);
+
+        const blackBassPath = path.join(__dirname, 'fonts/BLACK BASS DEMO/Black Bass Demo.otf');
+        doc.registerFont('Black Bass Demo', blackBassPath);
+
+        const dirgaHayuPath = path.join(__dirname, 'fonts/DIRGA HAYU/dDirgahayu.ttf');
+        doc.registerFont('Dirga Hayu', dirgaHayuPath);
+
+        const restaurantMenuBookPath = path.join(__dirname, 'fonts/RESTAURANT MENU BOOK/RestaurantMenuBook.ttf');
+        doc.registerFont('Restaurant Menu Book', restaurantMenuBookPath);
+
+        const hattenPath = path.join(__dirname, 'fonts/HATTEN/HATTEN.ttf');
+        doc.registerFont('Hatten', hattenPath);
+
+        const ncaaPath = path.join(__dirname, 'fonts/NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf');
+        doc.registerFont('NCAA Oregon Ducks Autzen', ncaaPath);
+
+        const qatarPath = path.join(__dirname, 'fonts/QATAR PERSONAL USE/QatarPersonalUse.ttf');
+        doc.registerFont('Qatar Personal Use', qatarPath);
+
+        const realMadridPath = path.join(__dirname, 'fonts/REAL MADRID/RealMadrid.ttf');
+        doc.registerFont('Real Madrid', realMadridPath);
+
+        const quantumRangersPath = path.join(__dirname, 'fonts/QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf');
+        doc.registerFont('Quantum Rangers Personal', quantumRangersPath);
+
+        const bostonCapsPath = path.join(__dirname, 'fonts/BOSTON CAPS/BOSTON CAPS.ttf');
+        doc.registerFont('Boston Caps', bostonCapsPath);
+
+        const chineseRocksPath = path.join(__dirname, 'fonts/CHINESE ROCKS/chinese rocks.ttf');
+        doc.registerFont('Chinese Rocks', chineseRocksPath);
+
+        const maduraUnitedPath = path.join(__dirname, 'fonts/MADURA UNITED FC/Madura United FC.otf');
+        doc.registerFont('Madura United FC', maduraUnitedPath);
+
+        const overgridPath = path.join(__dirname, 'fonts/OVERGRID/OVERGRID.ttf');
+        doc.registerFont('Overgrid', overgridPath);
+
+        const slovakiaPath = path.join(__dirname, 'fonts/SLOVAKIA/Slovakia.ttf');
+        doc.registerFont('Slovakia', slovakiaPath);
 
         // Manejadores de eventos para completar y manejar errores
         doc.on('data', buffers.push.bind(buffers));
