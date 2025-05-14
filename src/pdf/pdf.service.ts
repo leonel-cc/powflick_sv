@@ -67,7 +67,7 @@ export class PdfService {
         ];
 
         fonts.forEach(font => {
-          const fontPath = path.join(__dirname, font.path);
+          const fontPath = path.resolve(__dirname, font.path);
           doc.registerFont(font.name, fontPath);
         });
 
