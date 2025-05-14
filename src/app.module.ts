@@ -36,6 +36,8 @@ import { BrevoModule } from './brevo/brevo.module';
 import { BrevoService } from './brevo/brevo.service';
 import { LLPService } from './payments/LLP.service';
 import { FreeDesignModule } from './free-design/free-design.module';
+import { PaypalService } from './payments/paypal.service';
+import { PaypalController } from './payments/paypal.controller';
 
 @Module({
   imports: [
@@ -75,6 +77,7 @@ import { FreeDesignModule } from './free-design/free-design.module';
     PaymentsController,
     FilesController,
     CouponController,
+    PaypalController,
   ],
   providers: [
     BrevoService,
@@ -89,6 +92,7 @@ import { FreeDesignModule } from './free-design/free-design.module';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
+    PaypalService,
   ],
 })
 export class AppModule {

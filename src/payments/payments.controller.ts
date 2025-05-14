@@ -18,6 +18,7 @@ import { CLIENT_URL } from '../config/enviroments';
 import { StripeService } from './stripe.service';
 import { LLPService } from './LLP.service';
 import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
+import { PaypalService } from './paypal.service';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -25,6 +26,7 @@ export class PaymentsController {
   constructor(
     private readonly stripeService: StripeService,
     private readonly llpService: LLPService,
+    private readonly paypalService: PaypalService,
   ) {}
 
   @Post('create-checkout-session')
@@ -39,10 +41,27 @@ export class PaymentsController {
   async handleSuccessPayment(
     @Res() res: Response,
     @Param('orderid') orderid: string,
+    @Query('token') token: string,
+    @Query('PayerID') payerId: string,
   ) {
-    await this.llpService.actualizePayment('success', orderid);
+    console.log(
+      'PayPal SUCCESS endpoint hit for order:',
+      orderid,
+      'token:',
+      token,
+      'payerId:',
+      payerId,
+    );
 
-    res.redirect(CLIENT_URL + '/thanks-for-buying/' + orderid); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
+    try {
+      // Captura el pago en PayPal usando ambos IDs correctamente
+      await this.paypalService.actualizePayment('success', orderid, token);
+      // Redirige al frontend
+      res.redirect(CLIENT_URL + '/thanks-for-buying/' + orderid);
+    } catch (error) {
+      console.error('Error capturing PayPal payment:', error);
+      res.redirect(CLIENT_URL + '/checkout?paypal_error=1');
+    }
   }
 
   // Ruta para manejar un pago fallido
@@ -54,6 +73,7 @@ export class PaymentsController {
     @Res() res: Response,
     @Param('orderid') orderid: string,
   ) {
+    console.log('PayPal FAILURE endpoint hit for order:', orderid); // <-- Agrega log
     await this.llpService.actualizePayment('failure', orderid);
 
     res.redirect(CLIENT_URL + '/checkout'); // Insertar ruta a donde queremos que se diriga cuando se realize el pago
