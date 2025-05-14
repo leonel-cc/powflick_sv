@@ -160,153 +160,123 @@ export const Socks = [
   },
   {
     name: 'Purple (+$8.00)',
-    hex:
-      '#a00cf4',
+    hex: '#a00cf4',
   },
   {
     name: 'Red (+$8.00)',
-    hex:
-      '#ff4858',
+    hex: '#ff4858',
   },
   {
     name: 'White (+$8.00)',
-    hex:
-      '#ffffff',
+    hex: '#ffffff',
   },
   {
     name: 'Yellow (+$8.00)',
-    hex:
-      '#f0f404',
+    hex: '#f0f404',
   },
   {
     name: 'Green (+$8.00)',
-    hex:
-      '#50dc04',
+    hex: '#50dc04',
   },
   {
     name: 'Orange (+$8.00)',
-    hex:
-      '#f84404',
+    hex: '#f84404',
   },
   {
     name: 'Pink (+$8.00)',
-    hex:
-      '#ff8ccc',
+    hex: '#ff8ccc',
   },
   {
     name: 'Brown (+$8.00)',
-    hex:
-      '#78543c',
+    hex: '#78543c',
   },
   {
     name: 'Black (+$8.00)',
-    hex:
-      '#080404',
+    hex: '#080404',
   },
   {
     name: 'Blue (+$8.00)',
-    hex:
-      '#40848c',
+    hex: '#40848c',
   },
   {
     name: 'Canary (+$8.00)',
-    hex:
-      '#f3b562',
+    hex: '#f3b562',
   },
   {
     name: 'Persian Pink (+$8.00)',
-    hex:
-      '#f2508b',
+    hex: '#f2508b',
   },
   {
     name: 'Violet Eggplant (+$8.00)',
-    hex:
-      '#812b8c',
+    hex: '#812b8c',
   },
   {
     name: 'Blue Violet (+$8.00)',
-    hex:
-      '#5c58c7',
+    hex: '#5c58c7',
   },
   {
     name: 'Shiraz (+$8.00)',
-    hex:
-      '#a6035d',
+    hex: '#a6035d',
   },
   {
     name: 'Blue Navy (+$8.00)',
-    hex:
-      '#004294',
+    hex: '#004294',
   },
   {
     name: 'Cosmic Green (+$8.00)',
-    hex:
-      '#02735e',
+    hex: '#02735e',
   },
   {
     name: 'Mint (+$8.00)',
-    hex:
-      '#8fc1b5',
+    hex: '#8fc1b5',
   },
   {
     name: 'Cyan (+$8.00)',
-    hex:
-      '#04c4d9',
+    hex: '#04c4d9',
   },
   {
     name: 'Tomato Red (+$8.00)',
-    hex:
-      '#d91a2a',
+    hex: '#d91a2a',
   },
   {
     name: 'Lila (+$8.00)',
-    hex:
-      '#cb63ff',
+    hex: '#cb63ff',
   },
   {
     name: 'Yellow Summer (+$8.00)',
-    hex:
-      '#f2d541',
+    hex: '#f2d541',
   },
   {
     name: 'Orange Summer (+$8.00)',
-    hex:
-      '#f29422',
+    hex: '#f29422',
   },
   {
     name: 'Sand (+$8.00)',
-    hex:
-      '#d98162',
+    hex: '#d98162',
   },
   {
     name: 'Cappuccino (+$8.00)',
-    hex:
-      '#a6774e',
+    hex: '#a6774e',
   },
   {
     name: 'Coffee (+$8.00)',
-    hex:
-      '#593123',
+    hex: '#593123',
   },
   {
     name: 'Volcano (+$8.00)',
-    hex:
-      '#bf1e0f',
+    hex: '#bf1e0f',
   },
   {
     name: 'Meat (+$8.00)',
-    hex:
-      '#731d1d',
+    hex: '#731d1d',
   },
   {
     name: 'Tutti Frutti (+$8.00)',
-    hex:
-      '#f23e2e',
+    hex: '#f23e2e',
   },
   {
     name: 'Military Green (+$8.00)',
-    hex:
-      '#055902',
+    hex: '#055902',
   },
 ];
 
@@ -410,32 +380,39 @@ export const SizeGuide = {
   Baseball: {
     image1:
       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_baseball-amWwj6TsJvognNiUpeLcGGEUN6WRz5.png',
-    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASEBALL-1-R85THakU9b5GZbdcbNj0283iqCAd1e.png',
+    image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASEBALL-1-R85THakU9b5GZbdcbNj0283iqCAd1e.png',
   },
   Basketball: {
     image1:
       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_basket-JGzaJlfO7d5CH2bIVaZtNZhNIK31Y9.png',
-    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASKETBALL-LIdxmMQkUA8QRxeDj9MIGqMhvKbMAQ.png',
+    image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASKETBALL-LIdxmMQkUA8QRxeDj9MIGqMhvKbMAQ.png',
   },
   Gaming: {
     image1:
       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_gaming-bLMjCx1yAjEquqOw9nDFOIDlOrUpEl.png',
-    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/GAMING-1-l24CGsU52Ha2xo4IUClFSg8nQv41sp.png',
+    image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/GAMING-1-l24CGsU52Ha2xo4IUClFSg8nQv41sp.png',
   },
   Hockey: {
     image1:
       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_hockey-KrlLYrN21Ba1eRSA0Y0IIoNMqcfNhb.png',
-    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/HOCKEY-1-RUfKzLyTX6Z3pctahd86BFZIjJdY7i.png',
+    image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/HOCKEY-1-RUfKzLyTX6Z3pctahd86BFZIjJdY7i.png',
   },
   Running: {
     image1:
       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_running-0GqXzEvIVjoBzOSuGLK3tsTNxD766J.png',
-    image2: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/RUNNING-1-xSgD44ffjP3PzIMdqaKPYvZs1tvu33.png',
+    image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/RUNNING-1-xSgD44ffjP3PzIMdqaKPYvZs1tvu33.png',
   },
   Soccer: {
     image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
-    // image2:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new-o3cXUQE9nYWS0sOOGBufyepIVbUvCe.jpg',
+    // 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
+    image2:
+      ' https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new2-wYXth7miZkonIRtEUepJjtsZA495rd.jpg',
     //   'https://app.ideasjersey.com/wp-content/uploads/2023/12/Y0mQi1nnIGwqOLu8SKrGBaRafpjlO7FQJ8mgcdsPZek.png',
   },
 };
@@ -455,18 +432,20 @@ export const SizeType = [
   'XL-MEN',
   '2XL-MEN',
   '3XL-MEN',
-  '4-KIDS',
-  '6-KIDS',
-  '8-KIDS',
-  '10-KIDS',
-  '12-KIDS',
-  '14-KIDS',
-  '16-KIDS',
-  'L6-WOMEN',
-  'L8-WOMEN',
-  'L10-WOMEN',
-  'L12-WOMEN',
-  'L14-WOMEN',
-  'L16-WOMEN',
-  'L18-WOMEN',
+  '4XL-MEN',
+  '5XL-MEN',
+
+  'XSJ(5-6Y)-KIDS',
+  'SJ(7-8Y)-KIDS',
+  'MJ(9-10Y)-KIDS',
+  'LJ(11-12Y)-KIDS',
+  'XLJ(13-14Y)-KIDS',
+
+  'XS-WOMEN',
+  'S-WOMEN',
+  'M-WOMEN',
+  'L-WOMEN',
+  'XL-WOMEN',
+  '2XL-WOMEN',
+  '3XL-WOMEN',
 ];

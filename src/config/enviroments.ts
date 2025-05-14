@@ -33,9 +33,13 @@ export const USE_BREVO = process.env.USE_BREVO;
 export const LLP_API_URL = process.env.LLP_API_URL;
 export const LLP_MERCHANT_NAME = process.env.LLP_MERCHANT_NAME;
 export const LLP_MERCHANT_NUMBER = process.env.LLP_MERCHANT_NUMBER;
-export const LLP_SECONDARY_MERCHANT_NUMBER = process.env.LLP_SECONDARY_MERCHANT_NUMBER;
+export const LLP_SECONDARY_MERCHANT_NUMBER =
+  process.env.LLP_SECONDARY_MERCHANT_NUMBER;
 export const LLP_PRIVATE_KEY = process.env.LLP_PRIVATE_KEY;
 export const LLP_PUBLIC_KEY = process.env.LLP_PUBLIC_KEY;
 export const LLP_LOGIN_ACCOUNT = process.env.LLP_LOGIN_ACCOUNT;
-export const LLP_LOGIN_PASSWORD = process.env.LLP_LOGIN_PASSWORD; 
-
+export const LLP_LOGIN_PASSWORD = process.env.LLP_LOGIN_PASSWORD;
+export const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+export const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
+export const PAYPAL_SIGNATURE = process.env.PAYPAL_SIGNATURE;
+export const PAYPAL_LIVE = process.env.PAYPAL_LIVE === 'true';

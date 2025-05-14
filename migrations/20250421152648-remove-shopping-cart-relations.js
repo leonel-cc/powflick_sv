@@ -9,6 +9,14 @@ module.exports = {
       'Customizations',
       'Customizations_cartProductId_fkey',
     );
+    await queryInterface.removeConstraint(
+      'CartProduct',
+      'CartProduct_product_id_fkey',
+    );
+    await queryInterface.removeConstraint(
+      'CartProduct',
+      'CartProduct_cart_id_fkey',
+    );
 
     // Eliminar la tabla CartProduct (tabla intermedia)
     await queryInterface.dropTable('CartProduct');

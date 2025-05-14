@@ -29,9 +29,9 @@
   },
   "production": {
     "username": "neondb_owner",
-    "password": "Nd0UrmLjfX9n",
+    "password": "npg_oxnb9YWrJh2L",
     "database": "neondb",
-    "host": "ep-hidden-union-a5rsq54n-pooler.us-east-2.aws.neon.tech",
+    "host": "ep-hidden-frog-a5kwovnw-pooler.us-east-2.aws.neon.tech",
     "port": "5432",
     "dialect": "postgres",
     "dialectOptions": {
