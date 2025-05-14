@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addIndex('CouponUser', ['user_Id', 'coupon_Id'], {
+    await queryInterface.addIndex('CouponUser', ['user_id', 'coupon_id'], {
       unique: true,
       name: 'unique_user_coupon_index',
     });
