@@ -702,10 +702,7 @@ export class OrdersService {
         throw new InternalServerErrorException(
           'Something went wrong when looking for the orders. Check sent id',
         );
-      if (!orders.length)
-        throw new NotFoundException(
-          'No orders found associated with this user',
-        );
+
       return {
         status: 200,
         data: orders,

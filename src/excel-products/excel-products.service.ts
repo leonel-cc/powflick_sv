@@ -104,12 +104,11 @@ export class ExcelProductsService {
   ) {
     // let i = 0;
     try {
-      const Products: Product[] | null = await Product.findAll();
+      const Products: Product[] | null = await this.getExportProducts();
       for (const [index, value] of allProducts.entries()) {
         const thisProduct = Products.find(({ id }) => id === value.ID);
 
         value.Title = capitalizeTitle(value.Title.trim());
-
         /////////////////////////////////////////////////// Guardar imagenes de productos en una carpeta local
         // // Crear carpeta para el producto
         // const basePath = 'uploads/products';
@@ -164,6 +163,7 @@ export class ExcelProductsService {
           } else {
             await this.updateProduct(thisProduct, value, index);
             console.log(value.Title, 'Actualized');
+            // (this.productsAreEqual(thisProduct, value, true));
           }
         } else {
           await this.createNewProduct(value, index);
@@ -181,48 +181,77 @@ export class ExcelProductsService {
   }
 
   // Función para verificar si dos productos son iguales
-  productsAreEqual(dbProduct: Product, sheetProduct: SheetsProductsDto): boolean {
-    // console.log(dbProduct.title === sheetProduct.Title.trim(), 'title');
-    // console.log(dbProduct.content === sheetProduct.Content, 'content');
-    // console.log(dbProduct.short_description === sheetProduct['Short Description'], 'Short Description');
-    // console.log(dbProduct.date === sheetProduct.Date, 'date');
-    // console.log(dbProduct.stock === (Number(sheetProduct.Stock) || 0), 'stock');
-    // console.log(dbProduct.regular_price === Number(sheetProduct['Regular Price']), 'regular');
-    // console.log(dbProduct.stock_status === sheetProduct['Stock Status'], 'status');
-    // console.log(dbProduct.product_categories === sheetProduct['Product Categories'], 'category');
-    // console.log(dbProduct.genders === sheetProduct.Genders, ' gender');
-    // console.log(dbProduct.sports === sheetProduct.Sports, 'spor');
-    // console.log(arraysAreEqualUnordered(dbProduct.colors, sheetProduct.Colors), 'colors');
-    // console.log(dbProduct.status === sheetProduct.Status, ' statu');
-    // console.log(dbProduct.slug === sheetProduct.Slug, ' slug');
-    // console.log(dbProduct.font === sheetProduct.Font, 'font');
-    // console.log(dbProduct.font_color === sheetProduct['Font Color'], 'fontcolor');
-    // console.log(dbProduct.featured === sheetProduct.Featured, ' feat');
+  productsAreEqual(dbProduct: Product, sheetProduct: SheetsProductsDto, log = false): boolean {
+    const compare = (a: any, b: any, label: string) => {
+      const result = a === b;
+      if (log && !result) {
+        console.log(`[${label}] ❌ NO COINCIDE`);
+        console.log('DB:', a);
+        console.log('EXCEL:', b);
+      }
+      return result;
+    };
 
-    const returned =
-      dbProduct.title === sheetProduct.Title.trim() &&
-      dbProduct.content === sheetProduct.Content &&
-      dbProduct.short_description === sheetProduct['Short Description'] &&
-      dbProduct.date === sheetProduct.Date &&
-      dbProduct.stock === (Number(sheetProduct.Stock) || 0) &&
-      dbProduct.regular_price === Number(sheetProduct['Regular Price']) &&
-      dbProduct.stock_status === sheetProduct['Stock Status'] &&
-      dbProduct.product_categories === sheetProduct['Product Categories'] &&
-      dbProduct.product_collections === sheetProduct['Product Collections'] &&
-      dbProduct.product_tags === sheetProduct.Tags &&
-      dbProduct.score === Number(sheetProduct.Score) &&
-      dbProduct.genders === sheetProduct.Genders &&
-      dbProduct.sports === sheetProduct.Sports &&
-      arraysAreEqualUnordered(dbProduct.colors, sheetProduct.Colors) &&
-      // JSON.stringify(dbProduct.images) === JSON.stringify(stringArraying(sheetProduct.Images)) &&
-      dbProduct.status === sheetProduct.Status &&
-      dbProduct.slug === sheetProduct.Slug &&
-      dbProduct.font === sheetProduct.Font &&
-      dbProduct.font_color === sheetProduct['Font Color'] &&
-      dbProduct.featured === sheetProduct.Featured;
+    const compareSortedJoin = (dbArr: any[], excelStr: string, label: string) => {
+      const dbStr = dbArr.sort().join('|');
+      const result = dbStr === excelStr;
+      if (log && !result) {
+        console.log(`[${label}] ❌ NO COINCIDE`);
+        console.log('DB:', dbStr);
+        console.log('EXCEL:', excelStr);
+      }
+      return result;
+    };
 
-    return returned;
+    const compareNumber = (a: any, b: any, label: string) => {
+      const numA = Number(a);
+      const numB = Number(b);
+      const result = numA === numB;
+      if (log && !result) {
+        console.log(`[${label}] ❌ NO COINCIDE`);
+        console.log('DB:', numA);
+        console.log('EXCEL:', numB);
+      }
+      return result;
+    };
+
+    const compareArrayUnordered = (a: string[], b: string[], label: string) => {
+      const sortA = (a || []).slice().sort();
+      const sortB = (b || []).slice().sort();
+      const result = JSON.stringify(sortA) === JSON.stringify(sortB);
+      if (log && !result) {
+        console.log(`[${label}] ❌ NO COINCIDE`);
+        console.log('DB:', sortA);
+        console.log('EXCEL:', sortB);
+      }
+      return result;
+    };
+
+    const checks = [
+      compare(dbProduct.title, sheetProduct.Title.trim(), 'title'),
+      compare(dbProduct.content, sheetProduct.Content, 'content'),
+      compare(dbProduct.short_description, sheetProduct['Short Description'], 'short_description'),
+      compare(dbProduct.date, sheetProduct.Date, 'date'),
+      compareNumber(dbProduct.stock, sheetProduct.Stock, 'stock'),
+      compareNumber(dbProduct.regular_price, sheetProduct['Regular Price'], 'regular_price'),
+      compare(dbProduct.stock_status, sheetProduct['Stock Status'], 'stock_status'),
+      compareSortedJoin(dbProduct.categories.map(c => c.name), sheetProduct['Product Categories'], 'categories'),
+      compareSortedJoin(dbProduct.collections.map(c => c.title), sheetProduct['Product Collections'], 'collections'),
+      compareSortedJoin(dbProduct.tags.map(t => t.name), sheetProduct.Tags, 'tags'),
+      compareNumber(dbProduct.score, sheetProduct.Score, 'score'),
+      compare(dbProduct.genders, sheetProduct.Genders, 'genders'),
+      compare(dbProduct.sports, sheetProduct.Sports, 'sports'),
+      compareArrayUnordered(dbProduct.colors, sheetProduct.Colors, 'colors'),
+      compare(dbProduct.status, sheetProduct.Status, 'status'),
+      compare(dbProduct.slug, sheetProduct.Slug, 'slug'),
+      compare(dbProduct.font, sheetProduct.Font, 'font'),
+      compare(dbProduct.font_color, sheetProduct['Font Color'], 'font_color'),
+      compare(dbProduct.featured, sheetProduct.Featured, 'featured'),
+    ];
+
+    return checks.every(Boolean);
   }
+
 
   private async updateProduct(
     thisProduct: Product,
@@ -451,6 +480,7 @@ export class ExcelProductsService {
           attributes: ['name'], // Solo traer el título
         },
       ],
+      order: [['id', 'ASC']],
     });
 
     return products;
@@ -478,9 +508,9 @@ export class ExcelProductsService {
         product.URL,
         product.genders || 'Men|Women|Kids',
         product.sports,
-        product.categories.map(category => category.name).join('|'),
-        product.collections.map(collection => collection.title).join('|'),
-        product.tags.map(tag => tag.name).join('|'),
+        product.categories.map(category => category.name).sort().join('|'),
+        product.collections.map(collection => collection.title).sort().join('|'),
+        product.tags.map(tag => tag.name).sort().join('|'),
         product.score,
         product.slug,
         product.colors ? product.colors.join('|') : null,
