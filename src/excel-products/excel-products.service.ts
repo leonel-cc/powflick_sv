@@ -22,6 +22,7 @@ import { ProductTags } from '../tags/entity/productTags.entity';
 import { Collection } from '../collections/entity/collections.entity';
 import { Tags } from '../tags/entity/tags.entity';
 import { Categories } from '../categories/entity/categories.entity';
+import { User } from 'src/users/entity/users.entity';
 @Injectable()
 export class ExcelProductsService {
   constructor(
@@ -586,4 +587,25 @@ export class ExcelProductsService {
     return xlsx.write(workbook, { type: 'buffer' });
   }
 
+  async exportUsersToExcel(users: User[]) {
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.aoa_to_sheet([
+      [
+        'ID', 'Name', 'Email', 'Phone', 'Rol',
+      ],
+      ...users.map(user => [
+        user.id,
+        user.firstName + ' ' + user.lastName,
+        user.email,
+        user.phone,
+        user.rol,
+      ]),
+    ]);
+
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Products');
+
+    const buffer = xlsx.write(workbook, { type: 'buffer' });
+
+    return buffer;
+  }
 }
