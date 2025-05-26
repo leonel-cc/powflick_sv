@@ -591,7 +591,7 @@ export class ExcelProductsService {
     const workbook = xlsx.utils.book_new();
     const worksheet = xlsx.utils.aoa_to_sheet([
       [
-        'ID', 'Name', 'Email', 'Phone', 'Rol',
+        'ID', 'Name', 'Email', 'Phone', 'Rol', 'Created At',
       ],
       ...users.map(user => [
         user.id,
@@ -599,6 +599,7 @@ export class ExcelProductsService {
         user.email,
         user.phone,
         user.rol,
+        new Intl.DateTimeFormat('es-ES').format(new Date(user.createdAt)),
       ]),
     ]);
 
