@@ -3,4 +3,6 @@ export interface IContactFormResponseContext {
   message: string;
   userEmail: string;
   response: string;
+  FIRSTNAME?: string;
+  MESSAGE?: string;
 }

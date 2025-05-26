@@ -64,6 +64,8 @@ export class ContactController {
       // Contexto para el usuario
       const userContext = {
         name: updateOrderData.name,
+        FIRSTNAME: updateOrderData.name,
+        MESSAGE: updateOrderData.message,
       };
 
       await this.mailService.sendMails({
@@ -92,6 +94,8 @@ export class ContactController {
         // Brevo espera FIRSTNAME, así que lo agregamos
         FIRSTNAME: contactData.name,
         name: contactData.name, // por compatibilidad si otros templates lo usan
+        EMAIL: contactData.userEmail,
+        MESSAGE: contactData.message,
       };
 
       await this.messagesService.create({
