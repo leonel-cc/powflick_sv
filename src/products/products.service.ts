@@ -39,7 +39,7 @@ export class ProductsService {
     private readonly sequelize: Sequelize,
     @Inject(forwardRef(() => VercelBlobService))
     private readonly vercelBlobService: VercelBlobService,
-  ) { }
+  ) {}
 
   public async createGenericProduct(
     product: SheetsProductsDto,
@@ -62,7 +62,9 @@ export class ProductsService {
         score: product.Score,
         genders: product.Genders,
         sports: product.Sports,
-        colors: product.Colors,
+        colors: product.Colors
+          ? product.Colors.map((c) => c.trim().toLowerCase())
+          : [],
         // images: stringArraying(product.Images),
         slug: product.Slug,
         status: product.Status,
@@ -75,7 +77,8 @@ export class ProductsService {
       return genericCreatedProduct;
     } catch (error) {
       throw new InternalServerErrorException(
-        `An error occurred while working with the Product entity when creating the product ${product.ID
+        `An error occurred while working with the Product entity when creating the product ${
+          product.ID
         } in the index: ${index + 2}. ${error.message}`,
       );
     }
@@ -102,10 +105,7 @@ export class ProductsService {
     try {
       const product = await Product.findOne({
         where: {
-          [Op.or]: [
-            { id },
-            { slug: id },
-          ],
+          [Op.or]: [{ id }, { slug: id }],
         },
         include: [
           {
@@ -130,7 +130,9 @@ export class ProductsService {
       }
       // Convertir las colecciones y etiquetas en arrays de strings
       const categories = product.categories.map((cat) => cat.name);
-      const collections = product.collections.map((collection) => collection.title);
+      const collections = product.collections.map(
+        (collection) => collection.title,
+      );
       const tags = product.tags.map((tag) => tag.name);
 
       return { ...product.dataValues, collections, tags, categories };
@@ -143,10 +145,7 @@ export class ProductsService {
     try {
       const product = await Product.findOne({
         where: {
-          [Op.or]: [
-            { id },
-            { slug: id },
-          ],
+          [Op.or]: [{ id }, { slug: id }],
         },
         include: [
           {
@@ -169,13 +168,13 @@ export class ProductsService {
       }
 
       const collections = await Collection.findAll();
-      const collectionsList = collections.map(c => c.title);
+      const collectionsList = collections.map((c) => c.title);
 
       const categories = await Categories.findAll();
-      const categoriesList = categories.map(c => c.name);
+      const categoriesList = categories.map((c) => c.name);
 
       const tags = await Tags.findAll();
-      const tagList = tags.map(c => c.name);
+      const tagList = tags.map((c) => c.name);
 
       return {
         product,
@@ -183,10 +182,12 @@ export class ProductsService {
         categoriesList,
         tagList,
       };
-
     } catch (error) {
       const { message, status } = error;
-      throw new HttpException(message || 'Error fetching product', status || 500);
+      throw new HttpException(
+        message || 'Error fetching product',
+        status || 500,
+      );
     }
   }
 
@@ -203,7 +204,9 @@ export class ProductsService {
         });
 
         if (!sport) {
-          throw new NotFoundException(`Sport with name '${createProductDto.sports}' not found`);
+          throw new NotFoundException(
+            `Sport with name '${createProductDto.sports}' not found`,
+          );
         }
 
         sportId = sport.id; // Asignar el ID del deporte encontrado
@@ -224,11 +227,17 @@ export class ProductsService {
         existingProduct = await Product.findByPk(String(idGenerate)); // Verificamos si existe ese id
       }
 
-      const existProductTitle = await Product.findOne({ where: { title: createProductDto.title } });
-      if (existProductTitle) throw new HttpException('Has exist a product with this name.', 400);
+      const existProductTitle = await Product.findOne({
+        where: { title: createProductDto.title },
+      });
+      if (existProductTitle)
+        throw new HttpException('Has exist a product with this name.', 400);
 
-      const existProductSlug = await Product.findOne({ where: { slug: createProductDto.slug } });
-      if (existProductSlug) throw new HttpException('Has exist a product with this slug.', 400);
+      const existProductSlug = await Product.findOne({
+        where: { slug: createProductDto.slug },
+      });
+      if (existProductSlug)
+        throw new HttpException('Has exist a product with this slug.', 400);
 
       const slug = createProductDto.title.split(' ').join('-');
 
@@ -246,6 +255,9 @@ export class ProductsService {
         sports: createProductDto.sports,
         sportId,
         slug,
+        colors: createProductDto.colors
+          ? createProductDto.colors.map((c) => c.trim().toLowerCase())
+          : [],
         // Agrega aquí más campos según tu modelo Product
       };
 
@@ -253,7 +265,10 @@ export class ProductsService {
       const product = await Product.create(productData, { transaction });
 
       // Si se proporcionan colecciones, crear las relaciones
-      if (createProductDto.collections && createProductDto.collections.length > 0) {
+      if (
+        createProductDto.collections &&
+        createProductDto.collections.length > 0
+      ) {
         for (const name of createProductDto.collections) {
           const collection = await Collection.findOne({
             where: { title: name }, // Buscar por nombre de la colección
@@ -261,19 +276,19 @@ export class ProductsService {
           });
 
           if (!collection) {
-            throw new NotFoundException(`Collection with name '${name}' not found`);
+            throw new NotFoundException(
+              `Collection with name '${name}' not found`,
+            );
           }
 
           // Crear la relación en la tabla intermedia CollectionProduct
-          await CollectionProduct.findOrCreate(
-            {
-              where: {
-                productId: product.id,
-                collectionId: collection.id,
-              },
-              transaction,
+          await CollectionProduct.findOrCreate({
+            where: {
+              productId: product.id,
+              collectionId: collection.id,
             },
-          );
+            transaction,
+          });
         }
       }
 
@@ -298,13 +313,13 @@ export class ProductsService {
             },
             transaction,
           }); // Se pasa la transacción correctamente aquí
-
-          
-
         }
       }
 
-      if (createProductDto.product_categories && createProductDto.product_categories.length > 0) {
+      if (
+        createProductDto.product_categories &&
+        createProductDto.product_categories.length > 0
+      ) {
         for (const name of createProductDto.product_categories) {
           const cat = await Categories.findOne({
             where: { name }, // Busca por nombre de colección individual
@@ -312,7 +327,9 @@ export class ProductsService {
           });
 
           if (!cat) {
-            throw new NotFoundException(`Category with name '${name}' not found`);
+            throw new NotFoundException(
+              `Category with name '${name}' not found`,
+            );
           }
 
           // Crear la relación en la tabla intermedia ProductTags
@@ -342,14 +359,15 @@ export class ProductsService {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error.message);
       } else {
-        throw new InternalServerErrorException(
-          error.message,
-        );
+        throw new InternalServerErrorException(error.message);
       }
     }
   }
 
-  async updateImages(id: string, updateProductDto: UpdateProductDto): Promise<any> {
+  async updateImages(
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<any> {
     try {
       const product = await Product.findByPk(id);
 
@@ -373,7 +391,10 @@ export class ProductsService {
       }
 
       // Primero, eliminar todas las relaciones de colección si no se proporciona ninguna
-      if (!updateProductDto.collections || updateProductDto.collections.length === 0) {
+      if (
+        !updateProductDto.collections ||
+        updateProductDto.collections.length === 0
+      ) {
         // Eliminar las relaciones existentes entre el producto y las colecciones
         await CollectionProduct.destroy({
           where: { productId: id },
@@ -387,14 +408,15 @@ export class ProductsService {
           transaction,
         }); // Eliminar la relación existente
         for (const name of updateProductDto.collections) {
-
           const collection = await Collection.findOne({
             where: { title: name }, // Busca por nombre de colección individual
             transaction, // Usar la transacción
           });
 
           if (!collection) {
-            throw new NotFoundException(`Collection with name '${name}' not found`);
+            throw new NotFoundException(
+              `Collection with name '${name}' not found`,
+            );
           }
 
           // Crear la relación en la tabla intermedia CollectionProduct
@@ -404,13 +426,11 @@ export class ProductsService {
               collectionId: collection.id,
             },
             transaction,
-          },
-          ); // Se pasa la transacción correctamente aquí
+          }); // Se pasa la transacción correctamente aquí
         }
       }
       //manejar los tags
       if (!updateProductDto.tags || updateProductDto.tags.length === 0) {
-
         // Eliminar las relaciones existentes entre el producto y las colecciones
         await ProductTags.destroy({
           where: { productId: id },
@@ -424,7 +444,6 @@ export class ProductsService {
           transaction,
         }); // Eliminar la relación existente
         for (const name of updateProductDto.tags) {
-
           const tag = await Tags.findOne({
             where: { name }, // Busca por nombre de colección individual
             transaction, // Usar la transacción
@@ -441,8 +460,7 @@ export class ProductsService {
               tagId: tag.id,
             },
             transaction,
-          },
-          ); // Se pasa la transacción correctamente aquí
+          }); // Se pasa la transacción correctamente aquí
         }
       }
 
@@ -454,7 +472,9 @@ export class ProductsService {
         });
 
         if (!sport) {
-          throw new NotFoundException(`Sport with name '${updateProductDto.sports}' not found`);
+          throw new NotFoundException(
+            `Sport with name '${updateProductDto.sports}' not found`,
+          );
         }
 
         product.sports = updateProductDto.sports;
@@ -462,7 +482,9 @@ export class ProductsService {
       }
 
       // Verificar si no hay datos recibidos para actualizar
-      if (!Object.values(updateProductDto).some((value) => value !== undefined)) {
+      if (
+        !Object.values(updateProductDto).some((value) => value !== undefined)
+      ) {
         return {
           status: HttpStatus.NOT_MODIFIED,
           message: 'No data received to update.',
@@ -482,21 +504,23 @@ export class ProductsService {
       for (const key in updateProductDto) {
         if (updateProductDto.hasOwnProperty(key)) {
           if (key === 'slug' && updateProductDto['product_categories']) {
-            product['product_categories'] = updateProductDto.product_categories.join('|');
+            product['product_categories'] =
+              updateProductDto.product_categories.join('|');
             await ProductCategories.destroy({
               where: { productId: id },
               transaction,
             }); // Eliminar la relación existente
 
             for (const cat of updateProductDto.product_categories) {
-
               const thisCategory = await Categories.findOne({
                 where: { name: cat }, // Busca por nombre de colección individual
                 transaction, // Usar la transacción
               });
 
               if (!thisCategory) {
-                throw new NotFoundException(`Category with name '${name}' not found`);
+                throw new NotFoundException(
+                  `Category with name '${name}' not found`,
+                );
               }
 
               // Crear la relación en la tabla intermedia CollectionProduct
@@ -507,10 +531,11 @@ export class ProductsService {
                 },
                 transaction,
               }); // Se pasa la transacción correctamente aquí
-
             }
           } else if (key === 'slug' && updateProductDto['slug']) {
-            const allProducts = await Product.findAll({ where: { slug: updateProductDto['slug'] } });
+            const allProducts = await Product.findAll({
+              where: { slug: updateProductDto['slug'] },
+            });
 
             if (allProducts.length === 0 || id === allProducts[0].id) {
               product.slug = updateProductDto['slug'];
@@ -518,11 +543,13 @@ export class ProductsService {
               throw new HttpException('Another product has the same slug', 400);
             }
           } else if (key === 'score' && updateProductDto['score']) {
-            const allProducts = await Product.findAll({ where: { score: updateProductDto.score } });
+            const allProducts = await Product.findAll({
+              where: { score: updateProductDto.score },
+            });
 
             if (allProducts.length === 0 || id === allProducts[0].id) {
               // Si no hay otro producto con el mismo score actualiza el score
-              product.score = updateProductDto['score'];  // Actualiza el score
+              product.score = updateProductDto['score']; // Actualiza el score
             } else {
               // Si otro producto tiene el mismo slug, intercambia los scores
               const conflictingProduct = allProducts[0]; // El primer producto con el mismo slug
@@ -539,12 +566,15 @@ export class ProductsService {
               // Si todo está correcto, actualiza el slug
               product.score = updateProductDto.score;
             }
+          } else if (key === 'colors' && updateProductDto['colors']) {
+            product.colors = updateProductDto.colors.map((c) =>
+              c.trim().toLowerCase(),
+            );
           } else {
             product[key] = updateProductDto[key] ?? product[key];
           }
         }
       }
-
 
       // Guardar el producto actualizado
       await product.save({ transaction });
@@ -567,13 +597,17 @@ export class ProductsService {
         throw new NotFoundException(error.message);
       } else {
         throw new InternalServerErrorException(
-          'A server error occurred while trying to update the product' + error.message,
+          'A server error occurred while trying to update the product' +
+            error.message,
         );
       }
     }
   }
 
-  async updateBooleans(productId: string, updateProductDto: UpdateProductDto): Promise<any> {
+  async updateBooleans(
+    productId: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<any> {
     try {
       const product = await Product.findByPk(productId);
 
@@ -594,7 +628,8 @@ export class ProductsService {
       };
     } catch (error) {
       throw new InternalServerErrorException(
-        'A server error occurred while trying to update the product' + error.message,
+        'A server error occurred while trying to update the product' +
+          error.message,
       );
     }
   }
@@ -631,9 +666,18 @@ export class ProductsService {
       if (filters.sport) query['sports'] = filters.sport;
       if (filters.gender)
         query['genders'] = { [Op.like]: `%${filters.gender}%` };
-      if (filters.color) query['colors'] = { [Op.contains]: [filters.color] };
-      if (filters.color2)
-        query['colors'] = { [Op.contains]: [filters.color, filters.color2] };
+      if (filters.color && filters.color2) {
+        query['colors'] = {
+          [Op.contains]: [
+            filters.color.trim().toLowerCase(),
+            filters.color2.trim().toLowerCase(),
+          ],
+        };
+      } else if (filters.color) {
+        query['colors'] = {
+          [Op.contains]: [filters.color.trim().toLowerCase()],
+        };
+      }
       if (filters.minPrice && filters.maxPrice) {
         query['price'] = {
           [Op.gte]: parseFloat(filters.minPrice),
@@ -702,22 +746,28 @@ export class ProductsService {
           {
             model: Categories, // Modelo relacionado
             attributes: ['name'], // Solo traer el título
-            where: filters.category ? { name: { [Op.iLike]: `%${filters.category}%` } } : undefined,
+            where: filters.category
+              ? { name: { [Op.iLike]: `%${filters.category}%` } }
+              : undefined,
           },
           {
             model: Collection, // Modelo relacionado
             attributes: ['title'], // Solo traer el título
-            where: filters.collection ? { title: { [Op.iLike]: `%${filters.collection}%` } } : undefined,
+            where: filters.collection
+              ? { title: { [Op.iLike]: `%${filters.collection}%` } }
+              : undefined,
           },
           {
             model: Tags, // Modelo relacionado
             attributes: ['name'], // Solo traer el título
-            where: filters.tag ? { name: { [Op.iLike]: `%${filters.tag}%` } } : undefined,
+            where: filters.tag
+              ? { name: { [Op.iLike]: `%${filters.tag}%` } }
+              : undefined,
           },
         ],
       });
 
-      console.log(products.find(p => p.title === 'producto nuevo'));
+      console.log(products.find((p) => p.title === 'producto nuevo'));
 
       const transformedProducts = products.map((product) => ({
         ...product,
@@ -733,11 +783,17 @@ export class ProductsService {
       // Contar la cantidad de cada deporte
       const sportCount = this.countAtributes(products, 'sports');
       // Contar la cantidad de cada categoria
-      const categoryCount = this.countAtributes(transformedProducts, 'categories');
+      const categoryCount = this.countAtributes(
+        transformedProducts,
+        'categories',
+      );
       // Contar la cantidad de cada genero
       const genderCount = this.countAtributes(products, 'genders');
       // Contar la cantidad de cada colleccion
-      const collectionCount = this.countAtributes(transformedProducts, 'collections');
+      const collectionCount = this.countAtributes(
+        transformedProducts,
+        'collections',
+      );
 
       const tagCount = this.countAtributes(transformedProducts, 'tags');
 
@@ -753,10 +809,13 @@ export class ProductsService {
       const totalPages = Math.ceil(total / Number(limit));
 
       // Agrupar categorías y colecciones
-      const categoryMap = new Map<string, { title: string; child: { title: string }[] }>();
+      const categoryMap = new Map<
+        string,
+        { title: string; child: { title: string }[] }
+      >();
 
       products.forEach((product) => {
-        const categories = product.categories.map(c => c.name); // Separar categorías
+        const categories = product.categories.map((c) => c.name); // Separar categorías
         const collections = product.collections || [];
 
         if (categories) {
@@ -779,11 +838,13 @@ export class ProductsService {
       const filt = Array.from(categoryMap.values());
 
       const allColors = new Set(
-        products?.flatMap(p => p.colors?.map(c => c?.trim().toLowerCase()) || []),
+        products?.flatMap(
+          (p) => p.colors?.map((c) => c?.trim().toLowerCase()) || [],
+        ),
       );
 
       const alltags = new Set(
-        products?.flatMap(p => p.tags?.map(c => c.name) || []),
+        products?.flatMap((p) => p.tags?.map((c) => c.name) || []),
       );
 
       return {
@@ -828,8 +889,6 @@ export class ProductsService {
         typeof product[toCount] === 'string' &&
         !product[toCount].includes('|')
       ) {
-
-
         attributesCount[product[toCount]] =
           (attributesCount[product[toCount]] || 0) + 1;
       } else if (product[toCount]?.includes('|')) {
@@ -1142,7 +1201,6 @@ export class ProductsService {
       } else {
         return titles.map(({ title }) => title);
       }
-
     } catch (error) {
       // Maneja los errores de manera adecuada
       throw new HttpException(
@@ -1212,18 +1270,23 @@ export class ProductsService {
 
   async getAllProductsToIntercom() {
     try {
-      const products = await Product.findAll({ attributes: ['title', 'slug', 'URL', 'colors'] });
+      const products = await Product.findAll({
+        attributes: ['title', 'slug', 'URL', 'colors'],
+      });
 
       const returned = products.map((p) => {
-        return { title: p.title, link: 'https://www.powflick.com/products/' + (p.slug.replace(' ', '%20')), image: p.URL, colors: p.colors };
+        return {
+          title: p.title,
+          link:
+            'https://www.powflick.com/products/' + p.slug.replace(' ', '%20'),
+          image: p.URL,
+          colors: p.colors,
+        };
       });
 
       return returned;
     } catch (error) {
-      throw new HttpException(
-        'Error getting products: ' + error.message,
-        500,
-      );
+      throw new HttpException('Error getting products: ' + error.message, 500);
     }
   }
   // async examFolders() {
