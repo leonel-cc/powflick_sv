@@ -62,9 +62,7 @@ export class ProductsService {
         score: product.Score,
         genders: product.Genders,
         sports: product.Sports,
-        colors: product.Colors
-          ? product.Colors.map((c) => c.trim().toLowerCase())
-          : [],
+        colors: product.Colors,
         // images: stringArraying(product.Images),
         slug: product.Slug,
         status: product.Status,
@@ -255,9 +253,6 @@ export class ProductsService {
         sports: createProductDto.sports,
         sportId,
         slug,
-        colors: createProductDto.colors
-          ? createProductDto.colors.map((c) => c.trim().toLowerCase())
-          : [],
         // Agrega aquí más campos según tu modelo Product
       };
 
@@ -566,10 +561,6 @@ export class ProductsService {
               // Si todo está correcto, actualiza el slug
               product.score = updateProductDto.score;
             }
-          } else if (key === 'colors' && updateProductDto['colors']) {
-            product.colors = updateProductDto.colors.map((c) =>
-              c.trim().toLowerCase(),
-            );
           } else {
             product[key] = updateProductDto[key] ?? product[key];
           }
@@ -666,17 +657,34 @@ export class ProductsService {
       if (filters.sport) query['sports'] = filters.sport;
       if (filters.gender)
         query['genders'] = { [Op.like]: `%${filters.gender}%` };
-      if (filters.color && filters.color2) {
-        query['colors'] = {
-          [Op.contains]: [
-            filters.color.trim().toLowerCase(),
-            filters.color2.trim().toLowerCase(),
-          ],
-        };
-      } else if (filters.color) {
-        query['colors'] = {
-          [Op.contains]: [filters.color.trim().toLowerCase()],
-        };
+      // Cambiar el filtro de color para que sea insensible a mayúsculas/minúsculas
+      if (filters.color) {
+        query[Op.and] = query[Op.and] || [];
+        query[Op.and].push(
+          Sequelize.where(
+            Sequelize.fn(
+              'LOWER',
+              Sequelize.cast(Sequelize.col('colors'), 'text'),
+            ),
+            {
+              [Op.like]: `%${filters.color.toLowerCase()}%`,
+            },
+          ),
+        );
+      }
+      if (filters.color2) {
+        query[Op.and] = query[Op.and] || [];
+        query[Op.and].push(
+          Sequelize.where(
+            Sequelize.fn(
+              'LOWER',
+              Sequelize.cast(Sequelize.col('colors'), 'text'),
+            ),
+            {
+              [Op.like]: `%${filters.color2.toLowerCase()}%`,
+            },
+          ),
+        );
       }
       if (filters.minPrice && filters.maxPrice) {
         query['price'] = {
