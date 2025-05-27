@@ -111,6 +111,9 @@ export class PdfService {
         const slovakiaPath = path.join(__dirname, 'fonts/SLOVAKIA/Slovakia.ttf');
         doc.registerFont('Slovakia', slovakiaPath);
 
+        const crawfordPath = path.join(__dirname, 'fonts/Crawford Line/Crawford line.ttf');
+        doc.registerFont('Crawford Line', crawfordPath);
+
         // Manejadores de eventos para completar y manejar errores
         doc.on('data', buffers.push.bind(buffers));
         doc.on('end', () => {

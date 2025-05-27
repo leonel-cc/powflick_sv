@@ -7,8 +7,8 @@ export enum Templates {
   // createAccount = './createAccount',
   createAccount = 23, // ID real de plantilla Brevo para crear cuenta
 
-  // purchase = './purchase',
-  purchase = 30, // ID real de plantilla Brevo para compra
+  purchase = './purchase',
+  // purchase = 30, // ID real de plantilla Brevo para compra
 
   // contactFormUser = './contactFormUser',
   contactFormUser = 28, // ID real de plantilla Brevo para usuario Pow Flick
@@ -19,6 +19,6 @@ export enum Templates {
   // contactFormResponse = './contactFormResponse',
   contactFormResponse = 32, // ID real de plantilla Brevo
 
-  // updateOrder = './updateOrder',
-  updateOrder = 456789, // ID real de plantilla Brevo para actualización de pedido
+  updateOrder = './updateOrder',
+  // updateOrder = 456789, // ID real de plantilla Brevo para actualización de pedido
 }
