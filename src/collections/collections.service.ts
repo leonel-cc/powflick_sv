@@ -149,7 +149,7 @@ export class CollectionsService {
       include: [
         {
           model: Product,
-          where: { status: 'publish' },
+          where: { status: 'publish', password: null }, // Filtrar productos publicados y sin contraseña
           order: [['score', 'DESC']],
           include: [
             {

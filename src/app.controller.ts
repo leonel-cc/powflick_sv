@@ -39,6 +39,7 @@ export class AppController {
       where: {
         sports: product.sports,
         status: StateProduct.Active,
+        password: null, // Asegura que no se filtren productos con contraseña
         images: {
           [Op.ne]: null, // Filtra los productos donde 'images' no es un string vacío
         },
@@ -53,6 +54,7 @@ export class AppController {
       where: {
         sports: product.sports, // Relacionado con el mismo deporte
         status: StateProduct.Active,
+        password: null, // Asegura que no se filtren productos con contraseña
         id: {
           [Op.notIn]: sugestedProductIds, // Excluir productos ya sugeridos
         },

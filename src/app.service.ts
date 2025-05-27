@@ -131,12 +131,11 @@ export class AppService {
         status: 'publish',
       });
 
-      // Obtener los últimos productos
-      const latestProducts = await this.getLatestProducts(3);
-      const bestWeekProducts = await this.getRandomProducts(3);
-      const popularProducts = await this.getRandomProducts(3);
-      const saleProducts = await this.getRandomProducts(3);
-
+      // // Obtener los últimos productos
+      // const latestProducts = await this.getLatestProducts(3);
+      // const bestWeekProducts = await this.getRandomProducts(3);
+      // const popularProducts = await this.getRandomProducts(3);
+      // const saleProducts = await this.getRandomProducts(3);
 
       return {
         landing: {
@@ -146,10 +145,10 @@ export class AppService {
             featuredProducts,
             mostSoldProducts,
             discountProducts,
-            latestProducts,
-            bestWeekProducts,
-            popularProducts,
-            saleProducts,
+            // latestProducts,
+            // bestWeekProducts,
+            // popularProducts,
+            // saleProducts,
           },
         },
       };
