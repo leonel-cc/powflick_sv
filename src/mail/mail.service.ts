@@ -95,26 +95,13 @@ export class MailService {
       case Cases.CONTACT_FORM_USER:
         return {
           subject: 'We receive your query',
-          template: Templates.contactFormUser,
-          // attachments: [
-          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
-          //   { ...images.welcome, cid: 'welcomeImage@brevo.com' },
-          //   { ...images.request, cid: 'requestImage@brevo.com' },
-          //   { ...images.google, cid: 'googleImage@brevo.com' },
-          //   { ...images.appStore, cid: 'appImage@brevo.com' },
-          //   { ...images.facebook, cid: 'facebookImage@brevo.com' },
-          //   { ...images.instagram, cid: 'instagramImage@brevo.com' },
-          //   { ...images.pinterest, cid: 'pinterestImage@brevo.com' },
-          // ],
+          template: Templates.contactFormUser, // ahora es 230425
         };
 
       case Cases.CONTACT_FORM_RESPONSE:
         return {
           subject: 'We responded to your inquiry',
-          template: Templates.contactFormResponse,
-          // attachments: [
-          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
-          // ],
+          template: Templates.contactFormResponse, // ahora es un número (ID Brevo)
         };
 
       case Cases.CONTACT_FORM_ADMIN:
@@ -123,10 +110,7 @@ export class MailService {
             'userId' in context && context.userId
               ? `Help for User ID: ${context.userId}`
               : 'You received a General Inquiry',
-          template: Templates.contactFormAdmin,
-          // attachments: [
-          //   { ...images.logo, cid: 'headerTheSportsLogo@brevo.com' },
-          // ],
+          template: Templates.contactFormAdmin, // ahora es un número (ID Brevo)
         };
 
       case Cases.UPDATE_ORDER:

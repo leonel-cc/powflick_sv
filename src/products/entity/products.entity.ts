@@ -197,6 +197,12 @@ export class Product extends Model {
   font_color: string;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  password: string;
+
+  @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
     allowNull: false,

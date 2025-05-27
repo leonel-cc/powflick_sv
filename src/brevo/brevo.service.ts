@@ -22,7 +22,7 @@ export class BrevoService {
   }: {
     to: string;
     subject: string;
-    template: string;
+    template: string | number;
     context: any;
     attachments?: Array<{
       url?: string;
@@ -31,6 +31,36 @@ export class BrevoService {
       content?: string | Buffer;
     }>;
   }) {
+    // Si template es un número, usar plantilla Brevo
+    if (typeof template === 'number') {
+      const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+      sendSmtpEmail.to = [{ email: to }];
+      sendSmtpEmail.sender = {
+        email: 'support@powflick.com',
+        name: 'Powflick Support',
+      };
+      sendSmtpEmail.subject = subject;
+      sendSmtpEmail.templateId = template;
+      sendSmtpEmail.params = context;
+      if (attachments.length > 0) {
+        sendSmtpEmail.attachment = attachments.map((att) => ({
+          content:
+            typeof att.content === 'string'
+              ? att.content
+              : att.content?.toString('base64'),
+          name: att.name,
+        }));
+      }
+      try {
+        const response = await this.apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log('Email sent successfully (brevo template):', response);
+        return response;
+      } catch (error) {
+        console.error('Error sending email (brevo template):', error.message);
+        throw error;
+      }
+    }
+
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.to = [{ email: to }];
     sendSmtpEmail.sender = {
