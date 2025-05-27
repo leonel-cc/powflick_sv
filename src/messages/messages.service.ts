@@ -30,6 +30,7 @@ export class MessagesService {
       // Enviar correo electrónico al usuario
       const userContext: IContactFormUserContext = {
         name: message.name,
+        FIRSTNAME: message?.name,
       };
 
       await this.mailService.sendMails({
@@ -45,6 +46,9 @@ export class MessagesService {
         message: message.message,
         userEmail: message.email,
         userId: '',
+        FIRSTNAME: message.name,
+        EMAIL: message.email,
+        MESSAGE: message.message,
       };
 
       await this.mailService.sendMails({
@@ -306,6 +310,8 @@ export class MessagesService {
           userEmail: message.email,
           message: message.message,
           response: data.text,
+          FIRSTNAME: message.name,
+          MESSAGE: message.message,
         };
 
         await this.mailService.sendMails({
@@ -331,18 +337,18 @@ export class MessagesService {
 
       const messages = admin
         ? await Messages.findByPk(messageId, {
-          include: {
-            model: Conversation,
-            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-          },
-        })
+            include: {
+              model: Conversation,
+              attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+            },
+          })
         : await Messages.findAll({
-          where: { email: message.email },
-          include: {
-            model: Conversation,
-            attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
-          },
-        });
+            where: { email: message.email },
+            include: {
+              model: Conversation,
+              attributes: ['name', 'text', 'imgUrl', 'createdAt', 'from'],
+            },
+          });
       return {
         text: 'Your message has been sended succesfully',
         messages,

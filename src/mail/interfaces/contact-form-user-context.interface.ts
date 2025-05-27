@@ -1,3 +1,6 @@
 export interface IContactFormUserContext {
-  name: string;
+  name?: string;
+  FIRSTNAME?: string;
+  EMAIL?: string;
+  MESSAGE?: string;
 }
