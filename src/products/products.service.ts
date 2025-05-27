@@ -235,7 +235,7 @@ export class ProductsService {
         where: { slug: createProductDto.slug },
       });
       if (existProductSlug)
-        throw new HttpException('Has exist a product with this slug.', 400);
+        throw new HttpException('A product with this slug already exists.', 400);
 
       const slug = createProductDto.title.split(' ').join('-');
 
