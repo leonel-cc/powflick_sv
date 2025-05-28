@@ -299,7 +299,7 @@ export class ProductsService {
             transaction,
           }); // Se pasa la transacción correctamente aquí
 
-          
+
 
         }
       }
@@ -650,6 +650,7 @@ export class ProductsService {
 
       if (!admin) {
         query['status'] = StateProduct.Active;
+        query['password'] = null;
       } else {
         if (filters.status) {
           query['status'] = filters.status;
@@ -1112,6 +1113,10 @@ export class ProductsService {
       if (!search.trim()) {
         const allTitles = await Product.findAll({
           attributes: ['title'],
+          where: {
+            status: StateProduct.Active, // Asegurarse de que solo se obtienen productos activos
+            password: null, // Asegurarse de que no se obtienen productos con contraseña
+          },
         });
 
         return allTitles.map(({ title }) => title);
@@ -1131,6 +1136,8 @@ export class ProductsService {
       const titles = await Product.findAll({
         where: {
           [Op.and]: whereConditions,
+          password: null, // Asegurarse de que no se obtienen productos con contraseña
+          status: StateProduct.Active, // Asegurarse de que solo se obtienen productos activos
         },
         attributes: ['slug', 'title'],
         limit: limit ? 10 : null, // Limitar a las primeras 10 coincidencias, si se requiere
