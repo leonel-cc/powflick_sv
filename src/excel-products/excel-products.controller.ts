@@ -1,13 +1,11 @@
-import { Body, Controller, Get, HttpException, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ExcelProductsService } from './excel-products.service';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { SheetsProductsDto } from './dto/sheetsProductsDto';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
-import { GetUser } from '../auth/decorator/auth-user.decorator';
-import { IGetUser } from '../auth/interfaces/getUser.interface';
-import { Rol } from '../users/entity/users.entity';
+import { Rol, User } from '../users/entity/users.entity';
 import { RolesGuard } from '../auth/guards/rolesGuard';
 import { Roles } from '../auth/decorator/roles.decorator';
 
@@ -61,7 +59,7 @@ export class ExcelProductsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Rol.admin)
   @Get('')
-  async exportToExcel(@Res() res: Response) {
+  async exportProductsToExcel(@Res() res: Response) {
     // Recuperar datos de la base de datos utilizando el servicio
     const products = await this.excelProductsService.getExportProducts();
 
@@ -96,5 +94,29 @@ export class ExcelProductsController {
 
     // Enviar el archivo como respuesta
     res.send(buffer);
+  }
+
+  @ApiOperation({
+    description: 'Exportar Usuarios a un archivo Excel.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuarios exportados correctamente.',
+  })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Rol.admin)
+  @Get('users')
+  async exportUsersToExcel(@Res() res: Response) {
+    // Recuperar datos de la base de datos utilizando el servicio
+    const users = await User.findAll();
+
+    // Convertir los datos a un archivo Excel utilizando exceljs o alguna otra biblioteca
+    const buffer = await this.excelProductsService.exportUsersToExcel(users);
+
+    // Establecer las cabeceras de respuesta para el tipo de contenido y la descarga del archivo
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=exported_users.xlsx');
+    // Enviar el archivo Excel como respuesta
+    res.json(buffer);
   }
 }
