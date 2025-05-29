@@ -119,16 +119,19 @@ export class AppService {
       const featuredProducts = await this.getProductsByCondition({
         featured: true,
         status: 'publish',
+        password: null,
       });
 
       const mostSoldProducts = await this.getProductsByCondition({
         mostSold: true,
         status: 'publish',
+        password: null,
       });
 
       const discountProducts = await this.getProductsByCondition({
         discount: { [Op.gt]: 0 },
         status: 'publish',
+        password: null,
       });
 
       // // Obtener los últimos productos
