@@ -134,6 +134,8 @@ export class AppService {
         password: null,
       });
 
+      const filteredProducts = await this.getTopProductsPerCategory();
+
       // // Obtener los últimos productos
       // const latestProducts = await this.getLatestProducts(3);
       // const bestWeekProducts = await this.getRandomProducts(3);
@@ -148,6 +150,7 @@ export class AppService {
             featuredProducts,
             mostSoldProducts,
             discountProducts,
+            filteredProducts,
             // latestProducts,
             // bestWeekProducts,
             // popularProducts,
@@ -254,6 +257,42 @@ export class AppService {
       //   'updatedAt',
       // ],
     });
+  }
+
+  private async getTopProductsPerCategory(limit = 10) {
+    const categories = await Categories.findAll();
+
+    const productsPerCategory = await Promise.all(
+      categories.map((category) =>
+        Product.findAll({
+          include: [
+            {
+              model: Categories,
+              where: { id: category.id }, // filtra por categoría asociada
+              attributes: ['name'],
+              through: { attributes: [] }, // evita incluir campos del modelo pivot
+            },
+            {
+              model: Collection,
+              attributes: ['title'],
+            },
+            {
+              model: Tags,
+              attributes: ['name'],
+            },
+          ],
+          where: {
+            status: 'publish',
+            password: null,
+          },
+          limit,
+          order: [['createdAt', 'DESC']],
+        }),
+      ),
+    );
+
+    const allProducts = productsPerCategory.flat();
+    return allProducts;
   }
 
   private async getLatestProducts(limit: number) {
