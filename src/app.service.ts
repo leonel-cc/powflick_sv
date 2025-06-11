@@ -134,6 +134,8 @@ export class AppService {
         password: null,
       });
 
+      const designYourGameSection = await this.designYourGameSection(12, ['Electric', 'Glitch', 'Tropical', 'Woman'], ['Soccer']);
+
       // // Obtener los últimos productos
       // const latestProducts = await this.getLatestProducts(3);
       // const bestWeekProducts = await this.getRandomProducts(3);
@@ -148,6 +150,7 @@ export class AppService {
             featuredProducts,
             mostSoldProducts,
             discountProducts,
+            designYourGameSection,
             // latestProducts,
             // bestWeekProducts,
             // popularProducts,
@@ -256,11 +259,74 @@ export class AppService {
     });
   }
 
-  private async getLatestProducts(limit: number) {
-    const products = await Product.findAll({
-      order: [['createdAt', 'DESC']],
+  private async designYourGameSection(
+    limit = 12,
+    selectedCollections: string[] = [],
+    selectedCategories: string[] = [],
+  ) {
+    const collectionFilter = selectedCollections.length
+      ? {
+        title: {
+          [Op.iLike]: { [Op.any]: selectedCollections.map((t) => t.toLowerCase()) },
+        },
+      }
+      : undefined;
+
+    const collections = await Collection.findAll({ where: collectionFilter });
+
+    // Base includes con posible filtro por categorías
+    const baseIncludes: any[] = [
+      {
+        model: Categories,
+        attributes: ['name'],
+        ...(selectedCategories.length && {
+          where: {
+            [Op.or]: selectedCategories.map((c) => ({
+              name: {
+                [Op.iLike]: `%${c.toLowerCase()}%`,
+              },
+            })),
+          },
+        }),
+      },
+      { model: Collection, attributes: ['title'] },
+      { model: Tags, attributes: ['name'] },
+    ];
+
+    const order: [string, 'ASC' | 'DESC'][] = [['score', 'ASC']];
+
+    const topPickProducts = await Product.findAll({
       limit,
+      include: baseIncludes,
+      order,
+      where: { featured: true, status: 'publish', password: null },
     });
-    return products;
+
+    const productsPerCollection = await Promise.all(
+      collections.map((collection) =>
+        Product.findAll({
+          include: [
+            ...baseIncludes,
+            {
+              model: Collection,
+              where: { id: collection.id },
+              attributes: [],
+            },
+          ],
+          where: { status: 'publish', password: null },
+          limit,
+          order,
+        }),
+      ),
+    );
+
+    return {
+      collections: ['Top Picks', ...collections.map((c) => c.title)],
+      allProducts: Array.from(
+        new Map(
+          [...topPickProducts, ...productsPerCollection.flat()].map((p) => [p.id, p]),
+        ).values(),
+      ),
+    };
   }
 }
