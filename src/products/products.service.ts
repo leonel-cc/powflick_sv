@@ -39,7 +39,7 @@ export class ProductsService {
     private readonly sequelize: Sequelize,
     @Inject(forwardRef(() => VercelBlobService))
     private readonly vercelBlobService: VercelBlobService,
-  ) {}
+  ) { }
 
   public async createGenericProduct(
     product: SheetsProductsDto,
@@ -75,8 +75,7 @@ export class ProductsService {
       return genericCreatedProduct;
     } catch (error) {
       throw new InternalServerErrorException(
-        `An error occurred while working with the Product entity when creating the product ${
-          product.ID
+        `An error occurred while working with the Product entity when creating the product ${product.ID
         } in the index: ${index + 2}. ${error.message}`,
       );
     }
@@ -498,7 +497,7 @@ export class ProductsService {
       // Actualizar los campos del producto si se proporcionaron en el DTO
       for (const key in updateProductDto) {
         if (updateProductDto.hasOwnProperty(key)) {
-          if (key === 'slug' && updateProductDto['product_categories']) {
+          if (key === 'product_categories' && updateProductDto['product_categories']) {
             product['product_categories'] =
               updateProductDto.product_categories.join('|');
             await ProductCategories.destroy({
@@ -589,7 +588,7 @@ export class ProductsService {
       } else {
         throw new InternalServerErrorException(
           'A server error occurred while trying to update the product' +
-            error.message,
+          error.message,
         );
       }
     }
@@ -620,7 +619,7 @@ export class ProductsService {
     } catch (error) {
       throw new InternalServerErrorException(
         'A server error occurred while trying to update the product' +
-          error.message,
+        error.message,
       );
     }
   }
@@ -819,8 +818,8 @@ export class ProductsService {
 
       // Agrupar categorías y colecciones
       const categoryMap = new Map<
-        string,
-        { title: string; child: { title: string }[] }
+      string,
+      { title: string; child: { title: string }[] }
       >();
 
       products.forEach((product) => {
