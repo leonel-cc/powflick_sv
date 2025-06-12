@@ -134,7 +134,7 @@ export class AppService {
         password: null,
       });
 
-      const designYourGameSection = await this.designYourGameSection(12, ['Electric', 'Glitch', 'Tropical', 'Woman'], ['Soccer']);
+      const designYourGameSection = await this.designYourGameSection(12, ['Electric', 'Throwback Vibes', 'Tropical', 'Woman'], ['Soccer']);
 
       // // Obtener los últimos productos
       // const latestProducts = await this.getLatestProducts(3);
