@@ -141,12 +141,11 @@ export class PdfService {
         } catch (error) {
           console.log('Error al cargar la imagen:' + error.message);
         }
-
         // Descargar las imágenes de las URLs
         const imageUrls = [
           images[2] || images[0], // frontal remera
           images[3] || images[1], // posterior remera
-          neck ? Neck.find((n) => n.name === neck).image : null, // cuello
+          neck ? Neck.find((n) => n.name === neck)?.image : null, // cuello
           frontSide.logos?.reduce(
             (acc, logo) => (acc += logo.logoUrl + '|'),
             '',
@@ -173,7 +172,7 @@ export class PdfService {
 
         const imageBuffers: (Buffer | Buffer[] | void[])[] = await Promise.all(
           imageUrls.map(async (imageUrl) => {
-            if (imageUrl !== null && imageUrl.includes('|')) {
+            if (imageUrl !== null && imageUrl?.includes('|')) {
               // Si imageUrl es un array, obtener buffers para cada URL en el array
               const bffrs: Buffer[] = [];
               for (const url of imageUrl.split('|').filter((l) => l !== '')) {
