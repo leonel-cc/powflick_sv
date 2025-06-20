@@ -103,14 +103,15 @@ export enum ShortsType {
 
 export enum MaterialsType {
   None = 'None',
-  JQ3001 = 'JQ3001',
-  YX2034 = 'YX2034 (+$2.99)',
-  '08HT' = '08HT (+$2.99)',
-  'CWT-556' = 'CWT-556',
-  JQ5089 = 'JQ5089 (+$2.99)',
-  GameGuardTech = 'GameGuard Tech',
-  RapidFlexSport = 'RapidFlex Sport (+$2.99)',
-  XtremeFitFabric = 'XtremeFitFabric (+$2.99)',
-  JQ3018 = 'JQ3018',
-  YX3024 = 'YX3024 (+$2.99)',
+  LitePlay = 'LitePlay (+$0.00)',
+  AeroDry = 'AeroDry (+$0.00)',
+  ProMesh = 'ProMesh (+$2.99)',
+}
+
+export enum TechniqueType {
+  Default = 'Default Sublimated',
+  HeatPressTechnique = 'Heat Press Technique',
+  StitchEmbroidery = 'Stitch Embroidery',
+  EmbroideryLogo = 'Embroidery Logo',
+  HeatPressLogo = 'Heat Press Logo',
 }

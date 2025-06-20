@@ -30,6 +30,7 @@ import {
   calculateCustomizationPrice,
   currencySymbol,
   eliminarCaracteresNoNumericos,
+  getTotalWithDiscount,
 } from '../utils/tools';
 import { CouponService } from '../coupon/coupon.service';
 import {
@@ -51,7 +52,7 @@ export class OrdersService {
     private sequelize: Sequelize,
     private couponService: CouponService,
     private paypalService: PaypalService, // <--- Agrega PaypalService
-  ) {}
+  ) { }
 
   async findOneOrder(id: string, user: IGetUser) {
     try {
@@ -243,99 +244,94 @@ export class OrdersService {
             description += `Size: ${customization.size}, `;
           }
           if (customization.neck) {
-            description += `Neck: ${
-              customization.neck.split(' ')[1]
+            description += `Neck: ${customization.neck.split(' ')[1]
                 ? customization.neck.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.neck.split(' ').pop()),
-                      ),
+                ' ' +
+                '(' +
+                currencySymbol(currency.name) +
+                this.currencyService.convertCurrency(
+                  Number(
+                    eliminarCaracteresNoNumericos(
+                      String(customization.neck.split(' ').pop()),
                     ),
-                    currency.value,
-                  ) +
-                  ')'
+                  ),
+                  currency.value,
+                ) +
+                ')'
                 : customization.neck
-            }, `;
+              }, `;
           }
           if (customization.socks) {
-            description += `Socks: ${
-              customization.socks.split(' ')[1]
+            description += `Socks: ${customization.socks.split(' ')[1]
                 ? customization.socks.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.socks.split(' ').pop()),
-                      ),
+                ' ' +
+                '(' +
+                currencySymbol(currency.name) +
+                this.currencyService.convertCurrency(
+                  Number(
+                    eliminarCaracteresNoNumericos(
+                      String(customization.socks.split(' ').pop()),
                     ),
-                    currency.value,
-                  ) +
-                  ')'
+                  ),
+                  currency.value,
+                ) +
+                ')'
                 : customization.socks
-            }, `;
+              }, `;
           }
           if (customization.pants) {
-            description += `Pants: ${
-              customization.pants.split(' ')[1]
+            description += `Pants: ${customization.pants.split(' ')[1]
                 ? customization.pants.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.pants.split(' ').pop()),
-                      ),
+                ' ' +
+                '(' +
+                currencySymbol(currency.name) +
+                this.currencyService.convertCurrency(
+                  Number(
+                    eliminarCaracteresNoNumericos(
+                      String(customization.pants.split(' ').pop()),
                     ),
-                    currency.value,
-                  ) +
-                  ')'
+                  ),
+                  currency.value,
+                ) +
+                ')'
                 : customization.pants
-            }, `;
+              }, `;
           }
           if (customization.shorts) {
-            description += `Shorts: ${
-              customization.shorts.split(' ')[1]
+            description += `Shorts: ${customization.shorts.split(' ')[1]
                 ? customization.shorts.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.shorts.split(' ').pop()),
-                      ),
+                ' ' +
+                '(' +
+                currencySymbol(currency.name) +
+                this.currencyService.convertCurrency(
+                  Number(
+                    eliminarCaracteresNoNumericos(
+                      String(customization.shorts.split(' ').pop()),
                     ),
-                    currency.value,
-                  ) +
-                  ')'
+                  ),
+                  currency.value,
+                ) +
+                ')'
                 : customization.shorts
-            }, `;
+              }, `;
           }
           if (customization.materials) {
-            description += `Materials: ${
-              customization.materials.split(' ')[1]
+            description += `Materials: ${customization.materials.split(' ')[1]
                 ? customization.materials.split(' ')[0] +
-                  ' ' +
-                  '(' +
-                  currencySymbol(currency.name) +
-                  this.currencyService.convertCurrency(
-                    Number(
-                      eliminarCaracteresNoNumericos(
-                        String(customization.materials.split(' ').pop()),
-                      ),
+                ' ' +
+                '(' +
+                currencySymbol(currency.name) +
+                this.currencyService.convertCurrency(
+                  Number(
+                    eliminarCaracteresNoNumericos(
+                      String(customization.materials.split(' ').pop()),
                     ),
-                    currency.value,
-                  ) +
-                  ')'
+                  ),
+                  currency.value,
+                ) +
+                ')'
                 : customization.materials
-            }, `;
+              }, `;
           }
 
           if (
@@ -348,10 +344,9 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                  (description += `Text ${i}: ${e.text} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -360,10 +355,9 @@ export class OrdersService {
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                  (description += `Number ${i + 1}: ${e.number} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -379,10 +373,9 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                  (description += `Text ${i}: ${e.text} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -391,10 +384,9 @@ export class OrdersService {
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${e.number} ${
-                      '+ ' +
-                      currencySymbol(currency.name) +
-                      this.currencyService.convertCurrency(3.99, currency.value)
+                  (description += `Number ${i + 1}: ${e.number} ${'+ ' +
+                    currencySymbol(currency.name) +
+                    this.currencyService.convertCurrency(3.99, currency.value)
                     }, `),
                 );
             }
@@ -621,11 +613,11 @@ export class OrdersService {
               const [name, price] = value.split(' ');
               const formattedPrice = price
                 ? ` (${currencySymbol(
-                    currency.name,
-                  )}${this.currencyService.convertCurrency(
-                    Number(eliminarCaracteresNoNumericos(price)),
-                    currency.value,
-                  )})`
+                  currency.name,
+                )}${this.currencyService.convertCurrency(
+                  Number(eliminarCaracteresNoNumericos(price)),
+                  currency.value,
+                )})`
                 : '';
               description += `${type}: ${name}${formattedPrice}, `;
             }
@@ -647,19 +639,18 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} (+ ${currencySymbol(
-                      currency.name,
-                    )}${this.currencyService.convertCurrency(
-                      3.99,
-                      currency.value,
-                    )}), `),
+                  (description += `Text ${i}: ${e.text} (+ ${currencySymbol(
+                    currency.name,
+                  )}${this.currencyService.convertCurrency(
+                    3.99,
+                    currency.value,
+                  )}), `),
                 );
               numbers
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${
-                      e.number
+                  (description += `Number ${i + 1}: ${e.number
                     } (+ ${currencySymbol(
                       currency.name,
                     )}${this.currencyService.convertCurrency(
@@ -1188,11 +1179,11 @@ export class OrdersService {
               const [name, price] = value.split(' ');
               const formattedPrice = price
                 ? ` (${currencySymbol(
-                    currency.name,
-                  )}${this.currencyService.convertCurrency(
-                    Number(eliminarCaracteresNoNumericos(price)),
-                    currency.value,
-                  )})`
+                  currency.name,
+                )}${this.currencyService.convertCurrency(
+                  Number(eliminarCaracteresNoNumericos(price)),
+                  currency.value,
+                )})`
                 : '';
               description += `${type}: ${name}${formattedPrice}, `;
             }
@@ -1214,19 +1205,18 @@ export class OrdersService {
                 .filter((e) => e.text)
                 .forEach(
                   (e, i) =>
-                    (description += `Text ${i}: ${e.text} (+ ${currencySymbol(
-                      currency.name,
-                    )}${this.currencyService.convertCurrency(
-                      3.99,
-                      currency.value,
-                    )}), `),
+                  (description += `Text ${i}: ${e.text} (+ ${currencySymbol(
+                    currency.name,
+                  )}${this.currencyService.convertCurrency(
+                    3.99,
+                    currency.value,
+                  )}), `),
                 );
               numbers
                 .filter((e) => e.number)
                 .forEach(
                   (e, i) =>
-                    (description += `Number ${i + 1}: ${
-                      e.number
+                  (description += `Number ${i + 1}: ${e.number
                     } (+ ${currencySymbol(
                       currency.name,
                     )}${this.currencyService.convertCurrency(
@@ -1399,7 +1389,7 @@ export class OrdersService {
           }
 
           // Calcular el precio total del producto
-          const totalProduct = thisProduct.price * amount;
+          const totalProduct = getTotalWithDiscount(thisProduct.price, amount);
 
           // Calcular el precio total de las personalizaciones
           for (const custom of customizations) {

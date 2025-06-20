@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsString, ValidateNested,  IsOptional, IsObject, IsArray } from 'class-validator';
-import { MaterialsType, NeckType, PantsType, ShortsType, SizeType, SleeveType, SocksType } from '../enum/customization.enum';
+import { MaterialsType, NeckType, PantsType, ShortsType, SizeType, SleeveType, SocksType, TechniqueType } from '../enum/customization.enum';
 import { Type } from 'class-transformer';
 
 export class LogoDto {
@@ -294,6 +294,17 @@ export class CreateCustomizationDto {
     message: 'El tipo de material debe ser uno de los valores definidos en la enumeración MaterialsType.',
   })
     materials: MaterialsType;
+
+  @IsOptional()
+  @ApiProperty({
+    enum: TechniqueType,
+    description: 'Tipo de tecnica.',
+    enumName: 'TechniqueType',
+  })
+  @IsEnum(MaterialsType, {
+    message: 'El tipo de tecnica debe ser uno de los valores definidos en la enumeración TechniqueType.',
+  })
+    technique: TechniqueType;
 
   @IsOptional()
   @ApiProperty({

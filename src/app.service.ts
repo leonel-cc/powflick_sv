@@ -6,12 +6,13 @@ import {
   Pants,
   sportsConfig,
   withOrWithoutShort,
-  PaymentMethods,
-  ShippingTypes,
-  SizeGuide,
+  // PaymentMethods,
+  // ShippingTypes,
+  // SizeGuide,
   Materials,
   SizeType,
   defaultImage,
+  Technique,
 } from './utils/detail.enum';
 import { Product } from './products/entity/products.entity';
 import { Review, ShowType } from './reviews/entity/reviews.entity';
@@ -73,11 +74,12 @@ export class AppService {
         Socks: socks ? Socks : null,
         Shorts: shorts ? Shorts(sport) : !pants && !shorts ? withOrWithoutShort : null,
         Pants: pants ? Pants : null,
-        Materials: Materials[sport],
-        PaymentMethods,
-        ShippingTypes,
+        Materials: Materials,
+        Technique: Technique,
+        // PaymentMethods,
+        // ShippingTypes,
         Size: SizeType,
-        SizeGuide: SizeGuide[sport],
+        // SizeGuide: SizeGuide[sport],
       };
     } catch (error) {
       throw new HttpException(
