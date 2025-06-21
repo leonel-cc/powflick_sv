@@ -25,8 +25,8 @@ async function bootstrap() {
     app.use(morgan('dev'));
   }
   // Configuración de Express
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '5mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '5mb' }));
   app.use(express.static(path.join(__dirname, 'public')));
 
   await app.listen(port);
