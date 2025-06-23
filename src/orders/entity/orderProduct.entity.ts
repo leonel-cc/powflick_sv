@@ -31,6 +31,13 @@ export class OrderProduct extends Model<OrderProduct> {
   })
     price: number;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+    top: boolean;
+
   @ForeignKey(() => Order)
   @Column({
     type: DataType.NUMBER,
