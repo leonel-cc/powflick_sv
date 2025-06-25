@@ -121,83 +121,6 @@ export class StripeService {
         order.state = OrderStateEnum.PAGO;
         order.total = paymentIntent.amount / 100;
         await order.save();
-        const pdf = [];
-        const products = [];
-        // iterar sobre los productos vendidos y actualizar datos
-        for (const product of order.products) {
-          const thisProduct = await Product.findByPk(product.id);
-          const customizations = order.customizations.filter(
-            (e) => e.productId === product.id,
-          );
-
-          thisProduct.selled += customizations.length;
-          thisProduct.save();
-          //obtener customizacion para generar el pdf
-          for (const { customization } of customizations || []) {
-            //generar pdfs
-            const buffer = await this.pdfService.generatePdf(
-              customization,
-              thisProduct,
-              orderId,
-            );
-            //se agregan los pdf para adjuntar en el mail
-            pdf.push({ name: customization.designName, buffer });
-          }
-
-          const totalCustomizationPrice = customizations?.reduce(
-            (acc, { customization }) => (acc += customization.price),
-            0,
-          );
-          const customizationData = [];
-          customizations.forEach(({ customization }, i) =>
-            customizationData.push({
-              index: i + 1,
-              text: customization.backSide.texts
-                .map((t) => t.text) // Extrae solo la propiedad `text`
-                .join(' '), // Une los valores con un espacio
-              number: customization.backSide.numbers
-                .map((n) => n.number) // Extrae solo la propiedad `number`
-                .join(' '),
-            }),
-          );
-          //se agregan los productos al array para mostrarlos en el mail
-          products.push({
-            productName: thisProduct.title,
-            customizationData,
-            price: this.currencyService.convertCurrency(
-              thisProduct.price * customizations.length +
-              totalCustomizationPrice,
-              order.currency.value,
-            ),
-            amount: customizations.length,
-            imageURL: thisProduct.images[0],
-          });
-        }
-
-        const context: IPurchaseContext = {
-          name: thisUser.firstName + ' ' + thisUser.lastName,
-          order: orderId,
-          products,
-          direction: order.direction,
-          user: thisUser,
-          total: order.total,
-          currencySymbol: currencySymbol(order.currency.name),
-          purchaseDate: order.updatedAt
-            .toString()
-            .split(' ')
-            .slice(0, 4)
-            .join(' '),
-        };
-
-        const mailData = {
-          EmailAddress: thisUser.email,
-          subject: Cases.PURCHASE,
-          context,
-          pdf,
-        };
-
-        //Sending mail
-        await this.mailService.sendMails(mailData);
       }
 
       await Order.destroy({
@@ -225,6 +148,107 @@ export class StripeService {
       // await this.stripe.webhookEndpoints.del(order.webhookId);
     } catch (error) {
       // await this.stripe.webhookEndpoints.del(order.webhookId);
+      throw new HttpException(error.message, 500);
+    }
+  }
+
+  async generatePurchaseEmail(orderId: string, userId: string) {
+    try {
+      const order = await Order.findByPk(orderId, {
+        include: [
+          {
+            model: Product,
+            attributes: ['id', 'selled'],
+          },
+          {
+            model: Direction,
+          },
+        ],
+      });
+      const thisUser = await User.findByPk(userId);
+
+      const pdf = [];
+      const products = [];
+      // iterar sobre los productos vendidos y actualizar datos
+      for (const product of order.products) {
+        const thisProduct = await Product.findByPk(product.id);
+        const customizations = order.customizations.filter(
+          (e) => e.productId === product.id,
+        );
+
+        thisProduct.selled += customizations.length;
+        thisProduct.save();
+        // Generar PDFs en paralelo para cada personalización de este producto
+        const pdfBuffers = await Promise.all(
+          customizations.map(async ({ customization }) => {
+            const buffer = await this.pdfService.generatePdf(
+              customization,
+              thisProduct,
+              orderId,
+            );
+            return { name: customization.designName, buffer };
+          }),
+        );
+
+        pdf.push(...pdfBuffers);
+
+        const totalCustomizationPrice = customizations?.reduce(
+          (acc, { customization }) => (acc += customization.price),
+          0,
+        );
+        const customizationData = [];
+        customizations.forEach(({ customization }, i) =>
+          customizationData.push({
+            index: i + 1,
+            text: customization.backSide.texts
+              .map((t) => t.text) // Extrae solo la propiedad `text`
+              .join(' '), // Une los valores con un espacio
+            number: customization.backSide.numbers
+              .map((n) => n.number) // Extrae solo la propiedad `number`
+              .join(' '),
+          }),
+        );
+        //se agregan los productos al array para mostrarlos en el mail
+        products.push({
+          productName: thisProduct.title,
+          customizationData,
+          price: this.currencyService.convertCurrency(
+            thisProduct.price * customizations.length +
+            totalCustomizationPrice,
+            order.currency.value,
+          ),
+          amount: customizations.length,
+          imageURL: thisProduct.images[0],
+        });
+      }
+
+      const context: IPurchaseContext = {
+        name: thisUser.firstName + ' ' + thisUser.lastName,
+        order: String(orderId), // <-- conversión a string
+        products,
+        direction: order.direction,
+        user: thisUser,
+        total: order.total,
+        currencySymbol: currencySymbol(order.currency.name),
+        purchaseDate: order.updatedAt
+          .toString()
+          .split(' ')
+          .slice(0, 4)
+          .join(' '),
+      };
+
+      const mailData = {
+        EmailAddress: thisUser.email,
+        subject: Cases.PURCHASE,
+        context,
+        pdf,
+      };
+
+      //Sending mail
+      await this.mailService.sendMails(mailData);
+
+
+    } catch (error) {
       throw new HttpException(error.message, 500);
     }
   }

@@ -7,18 +7,20 @@ import {
   Param,
   Query,
   Res,
-  Header,
   HttpCode,
-  HttpStatus,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CLIENT_URL } from '../config/enviroments';
 import { StripeService } from './stripe.service';
 import { LLPService } from './LLP.service';
 import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
 import { PaypalService } from './paypal.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
+import { GetUser } from 'src/auth/decorator/auth-user.decorator';
+import { IGetUser } from 'src/auth/interfaces/getUser.interface';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -27,7 +29,7 @@ export class PaymentsController {
     private readonly stripeService: StripeService,
     private readonly llpService: LLPService,
     private readonly paypalService: PaypalService,
-  ) {}
+  ) { }
 
   @Post('create-checkout-session')
   async createCheckoutSession(@Body() body: { lineItems: any[] }) {
@@ -39,7 +41,7 @@ export class PaymentsController {
 
   @Get('success/:orderid')
   async handleSuccessPayment(
-    @Res() res: Response,
+  @Res() res: Response,
     @Param('orderid') orderid: string,
     @Query('token') token: string,
     @Query('PayerID') payerId: string,
@@ -64,13 +66,29 @@ export class PaymentsController {
     }
   }
 
+  @Get('email/:orderid')
+  @UseGuards(JwtAuthGuard)
+  async generatePurchaseEmail(
+  @GetUser() { userId }: IGetUser,
+    @Param('orderid') orderId: string,
+  ) {
+    try {
+      // Captura el pago en PayPal usando ambos IDs correctamente
+      await this.stripeService.generatePurchaseEmail(orderId, userId);
+      // Redirige al frontend
+      return 'Email sent successfully';
+    } catch (error) {
+      console.error('Error generating email:', error);
+    }
+  }
+
   // Ruta para manejar un pago fallido
   @ApiOperation({
     summary: 'Ruta para manejar un pago fallido.',
   })
   @Get('failure/:orderid')
   async handleFailurePayment(
-    @Res() res: Response,
+  @Res() res: Response,
     @Param('orderid') orderid: string,
   ) {
     console.log('PayPal FAILURE endpoint hit for order:', orderid); // <-- Agrega log
@@ -82,7 +100,7 @@ export class PaymentsController {
   @Post('webhook/:orderid')
   @HttpCode(200) // Responde con código 200 para confirmar la recepción del evento
   async handleStripeEvent(
-    @Body() event: any,
+  @Body() event: any,
     @Param('orderid') orderid: string,
   ) {
     // Maneja el evento recibido desde Stripe
@@ -95,7 +113,7 @@ export class PaymentsController {
 
   @Post('LLpay')
   async createLLPay(
-    @Body()
+  @Body()
     { body, orderId, email }: { body: any; orderId: number; email: string },
   ) {
     try {
@@ -113,7 +131,7 @@ export class PaymentsController {
 
   @Post('LLpay3DS')
   async createLLPay3DS(
-    @Body()
+  @Body()
     payload: {
       body: CreateLlpPaymentDto;
       orderId: number;
