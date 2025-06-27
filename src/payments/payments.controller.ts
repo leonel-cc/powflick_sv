@@ -54,8 +54,8 @@ export class PaymentsController {
     );
 
     try {
-      // Captura el pago en PayPal usando ambos IDs correctamente
-      await this.paypalService.actualizePayment('success', orderid, token);
+      // Captura el pago en LLP usando ambos IDs correctamente
+      await this.llpService.actualizePayment('success', orderid);
       // Redirige al frontend
       res.redirect(CLIENT_URL + '/thanks-for-buying/' + orderid);
     } catch (error) {
