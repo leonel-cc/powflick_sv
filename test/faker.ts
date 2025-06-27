@@ -1,6 +1,17 @@
 import { faker } from '@faker-js/faker';
-import { CreateCustomizationDto, FrontSideDto } from '../src/products/dto/create-customization.dto';
-import { MaterialsType, NeckType, PantsType, ShortsType, SizeType, SleeveType, SocksType } from '../src/products/enum/customization.enum';
+import {
+  CreateCustomizationDto,
+  FrontSideDto,
+} from '../src/products/dto/create-customization.dto';
+import {
+  MaterialsType,
+  NeckType,
+  PantsType,
+  ShortsType,
+  SizeType,
+  SleeveType,
+  SocksType,
+} from '../src/products/enum/customization.enum';
 import { StateProduct } from '../src/products/entity/products.entity';
 import { calculateCustomizationPrice } from '../src/utils/tools';
 
@@ -30,9 +41,11 @@ export const createSportObject = () => {
   return sport;
 };
 
-export const createCustomizationObject = (userId: string, productId: string) => {
-
-  const frontSide: FrontSideDto = {
+export const createCustomizationObject = (
+  userId: string,
+  productId: string,
+) => {
+  const frontSide: any = {
     logoUrl: 'http://example.com/logo.png',
     logoId: 'logo123',
     logoPosition: { x: 10, y: 20 },
@@ -70,8 +83,7 @@ export const createCustomizationObject = (userId: string, productId: string) => 
 };
 
 export const createCustomization = (userId: string, productId: string) => {
-
-  const frontSide: FrontSideDto = {
+  const frontSide: any = {
     logoUrl: 'http://example.com/logo.png',
     logoId: 'logo123',
     logoPosition: { x: 10, y: 20 },
@@ -141,7 +153,7 @@ export const createProductObject = (sportId: string) => {
     short_description: faker.commerce.productDescription(),
     date: new Date().toISOString(),
     stock: 0,
-    price: 20.00,
+    price: 20.0,
     regular_price: 100,
     URL: 'http://example.com',
     product_categories: 'Category 1, Category 2',
@@ -158,4 +170,3 @@ export const createProductObject = (sportId: string) => {
 
   return product;
 };
-

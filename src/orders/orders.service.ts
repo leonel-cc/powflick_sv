@@ -1371,7 +1371,7 @@ export class OrdersService {
       };
     } catch (error) {
       transaction.rollback();
-      console.log(error.message);
+      console.log(error);
       throw new InternalServerErrorException(
         `An error occurred while creating your order. \n ${error.message}`,
       );
