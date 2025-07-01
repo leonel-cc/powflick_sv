@@ -130,6 +130,7 @@ export class ReviewsService {
       await transaction.commit();
       return response;
     } catch (error) {
+      console.log(error.message);
       await transaction.rollback();
       throw new InternalServerErrorException(
         'Something went wrong when creating the review ' + error.message,
