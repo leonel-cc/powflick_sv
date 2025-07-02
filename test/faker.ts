@@ -11,9 +11,11 @@ import {
   SizeType,
   SleeveType,
   SocksType,
+  TechniqueType,
 } from '../src/products/enum/customization.enum';
 import { StateProduct } from '../src/products/entity/products.entity';
 import { calculateCustomizationPrice } from '../src/utils/tools';
+import { Technique } from 'src/utils/detail.enum';
 
 export const createUserObject = () => {
   const userId = faker.string.uuid();
@@ -74,6 +76,7 @@ export const createCustomizationObject = (
     pants: PantsType.Black,
     shorts: ShortsType.Blue,
     materials: MaterialsType['08HT'],
+    technique: TechniqueType['Default'],
     neck: NeckType.Default,
   };
 
@@ -111,6 +114,7 @@ export const createCustomization = (userId: string, productId: string) => {
     pants: PantsType.Black,
     shorts: ShortsType.Blue,
     materials: MaterialsType['08HT'],
+    technique: TechniqueType['Default'],
     neck: NeckType.Default,
   };
 
