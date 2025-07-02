@@ -1,5 +1,5 @@
 // pdf.service.ts
-import PDFDocument from 'pdfkit';
+import * as PDFDocument from 'pdfkit';
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import {
@@ -42,13 +42,22 @@ export class PdfService {
         const antonPath = path.join(__dirname, 'fonts/Anton/Anton-Regular.ttf');
         doc.registerFont('Anton', antonPath);
 
-        const rasiolinePath = path.join(__dirname, 'fonts/Rasioline/DD rasioline.otf');
+        const rasiolinePath = path.join(
+          __dirname,
+          'fonts/Rasioline/DD rasioline.otf',
+        );
         doc.registerFont('Rasioline', rasiolinePath);
 
-        const spotlightPath = path.join(__dirname, 'fonts/Spot Light/Spot Light.otf');
+        const spotlightPath = path.join(
+          __dirname,
+          'fonts/Spot Light/Spot Light.otf',
+        );
         doc.registerFont('Spot Light', spotlightPath);
 
-        const uniNorthPath = path.join(__dirname, 'fonts/Uni North/UNINorth-College.otf');
+        const uniNorthPath = path.join(
+          __dirname,
+          'fonts/Uni North/UNINorth-College.otf',
+        );
         doc.registerFont('Uni North', uniNorthPath);
 
         const tnrPath = path.join(__dirname, 'fonts/Times New Roman/TNR.ttf');
@@ -57,7 +66,10 @@ export class PdfService {
         const arialPath = path.join(__dirname, 'fonts/Arial/ARIAL.ttf');
         doc.registerFont('Arial', arialPath);
 
-        const courierNewPath = path.join(__dirname, 'fonts/Courier New/cour.ttf');
+        const courierNewPath = path.join(
+          __dirname,
+          'fonts/Courier New/cour.ttf',
+        );
         doc.registerFont('Courier New', courierNewPath);
 
         const verdanaPath = path.join(__dirname, 'fonts/Verdana/Verdana.ttf');
@@ -72,46 +84,85 @@ export class PdfService {
         const festPath = path.join(__dirname, 'fonts/FEST/Fest235 fs.otf');
         doc.registerFont('Fest', festPath);
 
-        const blackBassPath = path.join(__dirname, 'fonts/BLACK BASS DEMO/Black Bass Demo.otf');
+        const blackBassPath = path.join(
+          __dirname,
+          'fonts/BLACK BASS DEMO/Black Bass Demo.otf',
+        );
         doc.registerFont('Black Bass Demo', blackBassPath);
 
-        const dirgaHayuPath = path.join(__dirname, 'fonts/DIRGA HAYU/dDirgahayu.ttf');
+        const dirgaHayuPath = path.join(
+          __dirname,
+          'fonts/DIRGA HAYU/dDirgahayu.ttf',
+        );
         doc.registerFont('Dirga Hayu', dirgaHayuPath);
 
-        const restaurantMenuBookPath = path.join(__dirname, 'fonts/RESTAURANT MENU BOOK/RestaurantMenuBook.ttf');
+        const restaurantMenuBookPath = path.join(
+          __dirname,
+          'fonts/RESTAURANT MENU BOOK/RestaurantMenuBook.ttf',
+        );
         doc.registerFont('Restaurant Menu Book', restaurantMenuBookPath);
 
         const hattenPath = path.join(__dirname, 'fonts/HATTEN/HATTEN.ttf');
         doc.registerFont('Hatten', hattenPath);
 
-        const ncaaPath = path.join(__dirname, 'fonts/NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf');
+        const ncaaPath = path.join(
+          __dirname,
+          'fonts/NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf',
+        );
         doc.registerFont('NCAA Oregon Ducks Autzen', ncaaPath);
 
-        const qatarPath = path.join(__dirname, 'fonts/QATAR PERSONAL USE/QatarPersonalUse.ttf');
+        const qatarPath = path.join(
+          __dirname,
+          'fonts/QATAR PERSONAL USE/QatarPersonalUse.ttf',
+        );
         doc.registerFont('Qatar Personal Use', qatarPath);
 
-        const realMadridPath = path.join(__dirname, 'fonts/REAL MADRID/RealMadrid.ttf');
+        const realMadridPath = path.join(
+          __dirname,
+          'fonts/REAL MADRID/RealMadrid.ttf',
+        );
         doc.registerFont('Real Madrid', realMadridPath);
 
-        const quantumRangersPath = path.join(__dirname, 'fonts/QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf');
+        const quantumRangersPath = path.join(
+          __dirname,
+          'fonts/QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf',
+        );
         doc.registerFont('Quantum Rangers Personal', quantumRangersPath);
 
-        const bostonCapsPath = path.join(__dirname, 'fonts/BOSTON CAPS/BOSTON CAPS.ttf');
+        const bostonCapsPath = path.join(
+          __dirname,
+          'fonts/BOSTON CAPS/BOSTON CAPS.ttf',
+        );
         doc.registerFont('Boston Caps', bostonCapsPath);
 
-        const chineseRocksPath = path.join(__dirname, 'fonts/CHINESE ROCKS/chinese rocks.ttf');
+        const chineseRocksPath = path.join(
+          __dirname,
+          'fonts/CHINESE ROCKS/chinese rocks.ttf',
+        );
         doc.registerFont('Chinese Rocks', chineseRocksPath);
 
-        const maduraUnitedPath = path.join(__dirname, 'fonts/MADURA UNITED FC/Madura United FC.otf');
+        const maduraUnitedPath = path.join(
+          __dirname,
+          'fonts/MADURA UNITED FC/Madura United FC.otf',
+        );
         doc.registerFont('Madura United FC', maduraUnitedPath);
 
-        const overgridPath = path.join(__dirname, 'fonts/OVERGRID/OVERGRID.ttf');
+        const overgridPath = path.join(
+          __dirname,
+          'fonts/OVERGRID/OVERGRID.ttf',
+        );
         doc.registerFont('Overgrid', overgridPath);
 
-        const slovakiaPath = path.join(__dirname, 'fonts/SLOVAKIA/Slovakia.ttf');
+        const slovakiaPath = path.join(
+          __dirname,
+          'fonts/SLOVAKIA/Slovakia.ttf',
+        );
         doc.registerFont('Slovakia', slovakiaPath);
 
-        const crawfordPath = path.join(__dirname, 'fonts/Crawford Line/Crawford line.ttf');
+        const crawfordPath = path.join(
+          __dirname,
+          'fonts/Crawford Line/Crawford line.ttf',
+        );
         doc.registerFont('Crawford Line', crawfordPath);
 
         // Manejadores de eventos para completar y manejar errores

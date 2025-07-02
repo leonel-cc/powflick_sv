@@ -23,7 +23,7 @@ export class ReviewsService {
   constructor(
     private userService: UsersService,
     private sequelize: Sequelize,
-  ) { }
+  ) {}
 
   async create(id: string, createReviewDto: CreateReviewDto): Promise<IReview> {
     const transaction: Transaction = await this.sequelize.transaction();
@@ -36,8 +36,14 @@ export class ReviewsService {
         ...createReviewDto,
         type: createReviewDto.type,
         userId: user.id,
-        orderId: createReviewDto.type === ReviewType.ORDER ? createReviewDto.typeId : null,
-        productId: createReviewDto.type === ReviewType.PRODUCT ? createReviewDto.typeId : null,
+        orderId:
+          createReviewDto.type === ReviewType.ORDER
+            ? createReviewDto.typeId
+            : null,
+        productId:
+          createReviewDto.type === ReviewType.PRODUCT
+            ? createReviewDto.typeId
+            : null,
         isActive: false,
       });
 
@@ -73,19 +79,48 @@ export class ReviewsService {
     const phone = '+111111111';
     const userImage = createReviewDto.userImage;
     try {
-      console.log('hol');
-      
-      const user = await User.create({ firstName, lastName, email, phone, image: userImage, password: 'null' });
-      console.log(user);
+      const user = await User.create({
+        firstName,
+        lastName,
+        email,
+        phone,
+        image: userImage,
+        password: 'null',
+      });
+
+      let productId: string = null;
+      let orderId: string = null;
+
+      if (createReviewDto.type === ReviewType.PRODUCT) {
+        // Buscar el producto por nombre (typeId)
+        const product = await Product.findOne({
+          where: { title: { [Op.iLike]: createReviewDto.typeId } },
+        });
+        if (!product) {
+          throw new HttpException(
+            'The product with that name was not found',
+            404,
+          );
+        }
+        productId = product.id;
+      } else if (createReviewDto.type === ReviewType.ORDER) {
+        orderId = createReviewDto.typeId;
+      }
 
       const Newreview = await Review.create({
         ...createReviewDto,
         type: createReviewDto.type,
         userId: user.id,
-        orderId: createReviewDto.type === ReviewType.ORDER ? createReviewDto.typeId : null,
+        orderId,
+        productId,
         isActive: false,
       });
-      console.log(Newreview);
+
+      if (createReviewDto.type === ReviewType.ORDER) {
+        const order = await Order.findByPk(createReviewDto.typeId);
+        order.reviewId = Newreview.id;
+        await order.save();
+      }
 
       const response = {
         statusCode: 201,
@@ -95,6 +130,7 @@ export class ReviewsService {
       await transaction.commit();
       return response;
     } catch (error) {
+      console.log(error.message);
       await transaction.rollback();
       throw new InternalServerErrorException(
         'Something went wrong when creating the review ' + error.message,
@@ -141,7 +177,7 @@ export class ReviewsService {
             attributes: ['id'],
           });
 
-          const productIds = products.map(product => product.id);
+          const productIds = products.map((product) => product.id);
 
           whereClause.productId = {
             [Op.in]: productIds,
@@ -161,21 +197,40 @@ export class ReviewsService {
           model: User,
           attributes: ['firstName', 'lastName', 'email', 'image'],
         },
-        attributes: ['id', 'title', 'review', 'type', 'orderId', 'productId', 'isActive', 'show', 'rating', 'image', 'createdAt', 'updatedAt'],
+        attributes: [
+          'id',
+          'title',
+          'review',
+          'type',
+          'orderId',
+          'productId',
+          'isActive',
+          'show',
+          'rating',
+          'image',
+          'createdAt',
+          'updatedAt',
+        ],
         limit: limit,
         offset: offset,
         order: [['createdAt', 'DESC']],
       });
 
-      const reviewsToShowPromises = reviews.map(async ({ dataValues, type, productId }) => {
-        if (type === 'PRODUCT') {
-          const product = await Product.findByPk(String(productId));
-          const { title, images } = product;
-
-          return { ...dataValues, product: { title, images } };
-        }
-        return { ...dataValues };
-      });
+      const reviewsToShowPromises = reviews.map(
+        async ({ dataValues, type, productId }) => {
+          if (type === 'PRODUCT') {
+            const product = await Product.findByPk(String(productId));
+            if (product) {
+              const { title, images, slug } = product;
+              return { ...dataValues, product: { title, images, slug } };
+            } else {
+              // Producto no encontrado, devolver valores por defecto o null
+              return { ...dataValues, product: { title: null, images: [] } };
+            }
+          }
+          return { ...dataValues };
+        },
+      );
 
       const reviewsToShow = await Promise.all(reviewsToShowPromises);
       const totalPages = Math.ceil(totalReviews / limit);
@@ -208,13 +263,14 @@ export class ReviewsService {
         },
       };
     } catch (error) {
-      throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  async update(
-    updateReviewDto: UpdateReviewDto,
-  ): Promise<IReview> {
+  async update(updateReviewDto: UpdateReviewDto): Promise<IReview> {
     try {
       //Update
       const count = await Review.update(updateReviewDto, {
@@ -233,7 +289,20 @@ export class ReviewsService {
           model: User,
           attributes: ['firstName', 'lastName', 'email', 'image'],
         },
-        attributes: ['id', 'title', 'review', 'type', 'orderId', 'productId', 'isActive', 'show', 'rating', 'image', 'createdAt', 'updatedAt'],
+        attributes: [
+          'id',
+          'title',
+          'review',
+          'type',
+          'orderId',
+          'productId',
+          'isActive',
+          'show',
+          'rating',
+          'image',
+          'createdAt',
+          'updatedAt',
+        ],
       });
 
       return {
@@ -264,7 +333,9 @@ export class ReviewsService {
       const user = await User.findByPk(review.userId);
 
       const action = review.isActive ? 'activated' : 'disabled';
-      const message = `User review was ${action}: ${user?.firstName || 'Unknown'} ${user?.lastName || 'User'} successfully.`;
+      const message = `User review was ${action}: ${
+        user?.firstName || 'Unknown'
+      } ${user?.lastName || 'User'} successfully.`;
 
       return {
         message,

@@ -44,12 +44,46 @@ export class AppService {
     try {
       const { neck, socks, shorts, pants } = sportsConfig[sport];
 
+      const categoryNames = product.categories || [];
+      const collectionNames = product.collections || [];
+      const tagNames = product.tags || [];
+
       const reviews = await Review.findAll({
-        where: { productId: product.id, isActive: true },
-        include: {
-          model: User,
-          attributes: ['firstName', 'lastName', 'email'],
-        },
+        where: { isActive: true },
+        include: [
+          {
+            model: User,
+            attributes: ['firstName', 'lastName', 'email'],
+          },
+          {
+            model: Product,
+            attributes: ['id', 'title', 'images', 'slug', 'URL'],
+            required: true,
+            include: [
+              {
+                model: Categories,
+                where: {
+                  name: { [Op.in]: categoryNames },
+                },
+                required: false,
+              },
+              {
+                model: Collection,
+                where: {
+                  title: { [Op.in]: collectionNames },
+                },
+                required: false,
+              },
+              {
+                model: Tags,
+                where: {
+                  name: { [Op.in]: tagNames },
+                },
+                required: false,
+              },
+            ],
+          },
+        ],
         attributes: [
           'id',
           'title',
@@ -63,6 +97,8 @@ export class AppService {
           'updatedAt',
         ],
       });
+
+      console.log(reviews.length);
 
       return {
         product,
@@ -82,12 +118,15 @@ export class AppService {
         // SizeGuide: SizeGuide[sport],
       };
     } catch (error) {
+      console.log('error', error);
+
       throw new HttpException(
         'An error occurred while obtaining the detail validations',
         400,
       );
     }
   }
+
 
   async getLanding() {
     try {
