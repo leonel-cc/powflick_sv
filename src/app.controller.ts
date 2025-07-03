@@ -13,7 +13,7 @@ export class AppController {
     private readonly appService: AppService,
     private readonly productService: ProductsService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) { }
+  ) {}
 
   @Get()
   async HelloWorld() {
@@ -21,10 +21,7 @@ export class AppController {
   }
 
   @Get('detail/:id')
-  async getDetail(
-  @Param('id') productid: string,
-    @Res() res: Response,
-  ) {
+  async getDetail(@Param('id') productid: string, @Res() res: Response) {
     const cacheKey = `product:${productid}`;
     const cachedData = await this.cacheManager.get(cacheKey);
 
@@ -66,7 +63,12 @@ export class AppController {
       attributes: ['id', 'title', 'price', 'sports', 'images', 'slug', 'URL'],
     });
 
-    const result = await this.appService.getDetail(product.sports, product, sugestedProducts, frequentlyBought);
+    const result = await this.appService.getDetail(
+      product.sports,
+      product,
+      sugestedProducts,
+      frequentlyBought,
+    );
 
     // Almacena en caché el resultado por 5 minutos
     await this.cacheManager.set(cacheKey, result);
@@ -76,9 +78,7 @@ export class AppController {
   }
 
   @Get('landing')
-  async getLanding(
-  @Res() res: Response,
-  ) {
+  async getLanding(@Res() res: Response) {
     const cacheKey = 'landing';
     const cachedData = await this.cacheManager.get(cacheKey);
 
@@ -97,9 +97,7 @@ export class AppController {
   }
 
   @Get('navbar')
-  async getNavbar(
-  @Res() res: Response,
-  ) {
+  async getNavbar(@Res() res: Response) {
     const cacheKey = 'navbar';
     const cachedData = await this.cacheManager.get(cacheKey);
 
@@ -128,5 +126,4 @@ export class AppController {
     await this.cacheManager.del(`product:${slug}`);
     return 'Cache reset detail succesfully';
   }
-
 }

@@ -30,12 +30,11 @@ export class CreateReviewDto {
     message:
       '$property is too long, maximum length must be $constraint1, but actual is $value',
   })
-    review: string;
+  review: string;
 
   //review
   @ApiProperty({
-    description:
-      'Este es el titulo de la reseña ',
+    description: 'Este es el titulo de la reseña ',
     example: 'Buenisima camiseta',
   })
   @IsString({
@@ -52,19 +51,18 @@ export class CreateReviewDto {
     message:
       '$property is too long, maximum length must be $constraint1, but actual is $value',
   })
-    title: string;
+  title: string;
 
   //review
   @ApiProperty({
-    description:
-      'Aqui se envia el url de la imagen a subir',
+    description: 'Aqui se envia el url de la imagen a subir',
     example: 'imagen.jpg',
   })
   @IsString({
     message: '$property debe ser un string',
   })
   @IsOptional()
-    image: string;
+  image: string;
 
   //rating
   @ApiProperty({
@@ -83,7 +81,7 @@ export class CreateReviewDto {
     message:
       'Hay un número limitado de valores permitidos para $property y $value no lo es',
   })
-    rating: Rating;
+  rating: Rating;
 
   //type
   @ApiProperty({
@@ -102,13 +100,13 @@ export class CreateReviewDto {
     message:
       'Hay un número limitado de valores permitidos para $property y $value no lo es',
   })
-    type: ReviewType;
+  type: ReviewType;
 
   //review
   @ApiProperty({
     description:
-      'Este es el id del tipo de entidad al que se lo relaciona',
-    example: 'orden_id, product_id',
+      'Este es el id del tipo de entidad al que se lo relaciona. Si es de tipo PRODUCT, puede ser el nombre del producto.',
+    example: 'orden_id, product_id o nombre del producto',
   })
   @IsString({
     message: '$property debe ser un string',
@@ -116,7 +114,7 @@ export class CreateReviewDto {
   @IsNotEmpty({
     message: '$property no debe estar vacío',
   })
-    typeId: string;
+  typeId: string;
 }
 
 export class CreateMockReviewDto {
@@ -140,12 +138,11 @@ export class CreateMockReviewDto {
     message:
       '$property is too long, maximum length must be $constraint1, but actual is $value',
   })
-    review: string;
+  review: string;
 
   //review
   @ApiProperty({
-    description:
-      'Este es el titulo de la reseña ',
+    description: 'Este es el titulo de la reseña ',
     example: 'Buenisima camiseta',
   })
   @IsString({
@@ -162,19 +159,18 @@ export class CreateMockReviewDto {
     message:
       '$property is too long, maximum length must be $constraint1, but actual is $value',
   })
-    title: string;
+  title: string;
 
   //review
   @ApiProperty({
-    description:
-      'Aqui se envia el url de la imagen a subir',
+    description: 'Aqui se envia el url de la imagen a subir',
     example: 'imagen.jpg',
   })
   @IsString({
     message: '$property debe ser un string',
   })
   @IsOptional()
-    image: string;
+  image: string;
 
   //rating
   @ApiProperty({
@@ -193,7 +189,7 @@ export class CreateMockReviewDto {
     message:
       'Hay un número limitado de valores permitidos para $property y $value no lo es',
   })
-    rating: Rating;
+  rating: Rating;
 
   //type
   @ApiProperty({
@@ -212,13 +208,13 @@ export class CreateMockReviewDto {
     message:
       'Hay un número limitado de valores permitidos para $property y $value no lo es',
   })
-    type: ReviewType;
+  type: ReviewType;
 
   //review
   @ApiProperty({
     description:
-      'Este es el id del tipo de entidad al que se lo relaciona',
-    example: 'orden_id, product_id',
+      'Este es el id del tipo de entidad al que se lo relaciona. Si es de tipo PRODUCT, puede ser el nombre del producto.',
+    example: 'orden_id, product_id o nombre del producto',
   })
   @IsString({
     message: '$property debe ser un string',
@@ -226,32 +222,31 @@ export class CreateMockReviewDto {
   @IsNotEmpty({
     message: '$property no debe estar vacío',
   })
-    typeId: string;
+  typeId: string;
 
   //review
   @ApiProperty({
-    description:
-      'Este es el id del tipo del usuario al que se lo relaciona',
+    description: 'Este es el id del tipo del usuario al que se lo relaciona',
   })
   @IsOptional()
   @IsString({
     message: '$property debe ser un string',
   })
-    userId?: string;
+  userId?: string;
 
   @IsString({
     message: '$property debe ser un string',
   })
-    firstName?: string;
+  firstName?: string;
 
   @IsString({
     message: '$property debe ser un string',
   })
-    lastName?: string;
+  lastName?: string;
 
   @IsOptional()
   @IsString({
     message: '$property debe ser un string',
   })
-    userImage?: string;
+  userImage?: string;
 }
