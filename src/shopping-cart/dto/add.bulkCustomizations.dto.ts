@@ -13,4 +13,6 @@ export class FrontCartStore {
   totalProduct: number;
 
   totalCustomization: number;
+
+  top: boolean;
 }

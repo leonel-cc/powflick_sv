@@ -6,12 +6,13 @@ import {
   Pants,
   sportsConfig,
   withOrWithoutShort,
-  PaymentMethods,
-  ShippingTypes,
-  SizeGuide,
+  // PaymentMethods,
+  // ShippingTypes,
+  // SizeGuide,
   Materials,
   SizeType,
   defaultImage,
+  Technique,
 } from './utils/detail.enum';
 import { Product } from './products/entity/products.entity';
 import { Review, ShowType } from './reviews/entity/reviews.entity';
@@ -43,12 +44,46 @@ export class AppService {
     try {
       const { neck, socks, shorts, pants } = sportsConfig[sport];
 
+      const categoryNames = product.categories || [];
+      const collectionNames = product.collections || [];
+      const tagNames = product.tags || [];
+
       const reviews = await Review.findAll({
-        where: { productId: product.id, isActive: true },
-        include: {
-          model: User,
-          attributes: ['firstName', 'lastName', 'email'],
-        },
+        where: { isActive: true },
+        include: [
+          {
+            model: User,
+            attributes: ['firstName', 'lastName', 'email'],
+          },
+          {
+            model: Product,
+            attributes: ['id', 'title', 'images', 'slug', 'URL'],
+            required: true,
+            include: [
+              {
+                model: Categories,
+                where: {
+                  name: { [Op.in]: categoryNames },
+                },
+                required: false,
+              },
+              {
+                model: Collection,
+                where: {
+                  title: { [Op.in]: collectionNames },
+                },
+                required: false,
+              },
+              {
+                model: Tags,
+                where: {
+                  name: { [Op.in]: tagNames },
+                },
+                required: false,
+              },
+            ],
+          },
+        ],
         attributes: [
           'id',
           'title',
@@ -63,6 +98,8 @@ export class AppService {
         ],
       });
 
+      console.log(reviews.length);
+
       return {
         product,
         sugestedProducts,
@@ -73,19 +110,23 @@ export class AppService {
         Socks: socks ? Socks : null,
         Shorts: shorts ? Shorts(sport) : !pants && !shorts ? withOrWithoutShort : null,
         Pants: pants ? Pants : null,
-        Materials: Materials[sport],
-        PaymentMethods,
-        ShippingTypes,
+        Materials: Materials,
+        Technique: Technique,
+        // PaymentMethods,
+        // ShippingTypes,
         Size: SizeType,
-        SizeGuide: SizeGuide[sport],
+        // SizeGuide: SizeGuide[sport],
       };
     } catch (error) {
+      console.log('error', error);
+
       throw new HttpException(
         'An error occurred while obtaining the detail validations',
         400,
       );
     }
   }
+
 
   async getLanding() {
     try {
@@ -134,8 +175,6 @@ export class AppService {
         password: null,
       });
 
-      const designYourGameSection = await this.designYourGameSection(16, ['Retro', 'Throwback Vibes', 'Tropical', 'Woman'], ['Soccer']);
-
       // // Obtener los últimos productos
       // const latestProducts = await this.getLatestProducts(3);
       // const bestWeekProducts = await this.getRandomProducts(3);
@@ -150,7 +189,6 @@ export class AppService {
             featuredProducts,
             mostSoldProducts,
             discountProducts,
-            designYourGameSection,
             // latestProducts,
             // bestWeekProducts,
             // popularProducts,
@@ -259,74 +297,11 @@ export class AppService {
     });
   }
 
-  private async designYourGameSection(
-    limit = 12,
-    selectedCollections: string[] = [],
-    selectedCategories: string[] = [],
-  ) {
-    const collectionFilter = selectedCollections.length
-      ? {
-        title: {
-          [Op.iLike]: { [Op.any]: selectedCollections.map((t) => t.toLowerCase()) },
-        },
-      }
-      : undefined;
-
-    const collections = await Collection.findAll({ where: collectionFilter });
-
-    // Base includes con posible filtro por categorías
-    const baseIncludes: any[] = [
-      {
-        model: Categories,
-        attributes: ['name'],
-        ...(selectedCategories.length && {
-          where: {
-            [Op.or]: selectedCategories.map((c) => ({
-              name: {
-                [Op.iLike]: `%${c.toLowerCase()}%`,
-              },
-            })),
-          },
-        }),
-      },
-      { model: Collection, attributes: ['title'] },
-      { model: Tags, attributes: ['name'] },
-    ];
-
-    const order: [string, 'ASC' | 'DESC'][] = [['score', 'ASC']];
-
-    const topPickProducts = await Product.findAll({
+  private async getLatestProducts(limit: number) {
+    const products = await Product.findAll({
+      order: [['createdAt', 'DESC']],
       limit,
-      include: baseIncludes,
-      order,
-      where: { featured: true, status: 'publish', password: null },
     });
-
-    const productsPerCollection = await Promise.all(
-      collections.map((collection) =>
-        Product.findAll({
-          include: [
-            ...baseIncludes,
-            {
-              model: Collection,
-              where: { id: collection.id },
-              attributes: [],
-            },
-          ],
-          where: { status: 'publish', password: null },
-          limit,
-          order,
-        }),
-      ),
-    );
-
-    return {
-      collections: ['Top Picks', ...collections.map((c) => c.title)],
-      allProducts: Array.from(
-        new Map(
-          [...topPickProducts, ...productsPerCollection.flat()].map((p) => [p.id, p]),
-        ).values(),
-      ),
-    };
+    return products;
   }
 }

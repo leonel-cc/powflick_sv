@@ -7,6 +7,7 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 import { User } from '../../users/entity/users.entity';
+import { Product } from 'src/products/entity/products.entity';
 
 export enum Rating {
   zero = '0',
@@ -97,8 +98,12 @@ export class Review extends Model {
   })
     orderId: string;
 
+  @ForeignKey(() => Product)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
   })
-    productId: string;
+    productId: string | null;
+
+  @BelongsTo(() => Product)
+    product: Product;
 }

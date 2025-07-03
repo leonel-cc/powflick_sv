@@ -16,126 +16,107 @@ export const sportsConfig = {
   Soccer: { neck: true, socks: true, shorts: true, pants: false },
 };
 
-export const Materials = {
-  Baseball: [
-    {
-      name: 'RDHL3138',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Baseball/RD%20HL3138/IMG_5140-9wcKuwPhkkAvdbXCW3krlVKkpRjD5j.jpg',
-    },
-    {
-      name: 'RDJQ5089 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Baseball/RD%20JQ5089/IMG_5560-C9qjmqPr1O84bx42lD3FVsuh3ZcnpU.jpg',
-    },
-  ],
-  Basketball: [
-    {
-      name: 'RDJQ3018',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Basketball/RD%20JQ3018/IMG_5244-t8hEdNGNGFP9MHIi4WEmUn1Gm9xJt3.jpg',
-    },
-    {
-      name: 'RDJQ3001 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Basketball/RD%20JQ3001/IMG_5131-RmGZI6UQy7xj65VEblS44FgcGHAJ37.jpg',
-    },
-    {
-      name: 'RDYX3024 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Basketball/RD%20YX3024/IMG_5217-X5GP8crncCAbKuzb6F0J82QyhnL6Bu.jpg',
-    },
-  ],
-  Gaming: [
-    {
-      name: 'RDCWT556',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Gaming/RD%20CWT-556/IMG_5533-OyYqJIr93LOT7wmWPK9yHskz12ge4A.jpg',
-    },
-    {
-      name: 'RDJQ3001 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Gaming/RD%20JQ3001/IMG_5131-8miSoqRbLim8cGaueRrrKnEchIO7DA.jpg',
-    },
-    {
-      name: 'RDJQ5089 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Gaming/RD%20JQ5089/IMG_5560-MgCly2uJda1CXxwqBYRdapZDmttUtc.jpg',
-    },
-  ],
-  Hockey: [
-    {
-      name: 'RDJQ3001',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Hockey/RD%20JQ3001/IMG_5131-Crsn6lR6vCSuLpCPtfCghWnGlKBYq2.jpg',
-    },
-    {
-      name: 'RDYX2034: (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Hockey/RD%20YX2034/IMG_5197-dAMFdO9hJFd6AH5QwziK3txaOO38Kb.jpg',
-    },
-    {
-      name: 'RD08HT: (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Hockey/RD%2008HT/IMG_5160-UXGB1MtQNP4DdgU62IRAzZNQ5bZM9A.jpg',
-    },
-  ],
-  Running: [
-    {
-      name: 'RDCWT556',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Running/RD%20CWT-556/IMG_5533-oJhLmJEoLtvMnHQXjN0zJvWWE7bOT7.jpg',
-    },
-    {
-      name: 'RDJQ3001 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Running/RD%20JQ3001/IMG_5131-VR2JXlRCQlRSODJMGUyyDplfLtF221.jpg',
-    },
-    {
-      name: 'RDJQ3018 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Running/RD%20JQ3018/IMG_5244-DsqZk1CyiZZsasPRT1ykU6NQpcVOPk.jpg',
-    },
-  ],
-  Soccer: [
-    {
-      name: 'RDCWT556',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Soccer/RD%20CWT-556/IMG_5533-SQI0rGILc2cEtE7hkCgSo9glH8di4r.jpg',
-    },
-    {
-      name: 'RDJQ3001 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Soccer/RD%20JQ3001/IMG_5131-LZMY4jw0ORE6DGavHwGGVXqIvfWRx2.jpg',
-    },
-    {
-      name: 'RDJQ5089 (+$2.99)',
-      image:
-        'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Soccer/RD%20JQ5089/IMG_5560-Vf9elkwytAjJzf28Qrbr84zZI6u5Po.jpg',
-    },
-  ],
-};
+export const Materials = [
+  {
+    name: 'LitePlay (+$0.00)',
+    image:
+      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Basketball/RD%20JQ3018/IMG_5244-t8hEdNGNGFP9MHIi4WEmUn1Gm9xJt3.jpg',
+  },
+  {
+    name: 'AeroDry (+$0.00)',
+    image:
+      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Basketball/RD%20JQ3001/IMG_5131-RmGZI6UQy7xj65VEblS44FgcGHAJ37.jpg',
+  },
+  {
+    name: 'ProMesh (+$2.99)',
+    image:
+      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Materials/Basketball/RD%20YX3024/IMG_5217-X5GP8crncCAbKuzb6F0J82QyhnL6Bu.jpg',
+    htmlString: `
+  <section style="max-width: 600px; margin: auto;">
+    <h2 style="font-size: 24px; font-weight: bold;">ProMesh™ Fabric</h2>
+    <p style="font-style: italic; margin-bottom: 16px;">Diseñada para el alto rendimiento</p>
+    <div style="margin-top: 20px;">
+      <h3 style="font-size: 16px; font-weight: bold;">Tecnología de Tejido Cerrado</h3>
+      <p style="margin-bottom: 12px;">Su estructura de punto fino mejora la retención de forma y proporciona una caída elegante sin comprometer la ventilación.</p>
+
+      <h3 style="font-size: 16px; font-weight: bold;">Transpirabilidad Inteligente</h3>
+      <p style="margin-bottom: 12px;">El diseño microperforado permite el paso del aire y reduce la acumulación de calor corporal, ideal para entrenamientos intensos o climas cálidos.</p>
+
+      <h3 style="font-size: 16px; font-weight: bold;">Control Avanzado de Humedad</h3>
+      <p style="margin-bottom: 12px;">La tecnología de absorción rápida expulsa el sudor más eficientemente que las telas de malla tradicionales, manteniéndote seco por más tiempo.</p>
+
+      <h3 style="font-size: 16px; font-weight: bold;">Flexible + Ligera</h3>
+      <p style="margin-bottom: 12px;">Alta elasticidad que se adapta al movimiento natural del cuerpo. ProMesh ofrece libertad sin perder estructura.</p>
+
+      <h3 style="font-size: 16px; font-weight: bold;">Ideal para Uniformes Profesionales</h3>
+      <p style="margin-bottom: 12px;">Una opción premium (+$2.99) pensada para jugadores que exigen rendimiento sin sacrificar confort.</p>
+    </div>
+    <div style="display: flex; margin-top: 10px;">
+      <img src="/assets/images/detail/materials.png" alt="icono 1" style="height: 50px; width: full;" />
+    </div>
+  </section>
+`,
+  },
+];
+
+export const Technique = [
+  {
+    name: 'Default Sublimated',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/technique/PARTES_BUILDER_TECHNIQU-DEFAULT-BFlPXX67lxxbdBdzXFwqZQcSdvMEu1.png',
+    description: 'Standard Logo Included',
+  },
+  {
+    name: 'Heat Press Technique',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/technique/PARTES_BUILDER_TECHNIQU-HEAT%20PRESS-8cCeZkjVG7wYJLwAWmXGF5zPm4rQOa.png',
+    description: 'Looking to add this premium detail? Talk to us',
+    link: 'https://powflick.com/contact',
+  },
+  {
+    name: 'Stitch Embroidery',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/technique/PARTES_BUILDER_TECHNIQU-38-x1QWPiNl8basCNuPmPY0hMY15SAs0H.png',
+    description: 'Looking to add this premium detail? Talk to us',
+    link: 'https://powflick.com/contact',
+  },
+  {
+    name: 'Embroidery Logo',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/technique/PARTES_BUILDER_TECHNIQU-Embroidery%20logo-39-pHTxdkDcEfTVTqR200B6m6qdarCF2F.png',
+    description: 'Looking to add this premium detail? Talk to us',
+    link: 'https://powflick.com/contact',
+  },
+  {
+    name: 'Heat Press Logo',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/technique/PARTES_BUILDER_TECHNIQU-Embroidery%20logo-40-aM203Cwp80MMKm4DbD52DuSraZRffA.png',
+    description: 'Looking to add this premium detail? Talk to us',
+    link: 'https://powflick.com/contact',
+  },
+];
+
 
 export const Neck = [
   {
-    name: 'Default',
+    name: 'Crew Neck (+$0.00)',
     image:
-      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Necks/1--kkpMVScGCp2BrAdMiiXTOZp5S1koPj.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/neck/PARTES_BUILDER_CREW%20NECK-8FzE2P9mmvNhEmaavKsr8KBxlF03W4.png',
   },
   {
-    name: 'Neck #2 (+$2.99)',
+    name: 'Classic V-Neck (+$0.00)',
     image:
-      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Necks/2--tMJwR61nrHgpwcKLydZ6do6lVTwScN.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/neck/PARTES_BUILDER_CLASSIC%20V%20NECK-Dp5L38Zu8reAZCz5zgub8UNEmfEJk7.png',
   },
   {
-    name: 'Neck #3 (+$2.99)',
+    name: 'V-Neck Sports Collar (+$2.99)',
     image:
-      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Necks/3--FpN2rq7TXxCop3ZcgPkKI5lkNn6Xjt.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/neck/PARTES_BUILDER_V-%20NECK%20SPORTS-ScxDbFA3mASGV2VKYxMa6uLq7XCfMu.png',
   },
   {
-    name: 'Neck #4 (+$2.99)',
+    name: 'Polo Collar (+$2.99)',
     image:
-      'https://5ogdqbzzrogmotoh.public.blob.vercel-storage.com/Necks/polo-itnuJjevoNNi1j9OMZxIa7DFSNRu4O.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/neck/PARTES_BUILDER_POLO%20COLLAR-tLqEXGDAnXmee28UkdqILYPJ5mIMjN.png',
   },
 ];
 
@@ -156,127 +137,127 @@ export const Socks = [
   {
     name: 'No Socks (+$0.00)',
     image:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/no-socks-1-1-Ys65K9k2mbFsXz5aZAtOg7mugZH3rk.png',
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-WHITOUT-6i7FaoPso5v7VmiFfPQM6oTMh1DmNT.png',
   },
   {
     name: 'Purple (+$8.00)',
-    hex: '#a00cf4',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PURPLE-fbmuuJq4NJ0VW09WCTyaVX9ti8fePc.png',
   },
   {
     name: 'Red (+$8.00)',
-    hex: '#ff4858',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-RED-DESqUaq00uYROUDxbTR1F2yii50f0N.png',
   },
   {
     name: 'White (+$8.00)',
-    hex: '#ffffff',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-WHITE-GUTXEzf62OSg2QIOxt4dz6DkgcHGp8.png',
   },
   {
     name: 'Yellow (+$8.00)',
-    hex: '#f0f404',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-YELLOW-DDeJ502i35H5EMUkNEXHps5fE62Ayj.png',
   },
   {
     name: 'Green (+$8.00)',
-    hex: '#50dc04',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-GREEN-lpkaU6GGgkDjhCrKdx8X9OPf7j2nSs.png',
   },
   {
     name: 'Orange (+$8.00)',
-    hex: '#f84404',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-ORANGE-M2VhFH4A71cCblVYyz3bvyQXRGcb2q.png',
   },
   {
     name: 'Pink (+$8.00)',
-    hex: '#ff8ccc',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PINK-8UJRolNiuw3uvOc17a2V1JntSZVWdi.png',
   },
   {
     name: 'Brown (+$8.00)',
-    hex: '#78543c',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BROWN-5rHLIFpl0i363dZGoqb533MqLEbEV4.png',
   },
   {
     name: 'Black (+$8.00)',
-    hex: '#080404',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLACK-caseSXJIEWHNAnkc9jz1YGSDdsFSMk.png',
   },
   {
     name: 'Blue (+$8.00)',
-    hex: '#40848c',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE-Abzf7QwY1zocysv5JaKdoFLa6NwW6a.png',
   },
   {
     name: 'Canary (+$8.00)',
-    hex: '#f3b562',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CANARY-NITHlebvSQGcdbenhJL3ADOyeHs3Fo.png',
   },
   {
     name: 'Persian Pink (+$8.00)',
-    hex: '#f2508b',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PERSIAN%20PINK-aOeuduwNgy2GKIoAgzafZLe6Av8SHL.png',
   },
   {
     name: 'Violet Eggplant (+$8.00)',
-    hex: '#812b8c',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-VIOLET%20EGGPLANT-rqKyoxVlCgGQNEueiJ90fGacGBVKG4.png',
   },
   {
     name: 'Blue Violet (+$8.00)',
-    hex: '#5c58c7',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE%20VIOLET-2j0nfIXfCoZhCubNVTWwaraHVbmROo.png',
   },
   {
     name: 'Shiraz (+$8.00)',
-    hex: '#a6035d',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-SHIRAZ-50L1SeBtvUcob6WLK1NC3bZoeTKfsL.png',
   },
   {
     name: 'Blue Navy (+$8.00)',
-    hex: '#004294',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE%20NAVY-2jiUAqCSaz2nT3xxykVSIPjyRRQTMB.png',
   },
   {
     name: 'Cosmic Green (+$8.00)',
-    hex: '#02735e',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-COSMIC%20GREEN-J69FtPVMOFeHFXHJu3SzJeMYaIDe2E.png',
   },
   {
     name: 'Mint (+$8.00)',
-    hex: '#8fc1b5',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MINT-Fuwzd9xK5xDiz7OsJ4Chl1tzgr2ZMA.png',
   },
   {
     name: 'Cyan (+$8.00)',
-    hex: '#04c4d9',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CYAN-hZf4t0gG6u3zg98LVzklF1oId4i7fV.png',
   },
   {
     name: 'Tomato Red (+$8.00)',
-    hex: '#d91a2a',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-TOMATO%20RED-CxQmJmWFaDsuHUmEFsolaGl54yif9u.png',
   },
   {
     name: 'Lila (+$8.00)',
-    hex: '#cb63ff',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-LILA-thetg2ckTW5pkNkcR7EVK9z3szLNIg.png',
   },
   {
     name: 'Yellow Summer (+$8.00)',
-    hex: '#f2d541',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-YELLOW%20SUMMER-TPRK4vdvAwkOUMhsdB0ZheTdY9pgxS.png',
   },
   {
     name: 'Orange Summer (+$8.00)',
-    hex: '#f29422',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-ORANGE%20SUMER-GLWc3nxnYJSpgrADqNy2AsdSz7LnYE.png',
   },
   {
     name: 'Sand (+$8.00)',
-    hex: '#d98162',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-SAND-iymYD6YaaI2lBNcu3h2KMMlD5wcjNi.png',
   },
   {
     name: 'Cappuccino (+$8.00)',
-    hex: '#a6774e',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CAPPUCCINO-Cb5ZfAkkwj2mhdspqG9ygNf27PW35v.png',
   },
   {
     name: 'Coffee (+$8.00)',
-    hex: '#593123',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-COFFE-94llcwfQSX95OFD3HKdu96NiramNtY.png',
   },
   {
     name: 'Volcano (+$8.00)',
-    hex: '#bf1e0f',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-VOLCANO-dE42vcaGbpzVyB66bQiK7JyGN9RZT9.png',
   },
   {
     name: 'Meat (+$8.00)',
-    hex: '#731d1d',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MEAT-QF9DqRSAFyyFDsOtt202h2NEbapQwK.png',
   },
   {
     name: 'Tutti Frutti (+$8.00)',
-    hex: '#f23e2e',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-TUTTI%20FRUTTI-bwcXcwdHkaalaNhVITVttnGesZG7ep.png',
   },
   {
     name: 'Military Green (+$8.00)',
-    hex: '#055902',
+    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MILITARY%20GREEN-rwfWFhOGIQeXgusYprRYlgNLUJQaRq.png',
   },
 ];
 
@@ -328,15 +309,15 @@ export const Shorts = (sport: string) => {
         'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
     });
   } else {
-    shorts.unshift({
-      name: 'No Shorts (-$13.99)',
-      image:
-        'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
-    });
+    // shorts.unshift({
+    //   name: 'No Shorts (-$13.99)',
+    //   image:
+    //     'https://ideasjersey.com/wp-content/uploads/2024/01/240_F_616809410_J9aoPiy5GhsZYPXzDr2Cd0BHVBO8Rwtf-1.jpg',
+    // });
 
     // Hacemos que los demás shorts sean gratis
     shorts.forEach((short, index) => {
-      if (index !== 0) short.name = short.name.replace('(+$13.99)', '(+$0.00)');
+      short.name = short.name.replace('(+$13.99)', '(+$0.00)');
     });
   }
 
@@ -376,53 +357,53 @@ export const withOrWithoutShort: string[] = [
   'without shorts (-$13.99)',
 ];
 
-export const SizeGuide = {
-  Baseball: {
-    image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_baseball-amWwj6TsJvognNiUpeLcGGEUN6WRz5.png',
-    image2:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASEBALL-1-R85THakU9b5GZbdcbNj0283iqCAd1e.png',
-  },
-  Basketball: {
-    image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_basket-JGzaJlfO7d5CH2bIVaZtNZhNIK31Y9.png',
-    image2:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASKETBALL-LIdxmMQkUA8QRxeDj9MIGqMhvKbMAQ.png',
-  },
-  Gaming: {
-    image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_gaming-bLMjCx1yAjEquqOw9nDFOIDlOrUpEl.png',
-    image2:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/GAMING-1-l24CGsU52Ha2xo4IUClFSg8nQv41sp.png',
-  },
-  Hockey: {
-    image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_hockey-KrlLYrN21Ba1eRSA0Y0IIoNMqcfNhb.png',
-    image2:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/HOCKEY-1-RUfKzLyTX6Z3pctahd86BFZIjJdY7i.png',
-  },
-  Running: {
-    image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_running-0GqXzEvIVjoBzOSuGLK3tsTNxD766J.png',
-    image2:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/RUNNING-1-xSgD44ffjP3PzIMdqaKPYvZs1tvu33.png',
-  },
-  Soccer: {
-    image1:
-      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new-o3cXUQE9nYWS0sOOGBufyepIVbUvCe.jpg',
-    // 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
-    image2:
-      ' https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new2-wYXth7miZkonIRtEUepJjtsZA495rd.jpg',
-    //   'https://app.ideasjersey.com/wp-content/uploads/2023/12/Y0mQi1nnIGwqOLu8SKrGBaRafpjlO7FQJ8mgcdsPZek.png',
-  },
-};
+// export const SizeGuide = {
+//   Baseball: {
+//     image1:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_baseball-amWwj6TsJvognNiUpeLcGGEUN6WRz5.png',
+//     image2:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASEBALL-1-R85THakU9b5GZbdcbNj0283iqCAd1e.png',
+//   },
+//   Basketball: {
+//     image1:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_basket-JGzaJlfO7d5CH2bIVaZtNZhNIK31Y9.png',
+//     image2:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/BASKETBALL-LIdxmMQkUA8QRxeDj9MIGqMhvKbMAQ.png',
+//   },
+//   Gaming: {
+//     image1:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_gaming-bLMjCx1yAjEquqOw9nDFOIDlOrUpEl.png',
+//     image2:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/GAMING-1-l24CGsU52Ha2xo4IUClFSg8nQv41sp.png',
+//   },
+//   Hockey: {
+//     image1:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_hockey-KrlLYrN21Ba1eRSA0Y0IIoNMqcfNhb.png',
+//     image2:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/HOCKEY-1-RUfKzLyTX6Z3pctahd86BFZIjJdY7i.png',
+//   },
+//   Running: {
+//     image1:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_running-0GqXzEvIVjoBzOSuGLK3tsTNxD766J.png',
+//     image2:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/RUNNING-1-xSgD44ffjP3PzIMdqaKPYvZs1tvu33.png',
+//   },
+//   Soccer: {
+//     image1:
+//       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new-o3cXUQE9nYWS0sOOGBufyepIVbUvCe.jpg',
+//     // 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/tablas-pulgadas_soccer-dRn3USySocJUa5Qm4k0WNepXKmobUd.png',
+//     image2:
+//       ' https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/table-soccer-new2-wYXth7miZkonIRtEUepJjtsZA495rd.jpg',
+//     //   'https://app.ideasjersey.com/wp-content/uploads/2023/12/Y0mQi1nnIGwqOLu8SKrGBaRafpjlO7FQJ8mgcdsPZek.png',
+//   },
+// };
 
-export const ShippingTypes =
-  'We take pride in creating all of our custom uniforms to order within 15 business days in China. Once your order has been shipped, our team will provide you with a tracking number. Since each uniform is made specifically for you, we cannot accept returns or exchanges.';
+// export const ShippingTypes =
+//   'We take pride in creating all of our custom uniforms to order within 15 business days in China. Once your order has been shipped, our team will provide you with a tracking number. Since each uniform is made specifically for you, we cannot accept returns or exchanges.';
 
-export const PaymentMethods = {
-  text: "Secure payments worldwide. You can trust us with your credit card, whether you're in the USA or abroad.",
-};
+// export const PaymentMethods = {
+//   text: "Secure payments worldwide. You can trust us with your credit card, whether you're in the USA or abroad.",
+// };
 
 export const SizeType = [
   'XS-MEN',

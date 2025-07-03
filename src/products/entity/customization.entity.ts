@@ -16,6 +16,7 @@ import {
   SizeType,
   SleeveType,
   SocksType,
+  TechniqueType,
 } from '../enum/customization.enum';
 
 @Table({
@@ -148,7 +149,14 @@ export class Customization extends Model {
     type: DataType.STRING,
     defaultValue: MaterialsType.None,
   })
+
   materials: MaterialsType;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: TechniqueType.Default,
+  })
+  technique: TechniqueType;
 
   @Column({
     type: DataType.STRING,
