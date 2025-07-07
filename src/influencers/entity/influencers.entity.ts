@@ -1,0 +1,43 @@
+// src/models/influencer.model.ts
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  AllowNull,
+  HasMany,
+} from 'sequelize-typescript';
+import { Product } from '../../products/entity/products.entity';
+
+@Table({ tableName: 'Influencers', timestamps: true })
+export class Influencer extends Model<Influencer> {
+  @Column({
+    type: DataType.STRING,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+    primaryKey: true,
+    unique: true,
+  })
+    id: string;
+
+  @AllowNull(false)
+  @Column(DataType.STRING)
+    name: string;
+
+  @Column(DataType.STRING)
+    label: string;
+
+  @Column(DataType.STRING)
+    logo: string;
+
+  @Column(DataType.STRING)
+    banner: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+    email: string;
+
+  @HasMany(() => Product)
+    products: Product[];
+}

@@ -38,6 +38,7 @@ import { LLPService } from './payments/LLP.service';
 import { FreeDesignModule } from './free-design/free-design.module';
 import { PaypalService } from './payments/paypal.service';
 import { PaypalController } from './payments/paypal.controller';
+import { InfluencersModule } from './influencers/influencers.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { PaypalController } from './payments/paypal.controller';
     }),
     TagsModule,
     FreeDesignModule,
+    InfluencersModule,
   ],
   controllers: [
     AppController,

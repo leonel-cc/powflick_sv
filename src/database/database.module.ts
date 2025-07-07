@@ -20,7 +20,8 @@ import { CollectionProduct } from '../collections/entity/collectionProduct.entit
 import { Conversation } from '../messages/entity/conversationMessage';
 import { Tags } from '../tags/entity/tags.entity';
 import { ProductTags } from '../tags/entity/productTags.entity';
-import { FreeDesign } from 'src/free-design/entity/free-design.entity';
+import { FreeDesign } from '../free-design/entity/free-design.entity';
+import { Influencer } from '../influencers/entity/influencers.entity';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { FreeDesign } from 'src/free-design/entity/free-design.entity';
         Tags,
         ProductTags,
         FreeDesign,
+        Influencer,
       ],
       ssl: true,
       dialectOptions: {
