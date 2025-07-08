@@ -75,7 +75,8 @@ export class ReviewsService {
 
     // crear falso usuario
     const { firstName, lastName } = createReviewDto;
-    const email = firstName + lastName + createReviewDto.title[0] + '@mock.com';
+    const randomSuffix = Math.floor(Math.random() * 1000000); // 6 dígitos aleatorios
+    const email = `${firstName}${lastName}${createReviewDto.title[0]}${randomSuffix}@mock.com`;
     const phone = '+111111111';
     const userImage = createReviewDto.userImage;
     try {
