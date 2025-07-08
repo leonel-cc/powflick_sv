@@ -24,8 +24,17 @@ export class Influencer extends Model<Influencer> {
   @Column(DataType.STRING)
     name: string;
 
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.STRING,
+    unique: true, // <- esto lo hace único en la base de datos
+  })
     label: string;
+
+  @Column(DataType.STRING)
+    title: string;
+
+  @Column(DataType.TEXT)
+    description: string;
 
   @Column(DataType.STRING)
     logo: string;

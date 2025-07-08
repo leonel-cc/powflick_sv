@@ -28,6 +28,11 @@ export class InfluencerController {
     return this.influencerService.getAllInfluencers();
   }
 
+  @Get('/store/:influencerLabel')
+  GetInfluencerStore(@Param('influencerLabel') label: string) {
+    return this.influencerService.getInfluencerStore(label);
+  }
+
   @Get('/admin/get')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Rol.admin)

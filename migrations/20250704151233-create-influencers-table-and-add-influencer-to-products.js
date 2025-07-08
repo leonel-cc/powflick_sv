@@ -14,7 +14,14 @@ module.exports = {
         type: Sequelize.STRING,
       },
       label: {
+        unique: true, // <- esta línea garantiza unicidad
         type: Sequelize.STRING,
+      },
+      title: {
+        type: Sequelize.STRING,
+      },
+      description: {
+        type: Sequelize.TEXT,
       },
       logo: {
         type: Sequelize.STRING,

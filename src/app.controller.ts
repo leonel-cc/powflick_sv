@@ -37,6 +37,7 @@ export class AppController {
         sports: product.sports,
         status: StateProduct.Active,
         password: null, // Asegura que no se filtren productos con contraseña
+        influencer_id: null,
         images: {
           [Op.ne]: null, // Filtra los productos donde 'images' no es un string vacío
         },
@@ -52,6 +53,7 @@ export class AppController {
         sports: product.sports, // Relacionado con el mismo deporte
         status: StateProduct.Active,
         password: null, // Asegura que no se filtren productos con contraseña
+        influencer_id: null,
         id: {
           [Op.notIn]: sugestedProductIds, // Excluir productos ya sugeridos
         },
