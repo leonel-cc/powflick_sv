@@ -1,5 +1,5 @@
 // pdf.service.ts
-import PDFDocument from 'pdfkit';
+import PDFDocument = require('pdfkit');
 import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import {
@@ -44,13 +44,19 @@ export class PdfService {
         const antonPath = path.join(fontsPath, 'Anton/Anton-Regular.ttf');
         doc.registerFont('Anton', antonPath);
 
-        const rasiolinePath = path.join(fontsPath, 'Rasioline/DD rasioline.otf');
+        const rasiolinePath = path.join(
+          fontsPath,
+          'Rasioline/DD rasioline.otf',
+        );
         doc.registerFont('Rasioline', rasiolinePath);
 
         const spotlightPath = path.join(fontsPath, 'Spot Light/Spot Light.otf');
         doc.registerFont('Spot Light', spotlightPath);
 
-        const uniNorthPath = path.join(fontsPath, 'Uni North/UNINorth-College.otf');
+        const uniNorthPath = path.join(
+          fontsPath,
+          'Uni North/UNINorth-College.otf',
+        );
         doc.registerFont('Uni North', uniNorthPath);
 
         const tnrPath = path.join(fontsPath, 'Times New Roman/TNR.ttf');
@@ -74,37 +80,64 @@ export class PdfService {
         const festPath = path.join(fontsPath, 'FEST/Fest235 fs.otf');
         doc.registerFont('Fest', festPath);
 
-        const blackBassPath = path.join(fontsPath, 'BLACK BASS DEMO/Black Bass Demo.otf');
+        const blackBassPath = path.join(
+          fontsPath,
+          'BLACK BASS DEMO/Black Bass Demo.otf',
+        );
         doc.registerFont('Black Bass Demo', blackBassPath);
 
         const dirgaHayuPath = path.join(fontsPath, 'DIRGA HAYU/dDirgahayu.ttf');
         doc.registerFont('Dirga Hayu', dirgaHayuPath);
 
-        const restaurantMenuBookPath = path.join(fontsPath, 'RESTAURANT MENU BOOK/RestaurantMenuBook.ttf');
+        const restaurantMenuBookPath = path.join(
+          fontsPath,
+          'RESTAURANT MENU BOOK/RestaurantMenuBook.ttf',
+        );
         doc.registerFont('Restaurant Menu Book', restaurantMenuBookPath);
 
         const hattenPath = path.join(fontsPath, 'HATTEN/HATTEN.ttf');
         doc.registerFont('Hatten', hattenPath);
 
-        const ncaaPath = path.join(fontsPath, 'NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf');
+        const ncaaPath = path.join(
+          fontsPath,
+          'NCAA OREGON DUCKS AUTZEN/NCAA Oregon Ducks Autzen.ttf',
+        );
         doc.registerFont('NCAA Oregon Ducks Autzen', ncaaPath);
 
-        const qatarPath = path.join(fontsPath, 'QATAR PERSONAL USE/QatarPersonalUse.ttf');
+        const qatarPath = path.join(
+          fontsPath,
+          'QATAR PERSONAL USE/QatarPersonalUse.ttf',
+        );
         doc.registerFont('Qatar Personal Use', qatarPath);
 
-        const realMadridPath = path.join(fontsPath, 'REAL MADRID/RealMadrid.ttf');
+        const realMadridPath = path.join(
+          fontsPath,
+          'REAL MADRID/RealMadrid.ttf',
+        );
         doc.registerFont('Real Madrid', realMadridPath);
 
-        const quantumRangersPath = path.join(fontsPath, 'QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf');
+        const quantumRangersPath = path.join(
+          fontsPath,
+          'QUANTUM RANGERS PERSONAL/QuantumRangersPersonal.ttf',
+        );
         doc.registerFont('Quantum Rangers Personal', quantumRangersPath);
 
-        const bostonCapsPath = path.join(fontsPath, 'BOSTON CAPS/BOSTON CAPS.ttf');
+        const bostonCapsPath = path.join(
+          fontsPath,
+          'BOSTON CAPS/BOSTON CAPS.ttf',
+        );
         doc.registerFont('Boston Caps', bostonCapsPath);
 
-        const chineseRocksPath = path.join(fontsPath, 'CHINESE ROCKS/chinese rocks.ttf');
+        const chineseRocksPath = path.join(
+          fontsPath,
+          'CHINESE ROCKS/chinese rocks.ttf',
+        );
         doc.registerFont('Chinese Rocks', chineseRocksPath);
 
-        const maduraUnitedPath = path.join(fontsPath, 'MADURA UNITED FC/Madura United FC.otf');
+        const maduraUnitedPath = path.join(
+          fontsPath,
+          'MADURA UNITED FC/Madura United FC.otf',
+        );
         doc.registerFont('Madura United FC', maduraUnitedPath);
 
         const overgridPath = path.join(fontsPath, 'OVERGRID/OVERGRID.ttf');
@@ -113,7 +146,10 @@ export class PdfService {
         const slovakiaPath = path.join(fontsPath, 'SLOVAKIA/Slovakia.ttf');
         doc.registerFont('Slovakia', slovakiaPath);
 
-        const crawfordPath = path.join(fontsPath, 'Crawford Line/Crawford line.ttf');
+        const crawfordPath = path.join(
+          fontsPath,
+          'Crawford Line/Crawford line.ttf',
+        );
         doc.registerFont('Crawford Line', crawfordPath);
 
         // Manejadores de eventos para completar y manejar errores
