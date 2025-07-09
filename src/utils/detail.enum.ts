@@ -64,7 +64,8 @@ export const Technique = [
     name: 'Default Sublimated',
     image:
       'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/technique/PARTES_BUILDER_TECHNIQU-DEFAULT-BFlPXX67lxxbdBdzXFwqZQcSdvMEu1.png',
-    description: 'Standard Logo Included',
+    description: 'Looking to add this premium detail? Talk to us',
+    link: 'https://powflick.com/contact',
   },
   {
     name: 'Heat Press Technique',
@@ -95,7 +96,6 @@ export const Technique = [
     link: 'https://powflick.com/contact',
   },
 ];
-
 
 export const Neck = [
   {
@@ -141,123 +141,153 @@ export const Socks = [
   },
   {
     name: 'Purple (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PURPLE-fbmuuJq4NJ0VW09WCTyaVX9ti8fePc.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PURPLE-fbmuuJq4NJ0VW09WCTyaVX9ti8fePc.png',
   },
   {
     name: 'Red (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-RED-DESqUaq00uYROUDxbTR1F2yii50f0N.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-RED-DESqUaq00uYROUDxbTR1F2yii50f0N.png',
   },
   {
     name: 'White (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-WHITE-GUTXEzf62OSg2QIOxt4dz6DkgcHGp8.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-WHITE-GUTXEzf62OSg2QIOxt4dz6DkgcHGp8.png',
   },
   {
     name: 'Yellow (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-YELLOW-DDeJ502i35H5EMUkNEXHps5fE62Ayj.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-YELLOW-DDeJ502i35H5EMUkNEXHps5fE62Ayj.png',
   },
   {
     name: 'Green (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-GREEN-lpkaU6GGgkDjhCrKdx8X9OPf7j2nSs.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-GREEN-lpkaU6GGgkDjhCrKdx8X9OPf7j2nSs.png',
   },
   {
     name: 'Orange (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-ORANGE-M2VhFH4A71cCblVYyz3bvyQXRGcb2q.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-ORANGE-M2VhFH4A71cCblVYyz3bvyQXRGcb2q.png',
   },
   {
     name: 'Pink (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PINK-8UJRolNiuw3uvOc17a2V1JntSZVWdi.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PINK-8UJRolNiuw3uvOc17a2V1JntSZVWdi.png',
   },
   {
     name: 'Brown (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BROWN-5rHLIFpl0i363dZGoqb533MqLEbEV4.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BROWN-5rHLIFpl0i363dZGoqb533MqLEbEV4.png',
   },
   {
     name: 'Black (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLACK-caseSXJIEWHNAnkc9jz1YGSDdsFSMk.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLACK-caseSXJIEWHNAnkc9jz1YGSDdsFSMk.png',
   },
   {
     name: 'Blue (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE-Abzf7QwY1zocysv5JaKdoFLa6NwW6a.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE-Abzf7QwY1zocysv5JaKdoFLa6NwW6a.png',
   },
   {
     name: 'Canary (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CANARY-NITHlebvSQGcdbenhJL3ADOyeHs3Fo.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CANARY-NITHlebvSQGcdbenhJL3ADOyeHs3Fo.png',
   },
   {
     name: 'Persian Pink (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PERSIAN%20PINK-aOeuduwNgy2GKIoAgzafZLe6Av8SHL.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-PERSIAN%20PINK-aOeuduwNgy2GKIoAgzafZLe6Av8SHL.png',
   },
   {
     name: 'Violet Eggplant (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-VIOLET%20EGGPLANT-rqKyoxVlCgGQNEueiJ90fGacGBVKG4.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-VIOLET%20EGGPLANT-rqKyoxVlCgGQNEueiJ90fGacGBVKG4.png',
   },
   {
     name: 'Blue Violet (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE%20VIOLET-2j0nfIXfCoZhCubNVTWwaraHVbmROo.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE%20VIOLET-2j0nfIXfCoZhCubNVTWwaraHVbmROo.png',
   },
   {
     name: 'Shiraz (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-SHIRAZ-50L1SeBtvUcob6WLK1NC3bZoeTKfsL.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-SHIRAZ-50L1SeBtvUcob6WLK1NC3bZoeTKfsL.png',
   },
   {
     name: 'Blue Navy (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE%20NAVY-2jiUAqCSaz2nT3xxykVSIPjyRRQTMB.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-BLUE%20NAVY-2jiUAqCSaz2nT3xxykVSIPjyRRQTMB.png',
   },
   {
     name: 'Cosmic Green (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-COSMIC%20GREEN-J69FtPVMOFeHFXHJu3SzJeMYaIDe2E.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-COSMIC%20GREEN-J69FtPVMOFeHFXHJu3SzJeMYaIDe2E.png',
   },
   {
     name: 'Mint (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MINT-Fuwzd9xK5xDiz7OsJ4Chl1tzgr2ZMA.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MINT-Fuwzd9xK5xDiz7OsJ4Chl1tzgr2ZMA.png',
   },
   {
     name: 'Cyan (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CYAN-hZf4t0gG6u3zg98LVzklF1oId4i7fV.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CYAN-hZf4t0gG6u3zg98LVzklF1oId4i7fV.png',
   },
   {
     name: 'Tomato Red (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-TOMATO%20RED-CxQmJmWFaDsuHUmEFsolaGl54yif9u.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-TOMATO%20RED-CxQmJmWFaDsuHUmEFsolaGl54yif9u.png',
   },
   {
     name: 'Lila (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-LILA-thetg2ckTW5pkNkcR7EVK9z3szLNIg.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-LILA-thetg2ckTW5pkNkcR7EVK9z3szLNIg.png',
   },
   {
     name: 'Yellow Summer (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-YELLOW%20SUMMER-TPRK4vdvAwkOUMhsdB0ZheTdY9pgxS.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-YELLOW%20SUMMER-TPRK4vdvAwkOUMhsdB0ZheTdY9pgxS.png',
   },
   {
     name: 'Orange Summer (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-ORANGE%20SUMER-GLWc3nxnYJSpgrADqNy2AsdSz7LnYE.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-ORANGE%20SUMER-GLWc3nxnYJSpgrADqNy2AsdSz7LnYE.png',
   },
   {
     name: 'Sand (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-SAND-iymYD6YaaI2lBNcu3h2KMMlD5wcjNi.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-SAND-iymYD6YaaI2lBNcu3h2KMMlD5wcjNi.png',
   },
   {
     name: 'Cappuccino (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CAPPUCCINO-Cb5ZfAkkwj2mhdspqG9ygNf27PW35v.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-CAPPUCCINO-Cb5ZfAkkwj2mhdspqG9ygNf27PW35v.png',
   },
   {
     name: 'Coffee (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-COFFE-94llcwfQSX95OFD3HKdu96NiramNtY.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-COFFE-94llcwfQSX95OFD3HKdu96NiramNtY.png',
   },
   {
     name: 'Volcano (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-VOLCANO-dE42vcaGbpzVyB66bQiK7JyGN9RZT9.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-VOLCANO-dE42vcaGbpzVyB66bQiK7JyGN9RZT9.png',
   },
   {
     name: 'Meat (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MEAT-QF9DqRSAFyyFDsOtt202h2NEbapQwK.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MEAT-QF9DqRSAFyyFDsOtt202h2NEbapQwK.png',
   },
   {
     name: 'Tutti Frutti (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-TUTTI%20FRUTTI-bwcXcwdHkaalaNhVITVttnGesZG7ep.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-TUTTI%20FRUTTI-bwcXcwdHkaalaNhVITVttnGesZG7ep.png',
   },
   {
     name: 'Military Green (+$8.00)',
-    image: 'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MILITARY%20GREEN-rwfWFhOGIQeXgusYprRYlgNLUJQaRq.png',
+    image:
+      'https://sbvajd9r07chtxp5.public.blob.vercel-storage.com/Images-Detail/socks/PARTES_BUILDER_SOCKS-MILITARY%20GREEN-rwfWFhOGIQeXgusYprRYlgNLUJQaRq.png',
   },
 ];
 
