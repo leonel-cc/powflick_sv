@@ -11,7 +11,7 @@ import {
   LLP_MERCHANT_NUMBER,
   LLP_SECONDARY_MERCHANT_NUMBER,
 } from '../config/enviroments';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { CreateLlpPaymentDto } from './dto/create-llp-payment.dto';
 import { Transaction } from 'sequelize';
 import { CouponUser } from 'src/coupon/entities/coupon-user.entity';

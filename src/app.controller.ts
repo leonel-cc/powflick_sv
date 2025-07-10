@@ -84,10 +84,10 @@ export class AppController {
     const cacheKey = 'landing';
     const cachedData = await this.cacheManager.get(cacheKey);
 
-    if (cachedData) {
-      res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
-      return res.status(200).json(cachedData);
-    }
+    // if (cachedData) {
+    //   res.setHeader('X-Cache-Status', 'HIT'); // Indica que proviene del caché
+    //   return res.status(200).json(cachedData);
+    // }
 
     const data = await this.appService.getLanding();
 

@@ -1264,27 +1264,46 @@ export class OrdersService {
             }
           }
 
-          lineitems.push({
-            product_id: product.id,
-            name: product.title,
-            // Cambia aquí: suma el precio base + customización
-            price: Number(
-              this.currencyService.convertCurrency(
-                Number(product.price) + Number(customization.price),
-                currency.value,
-              ),
-            ),
-            description: description
-              .replace(/[^a-zA-Z0-9\s,:]/g, '') // Elimina caracteres especiales
-              .slice(0, 128), // Limita la longitud a 128 caracteres
-            category: 'custom jersey',
-            sku: product.id,
-            url:
-              product.images[0] ||
-              'https://www.powflick.com/products/' + product.id, // Actualización aquí
-            quantity: 1,
-            shipping_provider: 'other',
-          });
+          const existingItemIndex = lineitems.findIndex(
+            (item) => item.product_id === product.id,
+          );
+
+          const rawPrice =
+            Number(product.price) + Number(customization.price);
+
+          const converted = this.currencyService.convertCurrency(
+            rawPrice,
+            currency.value,
+          );
+
+          const itemPrice = Math.round(Number(converted) * 100) / 100;
+
+          console.log(itemPrice, product.id);
+          
+          if (existingItemIndex !== -1) {
+            // lineitems[existingItemIndex].quantity += 1;
+            lineitems[existingItemIndex].price =
+              Math.round(
+                (lineitems[existingItemIndex].price + itemPrice) * 100,
+              ) / 100;
+            lineitems[existingItemIndex].description += '';
+          } else {
+            lineitems.push({
+              product_id: product.id,
+              name: product.title,
+              price: itemPrice,
+              description: description
+                .replace(/[^a-zA-Z0-9\s,:]/g, '')
+                .slice(0, 128),
+              category: 'custom jersey',
+              sku: product.id,
+              url:
+                product.images[0] ||
+                'https://www.powflick.com/products/' + product.id,
+              quantity: 1,
+              shipping_provider: 'other',
+            });
+          }
 
           const customWithDesignName = {
             ...customization,
