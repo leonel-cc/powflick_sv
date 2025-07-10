@@ -103,7 +103,7 @@ export class InfluencerService {
       const deleted = await Influencer.destroy({ where: { id } });
       if (!deleted) throw new HttpException('Influencer not found', 404);
 
-      return { message: 'Influencer deleted and products desvinculated' };
+      return { message: 'Influencer deleted and products unlinked' };
     } catch (error) {
       throw new HttpException('Error deleting influencer', 500);
     }
@@ -152,18 +152,21 @@ export class InfluencerService {
         include: [Product],
       });
 
-      const influencers = await Influencer.findAll({
-        attributes: ['label'],
-        where: {
-          label: {
-            [Op.ne]: label, // label !== X
-          },
-        },
-      });
+      // const influencers = await Influencer.findAll({
+      //   attributes: ['label'],
+      //   where: {
+      //     label: {
+      //       [Op.ne]: label, // label !== X
+      //     },
+      //   },
+      // });
 
       if (!influencer) throw new NotFoundException('Influencer not found');
 
-      return { influencer, influencersLabel: influencers.map((i) => i.label) };
+      return {
+        influencer,
+        // influencersLabel: influencers.map((i) => i.label)
+      };
     } catch (error) {
       console.log(error.message);
       throw new HttpException('Error getting influencers', 500);
