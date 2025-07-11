@@ -47,6 +47,17 @@ export class Influencer extends Model<Influencer> {
   })
     email: string;
 
+  @Column(DataType.STRING)
+    profileImage: string;
+
+  @Column(DataType.JSON)
+    socialMedia: {
+    [key: string]: {
+      label?: string;
+      url?: string;
+    }
+  };
+
   @HasMany(() => Product)
     products: Product[];
 }

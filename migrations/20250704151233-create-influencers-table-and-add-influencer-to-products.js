@@ -29,6 +29,12 @@ module.exports = {
       banner: {
         type: Sequelize.STRING,
       },
+      profileImage: {
+        type: Sequelize.STRING, // Nueva columna para la imagen de perfil
+      },
+      socialMedia: {
+        type: Sequelize.JSON, // Nueva columna para redes sociales
+      },
       email: {
         type: Sequelize.STRING,
         unique: true,
