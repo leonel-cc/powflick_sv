@@ -64,7 +64,7 @@ export class InfluencerService {
   async getAllInfluencers() {
     try {
       return await Influencer.findAll({
-        include: { model: Product, through: { attributes: [] } },
+        include: { model: Product },
       });
     } catch (error) {
       throw new HttpException('Error fetching influencers', 500);
@@ -98,7 +98,10 @@ export class InfluencerService {
 
   async deleteInfluencer(id: string) {
     try {
-      await Product.update({ influencer_id: null }, { where: { influencer_id: id } });
+      await Product.update(
+        { influencer_id: null },
+        { where: { influencer_id: id } },
+      );
 
       const deleted = await Influencer.destroy({ where: { id } });
       if (!deleted) throw new HttpException('Influencer not found', 404);
@@ -146,7 +149,6 @@ export class InfluencerService {
 
   async getInfluencerStore(label: string) {
     try {
-
       const influencer = await Influencer.findOne({
         where: { label },
         include: [Product],
@@ -172,5 +174,4 @@ export class InfluencerService {
       throw new HttpException('Error getting influencers', 500);
     }
   }
-
 }
