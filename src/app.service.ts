@@ -161,18 +161,21 @@ export class AppService {
         featured: true,
         status: 'publish',
         password: null,
+        influencer_id: null,
       });
 
       const mostSoldProducts = await this.getProductsByCondition({
         mostSold: true,
         status: 'publish',
         password: null,
+        influencer_id: null,
       });
 
       const discountProducts = await this.getProductsByCondition({
         discount: { [Op.gt]: 0 },
         status: 'publish',
         password: null,
+        influencer_id: null,
       });
 
       const designYourGameSection = await this.designYourGameSection(16, ['Retro', 'Throwback Vibes', 'Tropical', 'Woman'], ['Soccer']);
