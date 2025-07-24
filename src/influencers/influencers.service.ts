@@ -64,7 +64,7 @@ export class InfluencerService {
   async getAllInfluencers() {
     try {
       return await Influencer.findAll({
-        include: { model: Product, through: { attributes: [] } },
+        include: { model: Product },
       });
     } catch (error) {
       throw new HttpException('Error fetching influencers', 500);
