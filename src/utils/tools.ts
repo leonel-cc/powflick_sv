@@ -160,72 +160,72 @@ export const getTotalWithDiscount = (basePrice: number, quantity: number, top: b
   return +(unitPrice * quantity).toFixed(2);
 };
 
-export const getUnitPriceWithDiscount = (basePrice: number, quantity: number, top: boolean, applyDiscount = true,): number => {
-    if (!applyDiscount) return basePrice;
+export const getUnitPriceWithDiscount = (basePrice: number, quantity: number, top: boolean, applyDiscount = true): number => {
+  if (!applyDiscount) return basePrice;
 
-    let tier: Tier;
+  let tier: Tier;
 
-    if (quantity >= 250) tier = '250+';
-    else if (quantity >= 101) tier = '101>250';
-    else if (quantity >= 51) tier = '51>100';
-    else if (quantity >= 21) tier = '21>50';
-    else tier = '10>20';
+  if (quantity >= 250) tier = '250+';
+  else if (quantity >= 101) tier = '101>250';
+  else if (quantity >= 51) tier = '51>100';
+  else if (quantity >= 21) tier = '21>50';
+  else tier = '10>20';
 
-    const tieredPrices = getTieredPrices(basePrice, top ? topDiscounts : uniformDiscounts);
-    return tieredPrices[tier];
-  };
+  const tieredPrices = getTieredPrices(basePrice, top ? topDiscounts : uniformDiscounts);
+  return tieredPrices[tier];
+};
 
-  export function isWebP(buffer: Buffer): boolean {
-    // La firma única de un archivo WebP comienza con 'RIFF' seguido de 'WEBP'
-    const webpSignature = ['52', '49', '46', '46'];
+export function isWebP(buffer: Buffer): boolean {
+  // La firma única de un archivo WebP comienza con 'RIFF' seguido de 'WEBP'
+  const webpSignature = ['52', '49', '46', '46'];
 
-    // Comparar los primeros bytes del buffer con la firma de WebP
-    for (let i = 0; i < webpSignature.length; i++) {
-      // Convertir la firma hexadecimal a decimal
-      const signatureByte = parseInt(webpSignature[i], 16);
+  // Comparar los primeros bytes del buffer con la firma de WebP
+  for (let i = 0; i < webpSignature.length; i++) {
+    // Convertir la firma hexadecimal a decimal
+    const signatureByte = parseInt(webpSignature[i], 16);
 
-      // Verificar si los bytes coinciden
-      if (buffer[i] !== signatureByte) {
-        return false; // No es WebP
-      }
+    // Verificar si los bytes coinciden
+    if (buffer[i] !== signatureByte) {
+      return false; // No es WebP
     }
-
-    return true; // Es WebP
   }
 
-  export function removeFirstRepeatedWord(title: string): string {
-    // Dividir el título en palabras individuales
-    const words = title.trim().split(' ');
+  return true; // Es WebP
+}
 
-    // Obtener la primera palabra
-    const firstWord = words[0];
+export function removeFirstRepeatedWord(title: string): string {
+  // Dividir el título en palabras individuales
+  const words = title.trim().split(' ');
 
-    // Filtrar las palabras restantes para eliminar todas las instancias de la primera palabra
-    const filteredWords = words.filter((word, index) => index === 0 || word.toLowerCase() !== firstWord.toLowerCase());
+  // Obtener la primera palabra
+  const firstWord = words[0];
 
-    // Unir las palabras de nuevo en un solo título y devolverlo
-    return filteredWords.join(' ');
+  // Filtrar las palabras restantes para eliminar todas las instancias de la primera palabra
+  const filteredWords = words.filter((word, index) => index === 0 || word.toLowerCase() !== firstWord.toLowerCase());
+
+  // Unir las palabras de nuevo en un solo título y devolverlo
+  return filteredWords.join(' ');
+}
+
+export const currencySymbol = (currency: string) => {
+  switch (currency) {
+    case 'EUR': return '€ ';
+    case 'CAD': return 'CAD ';
+    default: return '$ ';
   }
+};
 
-  export const currencySymbol = (currency: string) => {
-    switch (currency) {
-      case 'EUR': return '€ ';
-      case 'CAD': return 'CAD ';
-      default: return '$ ';
-    }
-  };
+export function eliminarCaracteresNoNumericos(inputString: string) {
+  // Utilizamos una expresión regular para reemplazar todos los caracteres que no son números ni puntos con una cadena vacía
+  const cleanedString = inputString.replace(/[^\d.+/-]/g, '');
 
-  export function eliminarCaracteresNoNumericos(inputString: string) {
-    // Utilizamos una expresión regular para reemplazar todos los caracteres que no son números ni puntos con una cadena vacía
-    const cleanedString = inputString.replace(/[^\d.+/-]/g, '');
+  return cleanedString;
+}
 
-    return cleanedString;
-  }
-
-  export function capitalizeTitle(text: string): string {
-    return text
-      .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
+export function capitalizeTitle(text: string): string {
+  return text
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
