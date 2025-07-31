@@ -1414,7 +1414,7 @@ export class OrdersService {
           }
 
           // Calcular el precio total del producto
-          const totalProduct = getTotalWithDiscount(thisProduct.price, amount, top);
+          const totalProduct = getTotalWithDiscount(thisProduct.price, amount, top, !thisProduct.influencer_id);
 
           // Calcular el precio total de las personalizaciones
           for (const custom of customizations) {
@@ -1427,7 +1427,7 @@ export class OrdersService {
             amount,
             product: {
               ...thisProduct.dataValues,
-              price: getUnitPriceWithDiscount(thisProduct.price + (top ? -10.00 : 0), amount, top),
+              price: getUnitPriceWithDiscount(thisProduct.price + (top ? -10.00 : 0), amount, top, !thisProduct.influencer_id),
             },
             customizations,
             totalCustomization,

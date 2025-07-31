@@ -702,6 +702,7 @@ export class ProductsService {
       if (!admin) {
         query['status'] = StateProduct.Active;
         query['password'] = null;
+        query['influencer_id'] = null;
       } else {
         if (filters.status) {
           query['status'] = filters.status;

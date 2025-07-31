@@ -23,6 +23,7 @@ import { Collection } from '../../collections/entity/collections.entity';
 import { CollectionProduct } from '../../collections/entity/collectionProduct.entity';
 import { ProductTags } from 'src/tags/entity/productTags.entity';
 import { Tags } from 'src/tags/entity/tags.entity';
+import { Influencer } from 'src/influencers/entity/influencers.entity';
 
 export enum StateProduct {
   Active = 'publish',
@@ -236,4 +237,11 @@ export class Product extends Model {
 
   @HasMany(() => Customization)
   customizations: Customization;
+
+  @ForeignKey(() => Influencer)
+  @Column(DataType.UUID)
+  influencer_id: string;
+
+  @BelongsTo(() => Influencer)
+  influencer: Influencer;
 }

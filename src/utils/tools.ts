@@ -144,7 +144,9 @@ const getTieredPrices = (basePrice: number, discounts: Record<Tier, number>): Re
   '250+': +(basePrice - discounts['250+']).toFixed(2),
 });
 
-export const getTotalWithDiscount = (basePrice: number, quantity: number, top: boolean): number => {
+export const getTotalWithDiscount = (basePrice: number, quantity: number, top: boolean, applyDiscount = true): number => {
+  if (!applyDiscount) return +(basePrice * quantity).toFixed(2);
+
   let tier: Tier;
 
   if (quantity >= 250) tier = '250+';
@@ -158,70 +160,72 @@ export const getTotalWithDiscount = (basePrice: number, quantity: number, top: b
   return +(unitPrice * quantity).toFixed(2);
 };
 
-export const getUnitPriceWithDiscount = (basePrice: number, quantity: number, top: boolean): number => {
-  let tier: Tier;
+export const getUnitPriceWithDiscount = (basePrice: number, quantity: number, top: boolean, applyDiscount = true,): number => {
+    if (!applyDiscount) return basePrice;
 
-  if (quantity >= 250) tier = '250+';
-  else if (quantity >= 101) tier = '101>250';
-  else if (quantity >= 51) tier = '51>100';
-  else if (quantity >= 21) tier = '21>50';
-  else tier = '10>20';
+    let tier: Tier;
 
-  const tieredPrices = getTieredPrices(basePrice, top ? topDiscounts : uniformDiscounts);
-  return tieredPrices[tier];
-};
+    if (quantity >= 250) tier = '250+';
+    else if (quantity >= 101) tier = '101>250';
+    else if (quantity >= 51) tier = '51>100';
+    else if (quantity >= 21) tier = '21>50';
+    else tier = '10>20';
 
-export function isWebP(buffer: Buffer): boolean {
-  // La firma única de un archivo WebP comienza con 'RIFF' seguido de 'WEBP'
-  const webpSignature = ['52', '49', '46', '46'];
+    const tieredPrices = getTieredPrices(basePrice, top ? topDiscounts : uniformDiscounts);
+    return tieredPrices[tier];
+  };
 
-  // Comparar los primeros bytes del buffer con la firma de WebP
-  for (let i = 0; i < webpSignature.length; i++) {
-    // Convertir la firma hexadecimal a decimal
-    const signatureByte = parseInt(webpSignature[i], 16);
+  export function isWebP(buffer: Buffer): boolean {
+    // La firma única de un archivo WebP comienza con 'RIFF' seguido de 'WEBP'
+    const webpSignature = ['52', '49', '46', '46'];
 
-    // Verificar si los bytes coinciden
-    if (buffer[i] !== signatureByte) {
-      return false; // No es WebP
+    // Comparar los primeros bytes del buffer con la firma de WebP
+    for (let i = 0; i < webpSignature.length; i++) {
+      // Convertir la firma hexadecimal a decimal
+      const signatureByte = parseInt(webpSignature[i], 16);
+
+      // Verificar si los bytes coinciden
+      if (buffer[i] !== signatureByte) {
+        return false; // No es WebP
+      }
     }
+
+    return true; // Es WebP
   }
 
-  return true; // Es WebP
-}
+  export function removeFirstRepeatedWord(title: string): string {
+    // Dividir el título en palabras individuales
+    const words = title.trim().split(' ');
 
-export function removeFirstRepeatedWord(title: string): string {
-  // Dividir el título en palabras individuales
-  const words = title.trim().split(' ');
+    // Obtener la primera palabra
+    const firstWord = words[0];
 
-  // Obtener la primera palabra
-  const firstWord = words[0];
+    // Filtrar las palabras restantes para eliminar todas las instancias de la primera palabra
+    const filteredWords = words.filter((word, index) => index === 0 || word.toLowerCase() !== firstWord.toLowerCase());
 
-  // Filtrar las palabras restantes para eliminar todas las instancias de la primera palabra
-  const filteredWords = words.filter((word, index) => index === 0 || word.toLowerCase() !== firstWord.toLowerCase());
-
-  // Unir las palabras de nuevo en un solo título y devolverlo
-  return filteredWords.join(' ');
-}
-
-export const currencySymbol = (currency: string) => {
-  switch (currency) {
-    case 'EUR': return '€ ';
-    case 'CAD': return 'CAD ';
-    default: return '$ ';
+    // Unir las palabras de nuevo en un solo título y devolverlo
+    return filteredWords.join(' ');
   }
-};
 
-export function eliminarCaracteresNoNumericos(inputString: string) {
-  // Utilizamos una expresión regular para reemplazar todos los caracteres que no son números ni puntos con una cadena vacía
-  const cleanedString = inputString.replace(/[^\d.+/-]/g, '');
+  export const currencySymbol = (currency: string) => {
+    switch (currency) {
+      case 'EUR': return '€ ';
+      case 'CAD': return 'CAD ';
+      default: return '$ ';
+    }
+  };
 
-  return cleanedString;
-}
+  export function eliminarCaracteresNoNumericos(inputString: string) {
+    // Utilizamos una expresión regular para reemplazar todos los caracteres que no son números ni puntos con una cadena vacía
+    const cleanedString = inputString.replace(/[^\d.+/-]/g, '');
 
-export function capitalizeTitle(text: string): string {
-  return text
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
+    return cleanedString;
+  }
+
+  export function capitalizeTitle(text: string): string {
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
