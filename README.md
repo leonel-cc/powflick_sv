@@ -25,7 +25,16 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Sport Zone Backend** es una aplicación de servidor construida con NestJS que gestiona un catálogo completo de uniformes deportivos. Esta plataforma permite a los usuarios explorar, descargar y gestionar una amplia variedad de uniformes para diferentes deportes como fútbol, baloncesto, béisbol, hockey, running y gaming.
+
+### Características principales:
+
+- **Catálogo extenso de uniformes**: Miles de diseños organizados por deporte y estilo
+- **Descarga de recursos**: Sistema de descarga de archivos de uniformes con información detallada
+- **Gestión de datos**: Base de datos robusta para almacenar información de uniformes y usuarios
+- **API RESTful**: Endpoints bien estructurados para consumo desde aplicaciones cliente
+- **Autenticación y autorización**: Sistema seguro de validación de usuarios
+- **Escalabilidad**: Arquitectura moderna con NestJS para aplicaciones de alto rendimiento
 
 ## Installation
 
