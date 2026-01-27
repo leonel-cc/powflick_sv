@@ -239,7 +239,7 @@ export class Product extends Model {
   customizations: Customization;
 
   @ForeignKey(() => Influencer)
-  @Column(DataType.UUID)
+  @Column(DataType.STRING)
   influencer_id: string;
 
   @BelongsTo(() => Influencer)

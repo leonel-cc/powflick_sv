@@ -1181,7 +1181,6 @@ export class ProductsService {
         const allTitles = await Product.findAll({
           attributes: ['title'],
           where: {
-            status: StateProduct.Active, // Asegurarse de que solo se obtienen productos activos
             password: null, // Asegurarse de que no se obtienen productos con contraseña
           },
         });

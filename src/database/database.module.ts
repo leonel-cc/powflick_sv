@@ -65,7 +65,6 @@ import { Influencer } from '../influencers/entity/influencers.entity';
       autoLoadModels: true,
       synchronize: true,
       logging: false,
-      sync: { force: false },
     }),
   ],
   exports: [SequelizeModule],

@@ -18,7 +18,6 @@ import { Review } from '../../reviews/entity/reviews.entity';
 
 export enum OrderStateEnum {
   //LLP
-  PENDING = 'PENDING',
   SUCCESS = 'SUCCESS',
   FAILURE = 'FAILURE',
   //Stipe
