@@ -178,7 +178,7 @@ export class AppService {
         influencer_id: null,
       });
 
-      const designYourGameSection = await this.designYourGameSection(16, ['Retro', 'Throwback Vibes', 'Tropical', 'Woman'], ['Soccer']);
+      const designYourGameSection = await this.designYourGameSection(16, ['Retro', 'Throwback Vibes', 'Geometry', 'Electric'], ['Soccer']);
 
       // // Obtener los últimos productos
       // const latestProducts = await this.getLatestProducts(3);
