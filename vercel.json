@@ -1,32 +1,22 @@
 {
-    "version": 2,
-    "rewrites": [
+  "version": 2,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
         {
-            "source": "/public/(.*)",
-            "destination": "/public/$1"
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         },
         {
-            "source": "/(.*)",
-            "destination": "/src/main.ts"
-        }
-    ],
-    "headers": [
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+        },
         {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "*"
-                },
-                {
-                    "key": "Access-Control-Allow-Methods",
-                    "value": "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-                },
-                {
-                    "key": "Access-Control-Allow-Headers",
-                    "value": "X-Requested-With, Content-Type, Authorization"
-                }
-            ]
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With, Content-Type, Authorization"
         }
-    ]
+      ]
+    }
+  ]
 }
